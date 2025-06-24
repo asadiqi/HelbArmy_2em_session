@@ -1,14 +1,13 @@
 package com.example.demo;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-
 public class Controller {
-    @FXML
-    private Label welcomeText;
+    private View view;
 
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    public void onButtonClick() {
+        view.updateLabel("Bonjour !");
     }
 }
