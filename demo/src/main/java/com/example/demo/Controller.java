@@ -7,9 +7,5 @@ public class Controller {
         this.view = view;
     }
 
-    public void onButtonClick() {
-        if (view != null) {
-            view.updateLabel("Bonjour !");
-        }
-    }
+
 }

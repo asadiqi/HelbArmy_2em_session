@@ -1,29 +1,59 @@
 package com.example.demo;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class View {
-    private Label label;
-    private Button button;
     private Scene scene;
+    private Pane pane;
+    private Label[][] labels = new Label[20][20];
 
     public View(Controller controller, Stage stage) {
-        label = new Label("Texte ici");
-        button = new Button("Clique moi");
-        button.setOnAction(e -> controller.onButtonClick());
+        pane = new Pane();
+        scene = new Scene(pane, 650, 650);
 
-        VBox layout = new VBox(10, label, button);
-        scene = new Scene(layout, 300, 200);
+        createGrid();
 
-        stage.setTitle("MVC Demo");
+        // Quand la taille change, on redimensionne la grille
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> resizeLabels());
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> resizeLabels());
+
+        resizeLabels();
+
+        stage.setTitle("Grille 20x20 responsive simple");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    public void updateLabel(String text) {
-        label.setText(text);
+    private void createGrid() {
+        for (int row = 0; row < 20; row++) {
+            for (int col = 0; col < 20; col++) {
+                Label label = new Label();
+                label.setStyle("-fx-border-color: black; -fx-background-color: white;");
+                labels[row][col] = label;
+                pane.getChildren().add(label);
+            }
+        }
+    }
+
+    private void resizeLabels() {
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+
+        double cellWidth = width / 20;
+        double cellHeight = height / 20;
+
+        for (int row = 0; row < 20; row++) {
+            for (int col = 0; col < 20; col++) {
+                Label label = labels[row][col];
+                label.setLayoutX(col * cellWidth);
+                label.setLayoutY(row * cellHeight);
+                label.setPrefWidth(cellWidth);
+                label.setPrefHeight(cellHeight);
+            }
+        }
     }
 
     public Scene getScene() {
