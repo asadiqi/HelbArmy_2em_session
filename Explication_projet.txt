@@ -1,0 +1,331 @@
+Espace de jeu (version simplifiée)
+La simulation se passe sur une carte en forme de grille, comme un tableau avec des lignes et des colonnes.
+
+Chaque élément du jeu (comme un soldat, un objet, etc.) a une position précise sur cette carte.
+Par exemple : une unité peut être à la ligne 2, colonne 3.
+
+En général, deux éléments ne peuvent pas être au même endroit en même temps.
+
+Les bords de la carte sont des murs :
+Les unités ne peuvent pas sortir de la carte ni traverser les murs.
+
+__________________________________________________________________________________________
+
+Les arbres sur la carte
+La carte contient des arbres placés de manière aléatoire.
+
+Ces arbres permettent de récolter du bois.
+Chaque arbre commence avec 50 unités de bois.
+Un arbre peut avoir au maximum 100 unités de bois.
+
+Quand un arbre a été entièrement vidé de son bois, il disparaît de la carte.
+
+Tant qu’il est encore sur la carte, un arbre est un obstacle : les unités ne peuvent pas passer à travers.
+
+
+Les rochers 
+Des rochers sont placés aléatoirement sur la carte.
+
+Ils permettent de récolter du minerai.
+
+Chaque rocher commence avec 100 unités de minerai.
+
+Un rocher peut contenir au maximum 200 unités.
+
+Quand un rocher est entièrement vidé de son minerai, il disparaît de la carte.
+
+Tant qu’il est présent, c’est un obstacle : les unités ne peuvent pas le traverser.
+
+Particularité importante :
+Contrairement aux autres éléments du jeu, un rocher occupe plusieurs cases :
+il prend un carré de 2 cases sur 2, donc 4 cases au total.
+
+__________________________________________________________________________________________
+
+Les villes
+Les villes sont des éléments placés sur la carte.
+Elles ont un rôle important : elles peuvent créer (ou "générer") des unités.
+
+Au début du jeu, il y a deux villes ennemies, placées à des coins opposés de la carte :
+
+Une est à la position (0, 0) (en haut à gauche).
+
+L’autre est à la position (n, m) (en bas à droite), où n est le nombre de lignes et m le nombre de colonnes de la carte.
+
+__________________________________________________________________________________________
+
+Les collecteurs 
+Les collecteurs sont des unités qui apparaissent en orange sur la carte.
+Ils servent à récolter des ressources.
+Après avoir été créés, ils vont automatiquement vers la ressource la plus proche pour la récolter.
+Pour collecter, le collecteur doit se placer sur une case adjacente (à côté) de la ressource.
+Ils récoltent à raison d’une unité de ressource par seconde.
+Au fur et à mesure, la quantité de ressource disponible diminue.
+Quand un collecteur collecte une ressource, cette quantité est ajoutée directement aux ressources de la ville à laquelle il appartient.
+Il n’est donc pas nécessaire que le collecteur retourne à la ville pour déposer ce qu’il a récolté.
+
+
+Les types de collecteurs 
+Il y a deux types de collecteurs :
+
+Les bûcherons :
+Ils récoltent du bois sur les arbres.
+Ils ont un bonus, donc ils collectent 2 unités de bois par seconde (au lieu de 1).
+
+Les piocheurs :
+Ils récoltent du minerai sur les rochers.
+Ils ont un bonus et collectent 3 unités de minerai par seconde (au lieu de 1).
+
+Attention, ces différences ne sont pas visibles sur la carte.
+On ne peut pas dire si un collecteur est un bûcheron ou un piocheur simplement en le regardant.
+__________________________________________________________________________________________
+
+Les semeurs (version simplifiée)
+Les semeurs sont des unités qui apparaissent en mauve sur la carte.
+
+Ils servent à créer de nouvelles ressources (arbres ou rochers) pour qu’elles puissent ensuite être récoltées.
+
+Comment fonctionne le semis :
+Le semeur doit se placer à côté d’une zone vide (sans aucun autre élément) où il peut créer une ressource.
+
+Les semeurs décident aléatoirement de la ressource à générer. 
+Une fois bien positionné, le semis commence.
+
+La ressource (arbre ou rocher) apparaît immédiatement sur la carte à cet endroit.
+
+Dès qu’elle apparaît, elle bloque le passage aux autres unités.
+
+Pendant que le semeur reste à côté, la ressource grandit :
+
+Chaque seconde, 2 unités de ressource sont ajoutées.
+
+Ce processus continue jusqu’à atteindre la capacité maximale de la ressource (par exemple, 100 pour un arbre ou 200 pour un rocher).
+
+Si le semeur est interrompu (ex. : attaqué ou déplacé) :
+La création s’arrête.
+
+La ressource garde la quantité atteinte jusqu’à ce moment.
+Par exemple : si un rocher est semé pendant 10 secondes, il contiendra 20 unités de minerai.
+
+__________________________________________________________________________________________
+
+Les assassins :
+Les assassins apparaissent en bleu sur la carte. Ils chassent les ennemis
+adverses les plus proches, en commençant par les assassins adverses, puis les
+collecteurs, et enfin les semeurs.
+__________________________________________________________________________________________
+
+Les combats 
+Un combat démarre lorsqu’une unité se trouve à côté (adjacente) d’une unité ennemie, et qu’au moins l’une des deux est un assassin.
+
+Cas simple : 2 unités en combat
+On lance un dé à 2 faces (comme pile ou face), chaque face représente une des deux unités.
+
+L’unité tirée au sort est éliminée (elle disparaît du terrain).
+
+L’autre survit (au moins pour ce tour).
+
+Cas plus complexe : plusieurs unités autour
+Si une unité est entourée par plusieurs ennemis, tous peuvent participer au combat.
+
+On lance un dé avec autant de faces que d’unités impliquées.
+
+Chaque face correspond à une unité différente.
+
+L’unité tirée au sort est éliminée.
+
+Le combat continue ensuite avec les unités restantes, jusqu’à ce qu’il n’y ait plus de combat possible (par exemple, plus qu’une unité ou plus d’assaillants autour).
+
+Remarques
+Seules les unités adjacentes (sur les cases voisines) peuvent participer.
+
+Un combat n’a lieu que si au moins un assassin est présent parmi les unités concernées.
+
+Le combat est entièrement aléatoire, basé sur le résultat du dé.
+__________________________________________________________________________________________
+
+Système de déplacement : 
+
+Collecteurs : Ils se déplacent vers la ressource collectable la plus proche.
+
+Si l'arbre le plus proche ne possède plus de positions de collecte libres. Le collecteur se
+déplace donc vers le second arbre le plus proche.qui a une position de collecte
+disponible.
+
+Si l'arbre possède une position de collecte libre, mais
+elle n'est pas accessible. Le collecteur se dirigera néanmoins vers cet arbre, même
+s'il est incapable d'y accéder. 
+__________________________________________________________________________________________
+
+Comportement des semeurs (version simplifiée)
+Quand un semeur est généré, il choisit aléatoirement s’il va semer :
+
+un arbre
+
+ou un rocher
+
+Ensuite, son comportement dépend du type choisi :
+
+Si le semeur choisit de semer un arbre :
+Il regarde s’il existe des arbres déjà présents sur la carte.
+
+Si oui :
+
+Il choisit un arbre au hasard parmi ceux qui ont au moins une case libre autour.
+
+Il se déplace vers une case vide adjacente à cet arbre.
+
+Il sème un nouvel arbre sur cette case.
+
+Les arbres sont donc toujours plantés à côté d’autres arbres, comme une forêt qui s'étend.
+
+Si aucun arbre n’est présent sur la carte :
+
+Le semeur choisit une case libre au hasard pour planter un arbre.
+
+Si le semeur choisit de semer un rocher :
+Il cherche un endroit vide disponible pour placer un rocher (n’oublie : un rocher prend 2x2 cases).
+
+Il choisit l’endroit le plus éloigné possible des autres rochers déjà présents.
+
+Il s’y déplace pour y semer le rocher.
+
+Important :
+Si, quand il arrive à l’endroit choisi, celui-ci n’est plus libre, alors :
+
+Il relance tout le processus :
+→ Il choisit à nouveau aléatoirement une ressource (arbre ou rocher),
+→ puis recommence la recherche d’un emplacement adapté.
+__________________________________________________________________________________________
+
+Assassins : Les assassins pourchassent les ennemis adverses les plus proches,
+en commençant par les assassins adverses, puis les collecteurs adverses, et enfin
+les semeurs adverses. Concrètement, si des assassins adverses sont présents sur
+la carte, l’assassin se dirige vers celui qui est le plus proche. Si aucun assassin
+adverse n’est présent, l’assassin se dirige vers le collecteur adverse le plus
+proche. Si aucun collecteur adverse n’est présent non plus, il se dirige vers le
+semeur adverse le plus proche. Si aucun ennemi n’est présent, l’assassin choisit
+une position aléatoire parmi toutes les positions libres sur la carte et s’y dirige pour
+s’y arrêter jusqu’à ce que l’apparition d’un ennemi le pousse à reprendre son
+déplacement. 
+__________________________________________________________________________________________
+
+Déplacement et gestion des obstacles :
+Chaque unité peut se déplacer horizontalement, verticalement, ou en diagonale, à
+condition que la case du déplacement soit une case ne contenant pas un autre
+élément du jeu. 
+
+
+
+__________________________________________________________________________________________
+
+Vitesses et gestion du temps :
+Toutes les unités se déplacent à la même vitesse. Par défaut, tous les éléments du
+jeu effectuent une action par seconde. On peut généraliser en disant que le jeu
+rafraichi les éléments une fois par seconde. Il doit être possible de modifier cette
+vitesse de rafraichissement. Par exemple, il doit être possible, depuis le code, de
+rafraichir le jeu une fois toutes les 0,5 secondes afin d’accélérer le déroulement de
+la simulation. Le drapeau est le seul élément dont le temps fonctionnel ne peut pas
+être impacté par le changement de la vitesse de rafraîchissement. 
+__________________________________________________________________________________________
+
+Génération des unités :
+Les unités sont générées de manière aléatoire par les villes. Toutefois, ce choix
+aléatoire est soumis aux influences suivantes :
+- Plus il y a d’arbres présents sur la carte, plus les chances de générer un
+collecteur bûcheron sont grandes.
+- Plus il y a de rochers présents sur la carte, plus les chances de générer un
+collecteur piocheur sont grandes.
+- Plus il y a d’assassins adverses sur la carte, plus les chances de générer un
+assassin sont grandes.
+Toutes les deux secondes, une unité est générée par la ville. La génération des
+unités ne coûte pas de ressources.
+Les unités sont générées à partir des villes, aléatoirement, sur l'une des cases
+libres les plus proches de la ville. Dès lors, si l’unité ne peut pas être générée sur
+une des cases situées à une distance de 1, elle sera générée sur une des cases
+situées à une distance de 2, et ainsi de suite jusqu’à une distance de 3, etc
+__________________________________________________________________________________________
+
+Le Drapeau : Toutes les deux minutes, un drapeau apparaît à une position
+aléatoire sur la carte et reste présent pendant 10 secondes avant de disparaître
+automatiquement. Lorsque le drapeau est présent, toutes les unités modifient leur
+comportement pour se déplacer aléatoirement sur la carte. Si le drapeau disparaît
+ou est fortuitement collecté.
+__________________________________________________________________________________________
+
+La Pierre Philosophale (oui, sérieusement)
+C’est un objet fixe qui agit comme un portail de téléportation.
+
+Quand une unité touche la pierre, elle est téléportée à une position aléatoire sur la carte.
+
+La pierre :
+
+ne disparaît jamais (elle reste en place),
+
+n’est pas présente au départ de la simulation : on doit probablement l'ajouter manuellement (ou par événement).
+
+__________________________________________________________________________________________
+
+
+Fin de partie :
+À l’issue de la partie, lorsque le programme est terminé, soit lors de la fermeture
+de la fenêtre de jeu, soit par l’utilisation d’un cheat code associé, les ressources en
+bois et en minerai des deux équipes sont affichées en console. Si une des équipes
+possède à la fois l’avantage sur la quantité de minerai et de bois, celle-ci est
+explicitement désignée comme vainqueur. Sinon il s’agit d’une égalité. 
+
+__________________________________________________________________________________________
+
+Questions :
+
+1) les arbres contient par défaut 50 unité de bois que voulez vous dire par Un arbre peut en contenir au maximum 100 unités de bois?
+
+2) Quand je lance le jeu il aura déjà des arbres et des rochers present sur la carte ?
+   est ce que il faut des pions aussi ?
+
+3) les villes occupent une case sur la carte? elle sont positionner en haut à gauche et en bas à droite ?
+
+
+4) Quand une ressource a été collectée par le collecteur, elle s’ajoute automatiquement aux ressources disponibles dans la ville à laquelle le collecteur appartient. donc chaque quantité de ressources est ajouter directement à la ville ? par Example si collecteur collecte 10 quantité du bois et que il mort la ville va recevoir 10 quantité du bois ?
+
+
+5) Le bûcheron possède un bonus de récolte sur les arbres : il peut collecter 2 unités de bois par seconde lorsqu'il exploite un arbre. Le piocheur, quant à lui, bénéficie d’un bonus de récolte sur les rochers et peut collecter 3 unités de minerai par seconde lorsqu'il exploite un rocher. 
+est ce que un bûcheron peut récolte des rochers et un piocheurs des arbres ?
+
+
+6) pour Vitesses et gestion du temps : on doit utiliser quoi vu que on peut pas utiliser streams etc ? juste timeline, cyclecount  ?
+
+Timeline timeline = new Timeline(
+    new KeyFrame(Duration.seconds(refreshRate), e -> updateGame())
+);
+timeline.setCycleCount(Animation.INDEFINITE);
+timeline.play();
+
+
+7) est ce que il faut afficher sur l'interface la logique de combat qui est 
+un dé à deux faces est lancé, chaque face étant associée à l’une des unités en combat. L’unité correspondant au résultat du jet de dé est éliminée et disparaît alors du terrain. 
+
+8) Chaque unité peut se déplacer horizontalement, verticalement, ou en diagonale, à condition que la case du déplacement soit une case ne contenant pas un autre élément du jeu. montrer la photo sur la page 6.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
