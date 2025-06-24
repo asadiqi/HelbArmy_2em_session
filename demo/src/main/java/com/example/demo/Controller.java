@@ -8,6 +8,8 @@ public class Controller {
     }
 
     public void onButtonClick() {
-        view.updateLabel("Bonjour !");
+        if (view != null) {
+            view.updateLabel("Bonjour !");
+        }
     }
 }
