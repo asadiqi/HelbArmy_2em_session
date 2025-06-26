@@ -16,7 +16,7 @@ public class View {
     private static final String WINDOW_TITLE = "Grille MVC Canvas";
     private static final int CHECKER_DIVISOR = 2;
     private static final int INITIAT_INDEX = 0;
-
+    private final int LAST_INDEX_OFFSET  = 1;
     private Canvas canvas;
     private Scene scene;
     private Pane pane;
@@ -27,7 +27,6 @@ public class View {
     private double cellWidth;
     private double cellHeight;
     private GraphicsContext gc;
-
 
     public View(Controller controller, Stage stage) {
         this.controller = controller;
@@ -80,15 +79,13 @@ public class View {
         Image southImage = new Image("file:" + controller.getSouthCityFilePath());
         // Afficher les images dans la grille
 
-        int n = controller.getGridRows()-1;
-        int m = controller.getGridCols()-1;
+        int lastRow = rows - LAST_INDEX_OFFSET;
+        int lastCol = cols - LAST_INDEX_OFFSET;
 
-        gc.drawImage(southImage, m * cellWidth, n * cellHeight, cellWidth, cellHeight);
-
-        gc.drawImage(northImage, 0 * cellWidth, 0 * cellHeight, cellWidth, cellHeight); // nord en (0,0)
-        gc.drawImage(southImage, n * cellWidth, m * cellHeight, cellWidth, cellHeight); // sud en (1,1) par exemple
-
+        gc.drawImage(northImage, INITIAT_INDEX, INITIAT_INDEX, cellWidth, cellHeight); // nord en (0,0)
+        gc.drawImage(southImage, lastCol * cellWidth, lastRow * cellHeight, cellWidth, cellHeight); // sud en (n,m)
     }
+
 
     public Scene getScene() {
         return scene;
