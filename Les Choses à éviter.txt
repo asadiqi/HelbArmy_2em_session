@@ -1,0 +1,97 @@
+1) si on change la taille de la grille qui est à 20x20 à 40x40 la taille de jeu ne change pas?
+oui la taille de jeu change mais la place des villes ne change pas 
+
+2) Montre la classe Main y a quoi de dans est ce que le main est le point d'entée de programme et rien d'autre ?
+ le main doit appeler le Controller pour initialiser le jeu et le Controller appelle la View
+la View fait launch de l'application c'est pas bon et view été le point d'entrée de programme.
+
+dans le main j'instancie un Controller que je passe à view et le problème c'été que le Controller été instancié 2 fois.
+
+
+3) j'avis attributs logique dans view par Example gridrow et gridcol (la taille de plateau est un élément logique) citysize cityimagegridwitdh. la taille de la fenêtre pourra resté dans view .
+
+4) les images des unités (Path vers l'images) été dans la view alors que il faut le mettre dans les unité.
+c'été intéressant de mettre les paths dans la classe correspondante parce que si demain je change l'image de collecteurs je change le path et dans la view on fait simplement truc à dessiner.get().pathToimage.
+
+si demain je supprime le collecteur alors on supprime la classe collecteurs , dans Controller on dit c'est bon on fait plus la création de collecteur et dans la view c'été attendu de avoir une liste de tout les gamelments et pour chaque gamelement récupère son Sprite crée une image à partir de Sprite et dessiner l'image à la position d'élément 
+
+5) il faut pas avoir  la logique applicatif dans la view 
+j'avis setupgameLoop dans la view j'avis un peu mixé le Controller et la view
+
+6) updateUnitImages n'été pas bon car le prof attant que on fait l'usage de polymorphisme (généricité) pour que les unités soit dessiner de la même façon.
+le code d'afficher le collecteur c'est la même que afficher un assainis 
+donc il faut for unit unitliste update unit 
+j'ai fait si c'est un collecteur fait ca si c'est un assassins fait ca (duplication du code).
+
+7) pour la cité aussi y a moyen de faire même chose que les image pour l'affichage  
+
+8) les classes model comme les units ne doit pas avoir élément de javfx
+
+
+9) si on veut changer quelques chose par rapport au flag on doit aller dans la classe de flag. il faut la responsabilité de chaque chose dans sa classe correspondante. si demain je supprime le flag je vais juste supprimer la classe et enlever le code de flag dans le Controller et aussi dans la classe units
+dans mon projet c'été dans units
+
+10) logique de stone est bien de stone mais units depande de la logique de la stone c'est pas top car demain je supprime stone je vais juste supprimer la classe et enlever le code de flag dans le Controller mais je dois pas supprimer quelques chose dans la classe units car units est indépendant de la stone.
+
+11) dans Controller j'ai placé le flag et pierre de manière aléatoire. et j'avis une méthode createflgifneed qui appelle createflag.
+ il faut bien implémenter la méthode de flag qui vérifie qui vérifie que si une case est occupé il crée pas le flag à cette place et elle cherche une autre case vide pour créer le flag
+dans le projet ce n'été pas le cas 
+
+12) il faut avoir meme nom par example createflag et create magicstone avec la vérification de case vide et faut pas avoir la duplication entre la creation d'un flag et magicstone. car la logique de placement est la même donc il faut avoir une fonction pour les faire. 
+dans mon projet j'avis 2 méthode défèrent pour création de flag et stone.
+
+13) le targeting d'une unité de jeu doit être dans sa classe correspondante. par Example si demain assassins ne vise pas semeurs mais autre unité il faut changer le code de la classe assassins.
+
+
+14) j'ai une methode movetowords dans unité qui dit si il y a pas de flag unité va vers le target. c'est bien car la logique de targeting est dans la classe fille et la logique de déplacement et dans la classe meme
+
+15) le code doit faire l'usage de polymorphisme pour mouvement des unités. 
+dans mon projet le mouvement été dans la méthode update dans Controller et je récupère la liste de units et pour chaque units je fait si si l'instance de collecteur fait update si c'est l'instance de assassins fait update etc.
+c'est pas bon car fallait juste faire unit.update et collectteursmovement dans la classe units et if unit.move unit.update. 
+donc ma méthode update si bien mais il y a plusieurs instaceof  fallait juste update de unit.
+
+
+16) la classe mère (unit) ne doit pas avoir connaissance de la classe fille 
+par Example si on surprime quelque chose dans collecteurs je dois pas modifier la classe mère. mais la classe fille doit avoir la connaissance de la classe mère.
+
+
+17) pour le bonus il faut dans la classe mère. donc comme il y a plusieurs logique de bonus il faut le mettre dans la classe mère.
+
+18) il faut bien faire attention aux attributs final name of final il est pas censé d'etre final. 
+
+19) la classe units qui rassemble les comportement communs des unités doit être abstraite 
+
+
+20) est ce que c'est nécessaire de créer une classe abstraite pour les collectable et mettre les position et même chose pour la classe position. 
+dans mon projet j'avis une classe collectable pas abstraite qui donne la position mais il faut pas car flag et stone peut hériter de gameelements et faire exactement la même.
+
+21) il faut pas avoir classe vide problèmes des insecte. comme la classe cité car la logique de cité dans mon projet été dans Controller. 
+la cité génère des unités et stock de ressource donc il faut mettre cette logique dans la classe cité pas dans Controller. le Controller peut faire appelle à cité. et pour les touches aussi dans la cité
+
+
+22) pour les positionnement alétooire des unité faut faire avec un do while 
+
+private Position generateRandomPosition(Controller gameController) {
+        Random random = new Random();
+        Position randomPosition;
+        do {
+            int x = random.nextInt(gameController.getRows());
+            int y = random.nextInt(gameController.getCols());
+            randomPosition = new Position(x, y);
+        } while (gameController.isPositionOccupied(randomPosition));
+        return randomPosition;
+    }
+}
+
+
+
+23) faut pas avoir code mort et problème de nommage et des nuls explicite.
+
+
+
+
+
+
+
+
+

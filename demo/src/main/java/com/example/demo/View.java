@@ -1,57 +1,59 @@
 package com.example.demo;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class View {
+    private static final double INITIAL_WIDTH = 700;
+    private static final double INITIAL_HEIGHT = 700;
+    private static final String LIGHT_GREEN_COLOR = "AAD751";
+    private static final String DARK_GREEN_COLOR = "8CBF3F";
+    private static final String WINDOW_TITLE = "Grille MVC Canvas";
+    private static final int CHECKER_DIVISOR = 2;
+    private static final int INITIAT_INDEX = 0;
+
+    private Canvas canvas;
     private Scene scene;
     private Pane pane;
-    private Label[][] labels = new Label[20][20];
+    private Controller controller;
 
     public View(Controller controller, Stage stage) {
+        this.controller = controller;
+
         pane = new Pane();
-        scene = new Scene(pane, 650, 650);
+        canvas = new Canvas(INITIAL_WIDTH, INITIAL_HEIGHT);
+        pane.getChildren().add(canvas);
 
-        createGrid();
+        scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
 
-        // Quand la taille change, on redimensionne la grille
-        scene.widthProperty().addListener((obs, oldVal, newVal) -> resizeLabels());
-        scene.heightProperty().addListener((obs, oldVal, newVal) -> resizeLabels());
+        drawGrid();
 
-        resizeLabels();
-
-        stage.setTitle("Grille 20x20 responsive simple");
+        stage.setTitle(WINDOW_TITLE);
         stage.setScene(scene);
         stage.show();
     }
 
-    private void createGrid() {
-        for (int row = 0; row < 20; row++) {
-            for (int col = 0; col < 20; col++) {
-                Label label = new Label();
-                label.setStyle("-fx-border-color: black; -fx-background-color: white;");
-                labels[row][col] = label;
-                pane.getChildren().add(label);
-            }
-        }
-    }
+    private void drawGrid() {
+        int rows = controller.getGridRows();
+        int cols = controller.getGridCols();
 
-    private void resizeLabels() {
-        double width = scene.getWidth();
-        double height = scene.getHeight();
+        double cellWidth = canvas.getWidth() / cols;
+        double cellHeight = canvas.getHeight() / rows;
 
-        double cellWidth = width / 20;
-        double cellHeight = height / 20;
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        for (int row = 0; row < 20; row++) {
-            for (int col = 0; col < 20; col++) {
-                Label label = labels[row][col];
-                label.setLayoutX(col * cellWidth);
-                label.setLayoutY(row * cellHeight);
-                label.setPrefWidth(cellWidth);
-                label.setPrefHeight(cellHeight);
+        for (int row = INITIAT_INDEX; row < rows; row++) {
+            for (int col = INITIAT_INDEX; col < cols; col++) {
+                if ((row + col) % CHECKER_DIVISOR == INITIAT_INDEX) {
+                    gc.setFill(Color.web(LIGHT_GREEN_COLOR));
+                } else {
+                    gc.setFill(Color.web(DARK_GREEN_COLOR));
+                }
+                gc.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
             }
         }
     }
