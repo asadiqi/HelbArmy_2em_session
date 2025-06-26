@@ -17,6 +17,12 @@ public class Controller {
         return gridCols;
     }
 
+    public String getNorthCityFilePath() {
+        return City.getNorthCityFilePath();
+    }
 
+    public String getSouthCityFilePath() {
+        return City.getSouthCityFilePath();
+    }
 
 }
