@@ -6,11 +6,10 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
-        Controller controller = new Controller();
-        View view = new View(controller, stage);
-        controller.setView(view);
-        stage.setScene(view.getScene());
-        stage.show();
+
+        View view = new View(stage);
+        Controller controller = new Controller(view);
+
     }
 
     public static void main(String[] args) {

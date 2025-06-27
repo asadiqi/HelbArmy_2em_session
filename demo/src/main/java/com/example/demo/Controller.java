@@ -1,12 +1,14 @@
 package com.example.demo;
 
 public class Controller {
-    private View view;
-    private int gridRows = 20;
-    private int gridCols = 20;
 
-    public void setView(View view) {
+    private View view;
+    private int gridRows = 15;
+    private int gridCols = 15;
+
+    public Controller(View view) {
         this.view = view;
+        view.initView(this);
     }
 
     public int getGridRows() {

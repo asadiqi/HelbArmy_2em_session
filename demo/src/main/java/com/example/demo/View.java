@@ -9,6 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class View {
+
+
+    private Stage stage;
+    private Scene scene;
+    private Controller controller;
+
     private static final double INITIAL_WIDTH = 700;
     private static final double INITIAL_HEIGHT = 700;
     private static final String LIGHT_GREEN_COLOR = "AAD751";
@@ -17,25 +23,28 @@ public class View {
     private static final int CHECKER_DIVISOR = 2;
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET  = 1;
+
     private Canvas canvas;
-    private Scene scene;
     private Pane pane;
-    private Controller controller;
+    private GraphicsContext gc;
 
     private int rows;
     private int cols;
     private double cellWidth;
     private double cellHeight;
-    private GraphicsContext gc;
 
-    public View(Controller controller, Stage stage) {
-        this.controller = controller;
+    public View(Stage stage) {
 
-        pane = new Pane();
-        canvas = new Canvas(INITIAL_WIDTH, INITIAL_HEIGHT);
+        this.stage = stage;
+        this.pane = new Pane();
+        this.canvas = new Canvas(INITIAL_WIDTH, INITIAL_HEIGHT);
         pane.getChildren().add(canvas);
+    }
 
-        scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
+
+    public void initView(Controller controller) {
+        this.controller = controller;
+        this.scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
 
         initiatgrid();
         drawGrid();
@@ -44,7 +53,6 @@ public class View {
         stage.setScene(scene);
         stage.show();
     }
-
 
     private void initiatgrid() {
         rows = controller.getGridRows();
@@ -55,7 +63,6 @@ public class View {
     }
 
     private void drawGrid() {
-
 
         for (int row = INITIAT_INDEX; row < rows; row++) {
             for (int col = INITIAT_INDEX; col < cols; col++) {
@@ -87,7 +94,4 @@ public class View {
     }
 
 
-    public Scene getScene() {
-        return scene;
-    }
 }
