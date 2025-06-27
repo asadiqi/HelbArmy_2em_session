@@ -3,8 +3,8 @@ package com.example.demo;
 public class Controller {
 
     private View view;
-    private int gridRows = 15;
-    private int gridCols = 15;
+    private int gridRows = 47;
+    private int gridCols = 47;
 
     public Controller(View view) {
         this.view = view;
@@ -19,12 +19,13 @@ public class Controller {
         return gridCols;
     }
 
-    public String getNorthCityFilePath() {
-        return City.getNorthCityFilePath();
+    public String[] getCityFilePaths() {
+        return new String[] {
+            City.getNorthCityFilePath(),
+            City.getSouthCityFilePath()
+
+        };
     }
 
-    public String getSouthCityFilePath() {
-        return City.getSouthCityFilePath();
-    }
 
 }

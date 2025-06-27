@@ -24,6 +24,9 @@ public class View {
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET  = 1;
 
+    private  final int NORTH = 0;
+    private final int SOUTH = 1;
+
     private Canvas canvas;
     private Pane pane;
     private GraphicsContext gc;
@@ -82,8 +85,10 @@ public class View {
 
         // Créer une instance de City pour accéder aux chemins
         // Charger les images à partir des chemins
-        Image northImage = new Image("file:" + controller.getNorthCityFilePath());
-        Image southImage = new Image("file:" + controller.getSouthCityFilePath());
+        String[] paths = controller.getCityFilePaths();
+        Image northImage = new Image("file:" + paths[NORTH]);
+        Image southImage = new Image("file:" + paths[SOUTH]);
+
         // Afficher les images dans la grille
 
         int lastRow = rows - LAST_INDEX_OFFSET;
