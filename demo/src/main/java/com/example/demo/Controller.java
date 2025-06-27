@@ -3,8 +3,8 @@ package com.example.demo;
 public class Controller {
 
     private View view;
-    private int gridRows = 47;
-    private int gridCols = 47;
+    private int gridRows = 15;
+    private int gridCols = 15;
 
     public Controller(View view) {
         this.view = view;
