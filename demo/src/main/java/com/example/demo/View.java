@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.ressource.Tree;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,9 +23,10 @@ public class View {
     private static final String WINDOW_TITLE = "Grille MVC Canvas";
     private static final int CHECKER_DIVISOR = 2;
     private static final int INITIAT_INDEX = 0;
-    private final int LAST_INDEX_OFFSET  = 1;
+    private final int LAST_INDEX_OFFSET = 1;
+    private Image treeImage;
 
-    private  final int NORTH = 0;
+    private final int NORTH = 0;
     private final int SOUTH = 1;
 
     private Canvas canvas;
@@ -50,7 +52,9 @@ public class View {
         this.scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
 
         initiatgrid();
+        initImages();
         drawGrid();
+
 
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(scene);
@@ -78,6 +82,7 @@ public class View {
             }
         }
         drawCity();
+        drawTrees();
     }
 
     public void drawCity() {
@@ -98,5 +103,18 @@ public class View {
         gc.drawImage(southImage, lastCol * cellWidth, lastRow * cellHeight, cellWidth, cellHeight); // sud en (n,m)
     }
 
+    private void initImages() {
+        treeImage = new Image("file:" + controller.getTreeImage());
+    }
 
+
+    public void drawTrees() {
+        for (Tree tree : controller.getTrees()) {
+            GameElement pos = tree.getPosition();
+            double x = pos.x * cellWidth;
+            double y = pos.y * cellHeight;
+            gc.drawImage(treeImage, x, y, cellWidth, cellHeight);
+        }
+
+    }
 }

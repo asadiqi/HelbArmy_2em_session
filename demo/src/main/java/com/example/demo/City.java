@@ -2,8 +2,8 @@ package com.example.demo;
 
 public class City {
 
-    public  static  String northCityFilePath = "img/white/northTown.png";
-    public static String southCityFilePath = "img/black/southTown.png";
+    public  static  String northCityFilePath = "img/white/northCity.png";
+    public static String southCityFilePath = "img/black/southCity.png";
 
 
     public static  String getNorthCityFilePath() {
@@ -13,5 +13,7 @@ public class City {
     public static  String getSouthCityFilePath() {
         return southCityFilePath;
     }
+
+
 }
 
