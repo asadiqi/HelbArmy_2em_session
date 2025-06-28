@@ -8,13 +8,14 @@ import java.util.Random;
 public class Controller {
 
     private View view;
-    private int gridRows = 4;
-    private int gridCols = 4;
+    private int gridRows = 15;
+    private int gridCols = 15;
     private List<Tree> trees;
 
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
+    private double treeRatio=0.03;
 
     public Controller(View view) {
         this.view = view;
@@ -37,15 +38,20 @@ public class Controller {
         return allElements;
     }
 
-    private void generateRandomTrees() {
-        Random rand = new Random();
-        int maxAttempts = 100;
-        int attempts = 0;
+    private int calculateNumberOfTrees() {
+        return (int) (gridRows * gridCols * treeRatio);
+    }
 
-        while (trees.size() < 5 && attempts < maxAttempts) {
+
+    private void generateRandomTrees() {
+        int numberOfTrees = calculateNumberOfTrees();
+
+        Random rand = new Random();
+
+
+        while (trees.size() < numberOfTrees) {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
-            attempts++;
 
             if (!isOccupied(x, y)) {
                 Tree tree = new Tree(new GameElement(x, y));

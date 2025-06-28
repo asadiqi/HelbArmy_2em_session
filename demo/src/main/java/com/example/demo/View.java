@@ -90,7 +90,7 @@ public class View {
             Image img = imagePath.get(path);
                 img = new Image("file:" + path);
                 imagePath.put(path, img);
-            
+
             double x = element.getX() * cellWidth;
             double y = element.getY() * cellHeight;
             gc.drawImage(img, x, y, cellWidth, cellHeight);
