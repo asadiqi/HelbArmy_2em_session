@@ -22,7 +22,7 @@ public class View {
     private static final String DARK_GREEN_COLOR = "8CBF3F";
     private static final String WINDOW_TITLE = "Grille MVC Canvas";
     private static final int CHECKER_DIVISOR = 2;
-    private Map<String, Image> imageCache = new HashMap<>();
+    private Map<String, Image> imagePath = new HashMap<>();// savoir expliquer au prof
 
     private int rows;
     private int cols;
@@ -84,14 +84,18 @@ public class View {
           drawAllElements();
     }
 
-    public void  drawAllElements() {
+    public void drawAllElements() {
         for (GameElement element : controller.getGameElements()) {
             String path = element.getImagePath();
-                Image img = imageCache.computeIfAbsent(path, p -> new Image("file:" + p));
-                double x = element.getX() * cellWidth;
-                double y = element.getY() * cellHeight;
-                gc.drawImage(img, x, y, cellWidth, cellHeight);
-            }
+            Image img = imagePath.get(path);
+                img = new Image("file:" + path);
+                imagePath.put(path, img);
+            
+            double x = element.getX() * cellWidth;
+            double y = element.getY() * cellHeight;
+            gc.drawImage(img, x, y, cellWidth, cellHeight);
+        }
     }
+
 
 }
