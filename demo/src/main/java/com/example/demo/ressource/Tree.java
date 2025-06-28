@@ -2,27 +2,25 @@ package com.example.demo.ressource;
 
 import com.example.demo.GameElement;
 
-public class Tree {
+public class Tree extends GameElement {
 
-    private final int woodAmount;
-    private final GameElement position;
+    private int woodAmount;
+    private static final int DEFULT_WOOD_AMOUNT=50;
     public  static  String treePath = "img/tree.png";
 
     public Tree(GameElement position) {
-        this.woodAmount = 50;
-        this.position = position;
-
+        super(position.getX(),position.getY());
+        this.woodAmount =DEFULT_WOOD_AMOUNT;
     }
 
-    public int getWoodAmount() {
+    @Override
+    public String getImagePath() {
+        return treePath;
+    }
+
+    public int getCurrentWoodAmount() {
         return woodAmount;
     }
 
-    public GameElement getPosition() {
-        return position;
-    }
 
-    public static String getTreePatch() {
-        return treePath;
-    }
 }

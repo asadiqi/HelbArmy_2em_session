@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.ressource.Tree;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,9 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.util.HashMap;
+import java.util.Map;
 
 public class View {
-
 
     private Stage stage;
     private Scene scene;
@@ -22,9 +22,11 @@ public class View {
     private static final String DARK_GREEN_COLOR = "8CBF3F";
     private static final String WINDOW_TITLE = "Grille MVC Canvas";
     private static final int CHECKER_DIVISOR = 2;
+    private Map<String, Image> imageCache = new HashMap<>();
+
+    private int rows;
+    private int cols;
     private static final int INITIAT_INDEX = 0;
-    private final int LAST_INDEX_OFFSET = 1;
-    private Image treeImage;
 
     private final int NORTH = 0;
     private final int SOUTH = 1;
@@ -33,13 +35,10 @@ public class View {
     private Pane pane;
     private GraphicsContext gc;
 
-    private int rows;
-    private int cols;
     private double cellWidth;
     private double cellHeight;
 
     public View(Stage stage) {
-
         this.stage = stage;
         this.pane = new Pane();
         this.canvas = new Canvas(INITIAL_WIDTH, INITIAL_HEIGHT);
@@ -52,10 +51,12 @@ public class View {
         this.scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
 
         initiatgrid();
-        initImages();
         drawGrid();
+        setUpStage();
 
+    }
 
+    public void setUpStage(){
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(scene);
         stage.show();
@@ -70,7 +71,6 @@ public class View {
     }
 
     private void drawGrid() {
-
         for (int row = INITIAT_INDEX; row < rows; row++) {
             for (int col = INITIAT_INDEX; col < cols; col++) {
                 if ((row + col) % CHECKER_DIVISOR == INITIAT_INDEX) {
@@ -81,40 +81,17 @@ public class View {
                 gc.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
             }
         }
-        drawCity();
-        drawTrees();
+          drawAllElements();
     }
 
-    public void drawCity() {
-
-
-        // Créer une instance de City pour accéder aux chemins
-        // Charger les images à partir des chemins
-        String[] paths = controller.getCityFilePaths();
-        Image northImage = new Image("file:" + paths[NORTH]);
-        Image southImage = new Image("file:" + paths[SOUTH]);
-
-        // Afficher les images dans la grille
-
-        int lastRow = rows - LAST_INDEX_OFFSET;
-        int lastCol = cols - LAST_INDEX_OFFSET;
-
-        gc.drawImage(northImage, INITIAT_INDEX, INITIAT_INDEX, cellWidth, cellHeight); // nord en (0,0)
-        gc.drawImage(southImage, lastCol * cellWidth, lastRow * cellHeight, cellWidth, cellHeight); // sud en (n,m)
+    public void  drawAllElements() {
+        for (GameElement element : controller.getGameElements()) {
+            String path = element.getImagePath();
+                Image img = imageCache.computeIfAbsent(path, p -> new Image("file:" + p));
+                double x = element.getX() * cellWidth;
+                double y = element.getY() * cellHeight;
+                gc.drawImage(img, x, y, cellWidth, cellHeight);
+            }
     }
 
-    private void initImages() {
-        treeImage = new Image("file:" + controller.getTreeImage());
-    }
-
-
-    public void drawTrees() {
-        for (Tree tree : controller.getTrees()) {
-            GameElement pos = tree.getPosition();
-            double x = pos.x * cellWidth;
-            double y = pos.y * cellHeight;
-            gc.drawImage(treeImage, x, y, cellWidth, cellHeight);
-        }
-
-    }
 }
