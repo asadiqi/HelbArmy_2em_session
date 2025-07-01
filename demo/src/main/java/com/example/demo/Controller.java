@@ -18,6 +18,7 @@ public class Controller {
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio=0.03;
+    private double StoneRatio=0.02;
 
     public Controller(View view) {
         this.view = view;
@@ -25,8 +26,8 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-        generateRandomTrees();
-        generateRandomStones();
+        generateRandomResources("tree");
+        generateRandomResources("stone");
         view.initView(this);
     }
 
@@ -42,60 +43,56 @@ public class Controller {
         return allElements;
     }
 
-    private int calculateNumberOfTrees() {
-        return (int) (gridRows * gridCols * treeRatio);
-    }
 
-
-    private int calculateNumberOfStones() {
-        return (int) (gridRows * gridCols * treeRatio);
-    }
-
-
-
-    private void generateRandomTrees() {
-        int numberOfTrees = calculateNumberOfTrees();
-
-        Random rand = new Random();
-
-
-        while (trees.size() < numberOfTrees) {
-            int x = rand.nextInt(gridCols);
-            int y = rand.nextInt(gridRows);
-
-            if (!isOccupied(x, y)) {
-                Tree tree = new Tree(new GameElement(x, y));
-                trees.add(tree);
-               // System.out.println("Bois: "+tree.getCurrentWoodAmount());
-                allElements.add(tree);
-                System.out.println("Tree placé en: " + x + " " + y);
-            } else {
-                System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
-            }
+    private void generateRandomResources(String type) {
+        int numberToGenerate;
+        if (type.equals("tree")) {
+            numberToGenerate = (int) (gridRows * gridCols * treeRatio);
+        } else if (type.equals("stone")) {
+            numberToGenerate = (int) (gridRows * gridCols * StoneRatio);
+        } else {
+            return; // type inconnu, on ne fait rien
         }
-}
-
-
-
-    private void generateRandomStones() {
-        int numberOfStones = calculateNumberOfStones();
 
         Random rand = new Random();
 
+        while ((type.equals("tree") && trees.size() < numberToGenerate)
+                || (type.equals("stone") && stones.size() < numberToGenerate)) {
 
-
-        while (stones.size() < numberOfStones) {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
 
-            if (!isOccupied(x, y)) {
-                Stone stone = new Stone(new GameElement(x, y));
-                stones.add(stone);
-                // System.out.println("Bois: "+tree.getCurrentWoodAmount());
-                allElements.add(stone);
-                System.out.println("rochers placé en: " + x + " " + y);
-            } else {
-                System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+            if (type.equals("stone")) {
+                // Vérifie que x+1 et y+1 sont dans la grille
+                if (x + 1 >= gridCols || y + 1 >= gridRows) {
+                    continue; // position non valide pour 2x2
+                }
+                // Vérifie que les 4 cases sont libres
+                if (!isOccupied(x, y) && !isOccupied(x + 1, y) && !isOccupied(x, y + 1) && !isOccupied(x + 1, y + 1)) {
+                    // On crée une pierre sur la case (x,y) - tu peux modifier la classe Stone si tu veux stocker la zone 2x2
+                    Stone stone = new Stone(new GameElement(x, y));
+                    stones.add(stone);
+                    allElements.add(stone);
+
+                    // Marquer les 3 autres cases comme occupées par un "élément fantôme" pour éviter que d'autres éléments se placent dessus
+                    // Ici on crée juste des GameElement "fictifs" dans allElements sans autre effet graphique
+                    allElements.add(new GameElement(x + 1, y));
+                    allElements.add(new GameElement(x, y + 1));
+                    allElements.add(new GameElement(x + 1, y + 1));
+
+                    System.out.println("Rochers 2x2 placé en: " + x + " " + y);
+                } else {
+                    System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
+                }
+            } else if (type.equals("tree")) {
+                if (!isOccupied(x, y)) {
+                    Tree tree = new Tree(new GameElement(x, y));
+                    trees.add(tree);
+                    allElements.add(tree);
+                    System.out.println("Tree placé en: " + x + " " + y);
+                } else {
+                    System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+                }
             }
         }
     }

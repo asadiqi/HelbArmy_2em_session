@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.ressource.Stone;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -93,7 +94,12 @@ public class View {
 
             double x = element.getX() * cellWidth;
             double y = element.getY() * cellHeight;
-            gc.drawImage(img, x, y, cellWidth, cellHeight);
+            double width = cellWidth*element.getWidthRatio();
+            double hight = cellWidth*element.getHightRatio();
+
+            gc.drawImage(img, x, y, width, hight);
+
+
         }
     }
 

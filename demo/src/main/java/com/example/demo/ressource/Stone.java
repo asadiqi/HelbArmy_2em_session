@@ -8,7 +8,7 @@ public class Stone extends GameElement {
     private int mineralAmount;
     private static final int DEFULT_MINREAL_AMOUNT=100;
     public  static  String stonePath = "img/stone.png";
-
+    private double stoneRatio=2.0;
     public Stone(GameElement position) {
         super(position.getX(),position.getY());
         this.mineralAmount = DEFULT_MINREAL_AMOUNT;
@@ -21,6 +21,18 @@ public class Stone extends GameElement {
 
     public int getCurrentMineralAmount() {
         return mineralAmount;
+    }
+
+
+    @Override
+    public double getWidthRatio() {
+        return stoneRatio;
+    }
+
+
+    @Override
+    public double getHightRatio() {
+        return stoneRatio;
     }
 
 }
