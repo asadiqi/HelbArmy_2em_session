@@ -52,6 +52,7 @@ public class View {
 
         initiatgrid();
         drawGrid();
+        drawAllElements();
         setUpStage();
 
     }
@@ -81,7 +82,6 @@ public class View {
                 gc.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
             }
         }
-          drawAllElements();
     }
 
     public void drawAllElements() {

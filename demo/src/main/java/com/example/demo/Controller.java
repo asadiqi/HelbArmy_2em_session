@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Controller {
     private int gridRows = 15;
     private int gridCols = 15;
     private List<Tree> trees;
+    private List<Stone> stones;
 
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
@@ -20,9 +22,11 @@ public class Controller {
     public Controller(View view) {
         this.view = view;
         this.trees = new ArrayList<Tree>();
+        this.stones=new ArrayList<Stone>();
 
         setupCity();
-        generateRandomTrees();;
+        generateRandomTrees();
+        generateRandomStones();
         view.initView(this);
     }
 
@@ -43,6 +47,12 @@ public class Controller {
     }
 
 
+    private int calculateNumberOfStones() {
+        return (int) (gridRows * gridCols * treeRatio);
+    }
+
+
+
     private void generateRandomTrees() {
         int numberOfTrees = calculateNumberOfTrees();
 
@@ -56,6 +66,7 @@ public class Controller {
             if (!isOccupied(x, y)) {
                 Tree tree = new Tree(new GameElement(x, y));
                 trees.add(tree);
+               // System.out.println("Bois: "+tree.getCurrentWoodAmount());
                 allElements.add(tree);
                 System.out.println("Tree placé en: " + x + " " + y);
             } else {
@@ -63,6 +74,32 @@ public class Controller {
             }
         }
 }
+
+
+
+    private void generateRandomStones() {
+        int numberOfStones = calculateNumberOfStones();
+
+        Random rand = new Random();
+
+
+
+        while (stones.size() < numberOfStones) {
+            int x = rand.nextInt(gridCols);
+            int y = rand.nextInt(gridRows);
+
+            if (!isOccupied(x, y)) {
+                Stone stone = new Stone(new GameElement(x, y));
+                stones.add(stone);
+                // System.out.println("Bois: "+tree.getCurrentWoodAmount());
+                allElements.add(stone);
+                System.out.println("rochers placé en: " + x + " " + y);
+            } else {
+                System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+            }
+        }
+    }
+
 
     public void setupCity() {
         int lastRow = gridRows - LAST_INDEX_OFFSET;
