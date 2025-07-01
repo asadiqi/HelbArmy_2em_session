@@ -18,7 +18,7 @@ public class Controller {
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio=0.03;
-    private double StoneRatio=0.02;
+    private double StoneRatio=0.09;
 
 
     public Controller(View view) {
@@ -75,11 +75,8 @@ public class Controller {
                     stones.add(stone);
                     allElements.add(stone);
 
-                    // Marquer les 3 autres cases comme occupées par un "élément fantôme" pour éviter que d'autres éléments se placent dessus
-                    // Ici on crée juste des GameElement "fictifs" dans allElements sans autre effet graphique
-                    allElements.add(new GameElement(x + 1, y));
-                    allElements.add(new GameElement(x, y + 1));
-                    allElements.add(new GameElement(x + 1, y + 1));
+                    // Ajoute les 4 cellules dans allElements (pour marquer comme occupées)
+                    allElements.addAll(stone.getOccupiedCells());
 
                     System.out.println("Rochers 2x2 placé en: " + x + " " + y);
                 } else {
