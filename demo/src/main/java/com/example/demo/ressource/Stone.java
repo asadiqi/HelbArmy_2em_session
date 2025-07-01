@@ -31,7 +31,7 @@ public class Stone extends GameElement {
 
 
     @Override
-    public double getHightRatio() {
+    public double getHeightRatio() {
         return stoneRatio;
     }
 

@@ -24,11 +24,11 @@ public class GameElement {
        //si non on pourrait mettre : return "img/default.png";
     }
 
-    public double getWidthRatio() {
+     public double getWidthRatio() {
         return defaultRatio;
     }
 
-    public double getHightRatio() {
+    public double getHeightRatio() {
         return defaultRatio;
     }
 

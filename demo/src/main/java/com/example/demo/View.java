@@ -95,9 +95,9 @@ public class View {
             double x = element.getX() * cellWidth;
             double y = element.getY() * cellHeight;
             double width = cellWidth*element.getWidthRatio();
-            double hight = cellWidth*element.getHightRatio();
+            double height = cellWidth*element.getHeightRatio();
 
-            gc.drawImage(img, x, y, width, hight);
+            gc.drawImage(img, x, y, width, height);
 
 
         }

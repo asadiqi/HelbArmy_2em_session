@@ -20,6 +20,7 @@ public class Controller {
     private double treeRatio=0.03;
     private double StoneRatio=0.02;
 
+
     public Controller(View view) {
         this.view = view;
         this.trees = new ArrayList<Tree>();
