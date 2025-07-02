@@ -26,8 +26,10 @@ public class Controller {
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
-    private double treeRatio=0.03;
-    private double StoneRatio=0.01;
+    private double treeRatio=0.05;
+    private double StoneRatio=0.03;
+    private City northCity;
+    private City southCity;
 
 
     public Controller(View view) {
@@ -58,7 +60,7 @@ public class Controller {
 
     private void setupGameLoop() {
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
             //System.out.println("Game loop tick");
             generateCollecter();
             view.drawAllElements();// à corriger
@@ -127,8 +129,8 @@ public class Controller {
         int lastRow = gridRows - LAST_INDEX_OFFSET;
         int lastCol = gridCols - LAST_INDEX_OFFSET;
 
-        City northCity = new City(new GameElement(INITIAT_INDEX, INITIAT_INDEX), true);
-        City southCity = new City(new GameElement(lastRow, lastCol), false);
+        northCity = new City(new GameElement(INITIAT_INDEX, INITIAT_INDEX), true);
+        southCity = new City(new GameElement(lastRow, lastCol), false);
 
         allElements.add(northCity);
         allElements.add(southCity);
@@ -139,15 +141,59 @@ public class Controller {
 
 
     public void generateCollecter() {
-        Collecter northCollecter = new Collecter(new GameElement(1, 1),true,true,false);
-        Collecter southCollecter = new Collecter(new GameElement(13, 13),false,false,true);
+
+        for (GameElement e : allElements) {
+            if (e instanceof City city) {
+                if (city.isNorth) {
+                    northCity=city;
+                } else {
+                    southCity=city;
+                }
+            }
+        }
+
+
+        GameElement northPos = findNearestFreePosition(northCity,14);
+        Collecter northCollecter = new Collecter(northPos, true, true, false);
         allElements.add(northCollecter);
+        System.out.println("North collecter créé en: " + northPos.getX() + " " + northPos.getY());
+
+        GameElement southPos = findNearestFreePosition(southCity,14);
+        Collecter southCollecter = new Collecter(southPos, false, false, true);
         allElements.add(southCollecter);
-        System.out.println("north "+ northCollecter.getX()+ " " + northCollecter.getY()+ " bonusTree "+northCollecter.getBonus("tree"));
-        System.out.println("south "+ southCollecter.getX()+ " " + southCollecter.getY()+ " bonusStone "+southCollecter.getBonus("stone"));
-
-
+        System.out.println("South collecter créé en: " + southPos.getX() + " " + southPos.getY());
     }
+
+    private GameElement findNearestFreePosition(GameElement startPos, int maxDistance) {
+        for (int dist=1; dist <= maxDistance; dist++) {
+            for (int dx = -dist; dx <= dist; dx++) {
+                int dy = dist - Math.abs(dx);
+
+                int x1 = startPos.getX() +dx;
+                int y1 = startPos.getX()+dy;
+
+                if (isValidAndFree(x1,y1)) {
+                    return new GameElement(x1,y1);
+                }
+
+                if (dy !=0) {
+                    int x2 = startPos.getX()+ dx;
+                    int y2 = startPos.getY() -dy ;
+
+                    if (isValidAndFree (x2,y2)) {
+                        return new GameElement(x2,y2);
+                    }
+                }
+            }
+        }
+        return new GameElement(-1,-1); // position invalide au lieu de null
+    }
+
+
+    private boolean isValidAndFree(int x, int y) {
+    return x >=0 && x < gridCols && y >=0 && y < gridRows && !isOccupied(x, y);
+    }
+
 
 
     private boolean isOccupied(int x, int y) {

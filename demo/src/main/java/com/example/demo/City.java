@@ -6,7 +6,7 @@ public class City extends GameElement {
     private static final String northCityFilePath = "img/white/northCity.png";
     private static final String southCityFilePath = "img/black/southCity.png";
 
-    private boolean isNorth;
+    public boolean isNorth;
 
     public City(GameElement position, boolean isNorth) {
         super(position.getX(), position.getY());
