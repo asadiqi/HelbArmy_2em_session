@@ -2,9 +2,17 @@ package com.example.demo;
 
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 public class Controller {
 
@@ -30,9 +38,25 @@ public class Controller {
         generateRandomResources("tree");
         generateRandomResources("stone");
         view.initView(this);
+        setupGameLoop();
+
     }
 
-    public int getGridRows() {
+    private void setupGameLoop() {
+
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+            System.out.println("Game loop tick");
+        }));
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+
+
+
+        public int getGridRows() {
         return gridRows;
     }
 

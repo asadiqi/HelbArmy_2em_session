@@ -1,4 +1,11 @@
 package com.example.demo.units;
 
-public class Collecter {
+import com.example.demo.GameElement;
+
+public class Collecter extends Unit {
+
+
+    public Collecter(GameElement position) {
+        super(position);
+    }
 }

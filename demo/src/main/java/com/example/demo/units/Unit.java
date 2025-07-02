@@ -1,4 +1,9 @@
 package com.example.demo.units;
 
-public class Unit {
+import com.example.demo.GameElement;
+
+public class Unit extends GameElement {
+    public Unit(GameElement position) {
+        super(position.getX(),position.getY());
+    }
 }
