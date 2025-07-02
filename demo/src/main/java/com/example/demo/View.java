@@ -72,7 +72,7 @@ public class View {
         gc = canvas.getGraphicsContext2D();
     }
 
-    private void drawGrid() {
+    public void drawGrid() {
         for (int row = INITIAT_INDEX; row < rows; row++) {
             for (int col = INITIAT_INDEX; col < cols; col++) {
                 if ((row + col) % CHECKER_DIVISOR == INITIAT_INDEX) {

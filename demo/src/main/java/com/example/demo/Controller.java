@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
+import com.example.demo.units.Collecter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -26,7 +27,7 @@ public class Controller {
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio=0.03;
-    private double StoneRatio=0.09;
+    private double StoneRatio=0.01;
 
 
     public Controller(View view) {
@@ -42,21 +43,7 @@ public class Controller {
 
     }
 
-    private void setupGameLoop() {
-
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
-            System.out.println("Game loop tick");
-        }));
-
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
-
-
-
-        public int getGridRows() {
+    public int getGridRows() {
         return gridRows;
     }
 
@@ -69,6 +56,22 @@ public class Controller {
     }
 
 
+    private void setupGameLoop() {
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+            //System.out.println("Game loop tick");
+            generateCollecter();
+            view.drawAllElements();// à corriger
+
+        }));
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+
+
+
     private void generateRandomResources(String type) {
         int numberToGenerate;
         if (type.equals("tree")) {
@@ -76,7 +79,7 @@ public class Controller {
         } else if (type.equals("stone")) {
             numberToGenerate = (int) (gridRows * gridCols * StoneRatio);
         } else {
-            return; // type inconnu, on ne fait rien
+            return;
         }
 
         Random rand = new Random();
@@ -134,6 +137,16 @@ public class Controller {
         System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
+
+    public void generateCollecter() {
+        Collecter northCollecter = new Collecter(new GameElement(1, 1),true);
+        Collecter southCollecter = new Collecter(new GameElement(13, 13),false);
+        allElements.add(northCollecter);
+        allElements.add(southCollecter);
+        System.out.println("north "+ northCollecter.getX()+ " " + northCollecter.getY());
+        System.out.println("south "+ southCollecter.getX()+ " " + southCollecter.getY());
+
+    }
 
 
     private boolean isOccupied(int x, int y) {
