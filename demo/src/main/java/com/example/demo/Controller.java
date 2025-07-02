@@ -139,12 +139,13 @@ public class Controller {
 
 
     public void generateCollecter() {
-        Collecter northCollecter = new Collecter(new GameElement(1, 1),true);
-        Collecter southCollecter = new Collecter(new GameElement(13, 13),false);
+        Collecter northCollecter = new Collecter(new GameElement(1, 1),true,true,false);
+        Collecter southCollecter = new Collecter(new GameElement(13, 13),false,false,true);
         allElements.add(northCollecter);
         allElements.add(southCollecter);
-        System.out.println("north "+ northCollecter.getX()+ " " + northCollecter.getY());
-        System.out.println("south "+ southCollecter.getX()+ " " + southCollecter.getY());
+        System.out.println("north "+ northCollecter.getX()+ " " + northCollecter.getY()+ " bonusTree "+northCollecter.getBonus("tree"));
+        System.out.println("south "+ southCollecter.getX()+ " " + southCollecter.getY()+ " bonusStone "+southCollecter.getBonus("stone"));
+
 
     }
 
