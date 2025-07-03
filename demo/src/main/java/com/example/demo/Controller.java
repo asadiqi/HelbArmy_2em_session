@@ -82,7 +82,6 @@ public class Controller {
     }
 
 
-
     private void generateRandomTrees() {
         int numberToGenerate = (int) (gridRows * gridCols * treeRatio);
         Random rand = new Random();
@@ -129,15 +128,18 @@ public class Controller {
     }
 
     public void generateCollecter() {
-        // Création collecteurs nord et sud via méthode dédiée
-        createCollecterForCity(northCity, true, true, false);
-        createCollecterForCity(southCity, false, false, true);
+        Random random = new Random();
+        boolean isLumberjack = random.nextBoolean(); // soit c'est un bouchron soit c'est un piocheur
+        createCollecterForCity(northCity, true, isLumberjack);
+
+        isLumberjack = random.nextBoolean();
+        createCollecterForCity(southCity, false, isLumberjack);
     }
 
-    private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter, boolean isPikerCollecter) {
+    private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
         GameElement pos = findNearestFreePosition(city, maxDistance);
         if (pos != null) {
-            Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter, isPikerCollecter);
+            Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter);
             addGameElement(collecter);
             System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
         } else {

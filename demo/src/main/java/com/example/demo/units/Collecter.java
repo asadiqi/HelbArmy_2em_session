@@ -8,14 +8,12 @@ public class Collecter extends Unit {
     public static String southCollecterPath = "img/black/southCollecter.png";
     private boolean isNorthCollecter;
     private boolean isLumberjackCollecter;
-    private boolean isPikerCollecter;
 
 
-    public Collecter(GameElement position, boolean isNorthCollecter, boolean isLumberjackCollecter, boolean isPikerCollecter) {
+    public Collecter(GameElement position, boolean isNorthCollecter, boolean isLumberjackCollecter) {
         super(position);
         this.isNorthCollecter = isNorthCollecter;
         this.isLumberjackCollecter = isLumberjackCollecter;
-        this.isPikerCollecter = isPikerCollecter;
     }
 
 
@@ -33,7 +31,7 @@ public class Collecter extends Unit {
                 return 1;
             }
         } else if (ressourceType.equals("stone")) {
-            if (isPikerCollecter) {
+            if (!isLumberjackCollecter) { // si c'est pas un bouchron donc c'est un piocheur
                 return 3;
             } else {
                 return 1;
