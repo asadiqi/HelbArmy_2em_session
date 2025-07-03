@@ -131,9 +131,12 @@ public class Controller {
         Random random = new Random();
         boolean isLumberjack = random.nextBoolean(); // soit c'est un bouchron soit c'est un piocheur
         createCollecterForCity(northCity, true, isLumberjack);
+        System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
+
 
         isLumberjack = random.nextBoolean();
         createCollecterForCity(southCity, false, isLumberjack);
+        //System.out.println("south city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
     }
 
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
@@ -141,7 +144,8 @@ public class Controller {
         if (pos != null) {
             Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter);
             addGameElement(collecter);
-            System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
+          //  System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
+
         } else {
             System.out.println("Aucune position libre trouvée pour collecter de la ville " + (city.isNorth ? "nord" : "sud"));
         }
