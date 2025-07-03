@@ -22,6 +22,7 @@ public class Controller {
     private View view;
     private int gridRows = 15;
     private int gridCols = 15;
+    private int maxDistance=gridRows-1;
     private List<Tree> trees;
     private List<Stone> stones;
 
@@ -32,6 +33,7 @@ public class Controller {
     private double stoneRatio=0.03;
     private City northCity;
     private City southCity;
+
 
 
     public Controller(View view) {
@@ -132,10 +134,10 @@ public class Controller {
         createCollecterForCity(southCity, false, false, true);
     }
 
-    private void createCollecterForCity(City city, boolean flag1, boolean flag2, boolean flag3) {
-        GameElement pos = findNearestFreePosition(city, 14);
+    private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter, boolean isPikerCollecter) {
+        GameElement pos = findNearestFreePosition(city, maxDistance);
         if (pos != null) {
-            Collecter collecter = new Collecter(pos, flag1, flag2, flag3);
+            Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter, isPikerCollecter);
             addGameElement(collecter);
             System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
         } else {
@@ -180,13 +182,13 @@ public class Controller {
                 }
             }
         }
-        return null ; // justifier new GameElement(-1,-1); // position invalide au lieu de null
+        return null ; // justifier retun new GameElement(-1,-1); // position invalide au lieu de null
     }
 
     private boolean isValidAndFree(int x, int y) {
         return x >=0 && x < gridCols && y >=0 && y < gridRows && !isOccupied(x, y);
     }
-    
+
     private boolean isOccupied(int x, int y) {
         for (GameElement element : allElements) {
             if (element.getX() == x && element.getY() == y) {
