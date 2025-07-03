@@ -43,7 +43,7 @@ public class Controller {
 
         setupCity();
         generateRandomTrees();
-      //  generateRandomStones();
+        generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
         addGameElement(collecter);
