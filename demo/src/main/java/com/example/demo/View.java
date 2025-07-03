@@ -86,6 +86,11 @@ public class View {
     }
 
     public void drawAllElements() {
+
+        // D'abord, on redessine toute la grille (efface l'ancien affichage)
+        drawGrid();
+
+        // Ensuite, on dessine les éléments à leurs positions actuelles
         for (GameElement element : controller.getGameElements()) {
             String path = element.getImagePath();
             Image img = imagePath.get(path);

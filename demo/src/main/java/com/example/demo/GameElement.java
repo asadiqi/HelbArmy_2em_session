@@ -32,4 +32,10 @@ public class GameElement {
         return defaultRatio;
     }
 
+    public double getDistanceWith(GameElement other) {
+        int dx = other.getX() - this.getX();
+        int dy = other.getY() - this.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
 }

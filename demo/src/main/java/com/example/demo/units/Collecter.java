@@ -1,6 +1,10 @@
 package com.example.demo.units;
 
 import com.example.demo.GameElement;
+import com.example.demo.ressource.Stone;
+import com.example.demo.ressource.Tree;
+
+import java.util.List;
 
 public class Collecter extends Unit {
 
@@ -42,5 +46,29 @@ public class Collecter extends Unit {
         }
     }
 
+    public void findNearestResource(List<Tree> trees, List<Stone> stones) {
+        GameElement closest = new GameElement(-1, -1);
+        double minDistance = Double.MAX_VALUE;
+
+        for (Tree tree : trees) {
+            double dist = tree.getDistanceWith(this);
+            if (dist < minDistance) {
+                minDistance = dist;
+                closest = tree;
+            }
+        }
+
+        for (Stone stone : stones) {
+            for (GameElement cell : stone.getOccupiedCells()) {
+                double dist = cell.getDistanceWith(this);
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    closest = cell;
+                }
+            }
+        }
+
+        setTarget(closest);
+    }
 
 }

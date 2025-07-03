@@ -29,7 +29,7 @@ public class Controller {
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
-    private double treeRatio=0.05;
+    private double treeRatio=0.01;
     private double stoneRatio=0.03;
     private City northCity;
     private City southCity;
@@ -43,8 +43,10 @@ public class Controller {
 
         setupCity();
         generateRandomTrees();
-        generateRandomStones();
+      //  generateRandomStones();
         view.initView(this);
+        Collecter collecter = new Collecter(new GameElement(1,1),true, true);
+        addGameElement(collecter);
         setupGameLoop();
 
     }
@@ -63,16 +65,37 @@ public class Controller {
 
 
     private void setupGameLoop() {
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
-            //System.out.println("Game loop tick");
-            generateCollecter();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+           // generateCollecter();
+            moveUnits();          // <- ici tu fais bouger les unités
             view.drawAllElements();
-
         }));
 
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+
+    private void moveUnits() {
+        for (GameElement element : allElements) {
+            if (element instanceof Collecter) {
+                Collecter collecter = (Collecter) element;
+
+                int oldX = collecter.getX();
+                int oldY = collecter.getY();
+
+                if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
+                    collecter.findNearestResource(trees, stones);
+                }
+
+                collecter.moveTowardsTarget(gridCols, gridRows, allElements);
+
+                int newX = collecter.getX();
+                int newY = collecter.getY();
+
+                System.out.println("Collecter moved from (" + oldX + "," + oldY + ") to (" + newX + "," + newY + ")");
+            }
+        }
     }
 
 
@@ -203,5 +226,6 @@ public class Controller {
         }
         return false;
     }
+
 
 }
