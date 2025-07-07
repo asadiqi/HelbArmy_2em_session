@@ -42,11 +42,15 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-        generateRandomTrees();
+        //generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
+        Collecter collecter1 = new Collecter(new GameElement(0,1),true, true);
+
         addGameElement(collecter);
+        addGameElement(collecter1);
+
         setupGameLoop();
 
     }
@@ -65,7 +69,7 @@ public class Controller {
 
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
            // generateCollecter();
             moveUnits();          // <- ici tu fais bouger les unités
             view.drawAllElements();

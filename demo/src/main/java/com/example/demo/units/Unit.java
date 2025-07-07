@@ -24,7 +24,11 @@ public class Unit extends GameElement {
     }
 
     public boolean hasReachedTarget() {
-        return hasValidTarget() && x == target.getX() && y == target.getY();
+        if (!hasValidTarget()) return false;
+        int dx = Math.abs(x - target.getX());
+        int dy = Math.abs(y - target.getY());
+        // accept adjacent or same cell
+        return dx <= 1 && dy <= 1;
     }
 
     public void setPosition(int newX, int newY) {
@@ -80,6 +84,10 @@ public class Unit extends GameElement {
     public void moveTowardsTarget(int maxX, int maxY, List<GameElement> occupied) {
         if (!hasValidTarget()) return;
 
+        if (hasReachedTarget()) {
+            // déjà proche de la cible, on reste sur place
+            return;
+        }
         GameElement current = new GameElement(this.x, this.y);
         GameElement next = getNextCoordinateForTarget(current, target, maxX, maxY, occupied);
         setPosition(next.getX(), next.getY());
