@@ -42,10 +42,10 @@ public class Unit extends GameElement {
 
     public List<GameElement> getAccessibleAdjacentCoordinates(GameElement coord, int maxX, int maxY, List<GameElement> occupied) {
         List<GameElement> result = new ArrayList<>();
-        int[] dx = {0, -1, 1, 0};
-        int[] dy = {-1, 0, 0, 1};
+        int[] dx = {-1,-1,-1,0,0,1,1,1};
+        int[] dy = {-1, 0, 1, -1,-1,-1,0,1};
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < dx.length; i++) {
             int newX = coord.getX() + dx[i];
             int newY = coord.getY() + dy[i];
             GameElement adjacent = new GameElement(newX, newY);
