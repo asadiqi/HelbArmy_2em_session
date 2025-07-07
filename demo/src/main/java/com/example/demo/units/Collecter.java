@@ -1,5 +1,6 @@
 package com.example.demo.units;
 
+import com.example.demo.City;
 import com.example.demo.GameElement;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
@@ -70,5 +71,43 @@ public class Collecter extends Unit {
 
         setTarget(closest);
     }
+
+    public void collectRessource(List<Tree> trees, List<Stone> stones, City northCith, City southCith) {
+        for (Tree tree : trees) {
+            if (isAdjacentTo(tree)) {
+                if (tree.getCurrentWoodAmount() > 0) {
+                    tree.decreaseWood(1);
+                    getCity(northCith,southCith).incrementStock(1);
+                    System.out.println("Collecter " + (isNorthCollecter ? "nord " : "sud") + "a récolté 1 bois, stock : " + (isNorthCollecter ? "nord " : "sud") + getCity(northCith, southCith).getStock());
+                }
+                return;
+            }
+        }
+
+        for (Stone stone : stones) {
+            for (GameElement cell : stone.getOccupiedCells()) {
+                if (isAdjacentTo(cell)) {
+                    if (stone.getCurrentMineralAmount() > 0) {
+                        stone.decreaseMineral(1);
+                        getCity(northCith,southCith).incrementStock(1);
+                        System.out.println("Collecter " + (isNorthCollecter ? "nord " : "sud") + "a récolté 1 minerai, stock : " + (isNorthCollecter ? "nord " : "sud") + getCity(northCith, southCith).getStock());
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+
+    private boolean isAdjacentTo(GameElement other) {
+        int dx = Math.abs(this.getX() - other.getX());
+        int dy = Math.abs(this.getY() - other.getY());
+        return dx <= 1 && dy <= 1;
+    }
+
+    private City getCity(City northCity, City southCity) {
+        return isAdjacentTo(northCity) ? northCity : southCity;
+    }
+
 
 }

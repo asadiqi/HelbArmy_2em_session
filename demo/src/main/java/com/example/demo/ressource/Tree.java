@@ -22,6 +22,10 @@ public class Tree extends GameElement {
         return woodAmount;
     }
 
+    public void decreaseWood(int amount) {
+        woodAmount = Math.max(0, woodAmount - amount);
+    }
+
 
 
 

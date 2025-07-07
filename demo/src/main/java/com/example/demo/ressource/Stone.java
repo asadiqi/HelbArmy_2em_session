@@ -54,4 +54,9 @@ public class Stone extends GameElement {
         return stoneRatio;
     }
 
+    public void decreaseMineral(int amount) {
+         mineralAmount = Math.max(0, mineralAmount - amount);;
+    }
+
+
 }

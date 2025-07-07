@@ -42,11 +42,11 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-        //generateRandomTrees();
+       // generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
-        Collecter collecter1 = new Collecter(new GameElement(0,1),true, true);
+        Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),false, false);
 
         addGameElement(collecter);
         addGameElement(collecter1);
@@ -69,7 +69,7 @@ public class Controller {
 
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
            // generateCollecter();
             moveUnits();          // <- ici tu fais bouger les unités
             view.drawAllElements();
@@ -93,11 +93,12 @@ public class Controller {
                 }
 
                 collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-
+                collecter.collectRessource(trees,stones,northCity,southCity);
                 int newX = collecter.getX();
                 int newY = collecter.getY();
 
-                System.out.println("Collecter moved from (" + oldX + "," + oldY + ") to (" + newX + "," + newY + ")");
+               // System.out.println("Collecter moved from (" + oldX + "," + oldY + ") to (" + newX + "," + newY + ")");
+               // System.out.println("stock nord " + northCity.getStock()+ "stock sud "+ southCity.getStock());
             }
         }
     }
