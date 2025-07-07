@@ -6,6 +6,7 @@ public class Tree extends GameElement {
 
     private int woodAmount;
     private static final int DEFULT_WOOD_AMOUNT=50;
+    private static final int MAX_WOOD_AMOUNT =100;
     public  static  String treePath = "img/tree.png";
 
     public Tree(GameElement position) {
@@ -27,6 +28,9 @@ public class Tree extends GameElement {
     }
 
 
+    public boolean isDepleted() {
+        return woodAmount <= 0;
+    }
 
 
 }

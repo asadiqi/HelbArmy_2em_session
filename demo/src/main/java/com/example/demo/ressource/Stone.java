@@ -10,6 +10,8 @@ public class Stone extends GameElement {
 
     private int mineralAmount;
     private static final int DEFULT_MINREAL_AMOUNT=100;
+    private static final int MAX_MINREAL_AMOUNT =200;
+
     public  static  String stonePath = "img/stone.png";
     private double stoneRatio=2.0;
 
@@ -56,6 +58,11 @@ public class Stone extends GameElement {
 
     public void decreaseMineral(int amount) {
          mineralAmount = Math.max(0, mineralAmount - amount);;
+    }
+
+
+    public boolean isDepleted() {
+        return mineralAmount <= 0;
     }
 
 

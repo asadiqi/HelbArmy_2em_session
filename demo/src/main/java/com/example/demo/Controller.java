@@ -69,7 +69,7 @@ public class Controller {
 
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
            // generateCollecter();
             moveUnits();          // <- ici tu fais bouger les unités
             view.drawAllElements();
@@ -81,27 +81,43 @@ public class Controller {
 
 
     private void moveUnits() {
-        for (GameElement element : allElements) {
+
+        for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Collecter) {
                 Collecter collecter = (Collecter) element;
-
-                int oldX = collecter.getX();
-                int oldY = collecter.getY();
 
                 if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
                     collecter.findNearestResource(trees, stones);
                 }
 
                 collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-                collecter.collectRessource(trees,stones,northCity,southCity);
-                int newX = collecter.getX();
-                int newY = collecter.getY();
+                collecter.collectRessource(trees, stones, northCity, southCity);
 
-               // System.out.println("Collecter moved from (" + oldX + "," + oldY + ") to (" + newX + "," + newY + ")");
-               // System.out.println("stock nord " + northCity.getStock()+ "stock sud "+ southCity.getStock());
+                trees.removeIf(tree -> {
+                    if (tree.isDepleted()) {
+                        allElements.remove(tree);
+                        System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getX());
+                        return true;
+                    }
+                    return false;
+                });
+
+
+                stones.removeIf(stone -> {
+                    if (stone.isDepleted()) {
+                        allElements.remove(stone);
+                        allElements.removeAll(stone.getOccupiedCells());
+                        System.out.println("Pierre retiré: " + stone.getX() + "," + stone.getX());
+                        return true;
+                    }
+                    return false;
+                });
+
             }
         }
     }
+
+
 
 
     // Méthode pour ajouter un élément dans allElements (centralisation)

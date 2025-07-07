@@ -92,21 +92,23 @@ public class Collecter extends Unit {
 
     private void tryCollectFromTree(Tree tree, City northCity, City southCity) {
         if (isAdjacentTo(tree) && tree.getCurrentWoodAmount() > 0) {
-            tree.decreaseWood(1);
+            int bonus = getBonus("tree");
+            tree.decreaseWood(bonus);
             City city = getCityOfCollecter(northCity, southCity);
-            city.incrementStock(1);
+            city.incrementStock(bonus);
             System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
-                    " a récolté 1 bois, stock : " + city.getStock());
+                    " a récolté "+ bonus + " bois, stock : " + city.getStock());
         }
     }
 
     private void tryCollectFromStone(Stone stone, GameElement cell, City northCity, City southCity) {
         if (isAdjacentTo(cell) && stone.getCurrentMineralAmount() > 0) {
-            stone.decreaseMineral(1);
+            int bonus = getBonus("stone");
+            stone.decreaseMineral(bonus);
             City city = getCityOfCollecter(northCity, southCity);
-            city.incrementStock(1);
+            city.incrementStock(bonus);
             System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
-                    " a récolté 1 minerai, stock : " + city.getStock());
+                    " a récolté "+ bonus+ "minerai, stock : " + city.getStock());
         }
     }
 
