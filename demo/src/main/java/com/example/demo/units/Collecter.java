@@ -72,31 +72,45 @@ public class Collecter extends Unit {
         setTarget(closest);
     }
 
-    public void collectRessource(List<Tree> trees, List<Stone> stones, City northCith, City southCith) {
+    public void collectRessource(List<Tree> trees, List<Stone> stones, City northCity, City southCity) {
         for (Tree tree : trees) {
-            if (isAdjacentTo(tree)) {
-                if (tree.getCurrentWoodAmount() > 0) {
-                    tree.decreaseWood(1);
-                    getCity(northCith,southCith).incrementStock(1);
-                    System.out.println("Collecter " + (isNorthCollecter ? "nord " : "sud") + "a récolté 1 bois, stock : " + (isNorthCollecter ? "nord " : "sud") + getCity(northCith, southCith).getStock());
-                }
+            if (isAdjacentTo(tree) && tree.getCurrentWoodAmount() > 0) {
+                tryCollectFromTree(tree, northCity, southCity);
                 return;
             }
         }
 
         for (Stone stone : stones) {
             for (GameElement cell : stone.getOccupiedCells()) {
-                if (isAdjacentTo(cell)) {
-                    if (stone.getCurrentMineralAmount() > 0) {
-                        stone.decreaseMineral(1);
-                        getCity(northCith,southCith).incrementStock(1);
-                        System.out.println("Collecter " + (isNorthCollecter ? "nord " : "sud") + "a récolté 1 minerai, stock : " + (isNorthCollecter ? "nord " : "sud") + getCity(northCith, southCith).getStock());
-                    }
+                if (isAdjacentTo(cell) && stone.getCurrentMineralAmount() > 0) {
+                    tryCollectFromStone(stone, cell, northCity, southCity);
                     return;
                 }
             }
         }
     }
+
+    private void tryCollectFromTree(Tree tree, City northCity, City southCity) {
+        if (isAdjacentTo(tree) && tree.getCurrentWoodAmount() > 0) {
+            tree.decreaseWood(1);
+            City city = getCityOfCollecter(northCity, southCity);
+            city.incrementStock(1);
+            System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
+                    " a récolté 1 bois, stock : " + city.getStock());
+        }
+    }
+
+    private void tryCollectFromStone(Stone stone, GameElement cell, City northCity, City southCity) {
+        if (isAdjacentTo(cell) && stone.getCurrentMineralAmount() > 0) {
+            stone.decreaseMineral(1);
+            City city = getCityOfCollecter(northCity, southCity);
+            city.incrementStock(1);
+            System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
+                    " a récolté 1 minerai, stock : " + city.getStock());
+        }
+    }
+
+
 
 
     private boolean isAdjacentTo(GameElement other) {
@@ -105,9 +119,11 @@ public class Collecter extends Unit {
         return dx <= 1 && dy <= 1;
     }
 
-    private City getCity(City northCity, City southCity) {
-        return isAdjacentTo(northCity) ? northCity : southCity;
+
+    private City getCityOfCollecter(City northCity, City southCity) {
+        return isNorthCollecter ? northCity : southCity;
     }
+
 
 
 }

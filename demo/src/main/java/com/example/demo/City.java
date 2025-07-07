@@ -27,4 +27,6 @@ public class City extends GameElement {
         stock += amount;
     }
 
+
+
 }
