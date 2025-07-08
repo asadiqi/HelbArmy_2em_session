@@ -99,5 +99,43 @@ public class Unit extends GameElement {
         }
     }
 
+
+    public static GameElement findNearestFreePosition(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
+        for (int dist = 1; dist <= maxDistance; dist++) {
+            for (int dx = -dist; dx <= dist; dx++) {
+                int dy = dist - Math.abs(dx);
+
+                int x1 = startPos.getX() + dx;
+                int y1 = startPos.getY() + dy;
+
+                if (isValidAndFree(x1, y1, maxX, maxY, occupied)) {
+                    return new GameElement(x1, y1);
+                }
+
+                if (dy != 0) {
+                    int x2 = startPos.getX() + dx;
+                    int y2 = startPos.getY() - dy;
+
+                    if (isValidAndFree(x2, y2, maxX, maxY, occupied)) {
+                        return new GameElement(x2, y2);
+                    }
+                }
+            }
+        }
+        return null ; // justifier retun new GameElement(-1,-1); // position invalide au lieu de null
+    }
+
+    private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
+        if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;
+
+        for (GameElement e : occupied) {
+            if (e.getX() == x && e.getY() == y) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }
 

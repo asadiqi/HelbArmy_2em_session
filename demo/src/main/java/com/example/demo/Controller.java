@@ -5,6 +5,7 @@ package com.example.demo;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
 import com.example.demo.units.Collecter;
+import com.example.demo.units.Unit;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,7 +30,7 @@ public class Controller {
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
-    private double treeRatio=0.01;
+    private double treeRatio=0.05;
     private double stoneRatio=0.03;
     private City northCity;
     private City southCity;
@@ -42,7 +43,7 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-       // generateRandomTrees();
+        generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
@@ -69,9 +70,9 @@ public class Controller {
 
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-           // generateCollecter();
-            moveUnits();          // <- ici tu fais bouger les unités
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+            generateCollecter();
+            moveUnits();          // <- ici on fait bouger les unités
             view.drawAllElements();
         }));
 
@@ -83,8 +84,7 @@ public class Controller {
     private void moveUnits() {
 
         for (GameElement element : new ArrayList<>(allElements)) {
-            if (element instanceof Collecter) {
-                Collecter collecter = (Collecter) element;
+            if (element instanceof Collecter collecter) {
 
                 if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
                     collecter.findNearestResource(trees, stones);
@@ -184,7 +184,7 @@ public class Controller {
     }
 
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
-        GameElement pos = findNearestFreePosition(city, maxDistance);
+        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
         if (pos != null) {
             Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter);
             addGameElement(collecter);
@@ -210,34 +210,7 @@ public class Controller {
         System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
-    private GameElement findNearestFreePosition(GameElement startPos, int maxDistance) {
-        for (int dist=1; dist <= maxDistance; dist++) {
-            for (int dx = -dist; dx <= dist; dx++) {
-                int dy = dist - Math.abs(dx);
 
-                int x1 = startPos.getX() +dx;
-                int y1 = startPos.getX()+dy;
-
-                if (isValidAndFree(x1,y1)) {
-                    return new GameElement(x1,y1);
-                }
-
-                if (dy !=0) {
-                    int x2 = startPos.getX()+ dx;
-                    int y2 = startPos.getY() -dy ;
-
-                    if (isValidAndFree (x2,y2)) {
-                        return new GameElement(x2,y2);
-                    }
-                }
-            }
-        }
-        return null ; // justifier retun new GameElement(-1,-1); // position invalide au lieu de null
-    }
-
-    private boolean isValidAndFree(int x, int y) {
-        return x >=0 && x < gridCols && y >=0 && y < gridRows && !isOccupied(x, y);
-    }
 
     private boolean isOccupied(int x, int y) {
         for (GameElement element : allElements) {
