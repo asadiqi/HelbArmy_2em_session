@@ -34,6 +34,9 @@ public class Controller {
     private double stoneRatio=0.03;
     private City northCity;
     private City southCity;
+    private static final int GAMELOOP_INERVAL_MS=1000;
+    private static final int UNIT_GENRATION_MS=2000;
+    private int elapsedTimeMs = 0;
 
 
 
@@ -70,10 +73,16 @@ public class Controller {
 
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
-            generateCollecter();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
             moveUnits();          // <- ici on fait bouger les unités
             view.drawAllElements();
+            elapsedTimeMs+=GAMELOOP_INERVAL_MS;
+
+            if (elapsedTimeMs >= UNIT_GENRATION_MS) {
+                generateCollecter();
+                elapsedTimeMs=0;
+            }
+
 
         }));
 
@@ -135,7 +144,7 @@ public class Controller {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
 
-            if (!GameElement.isOccupied(x, y, allElements)) {
+            if (GameElement.isOccupied(x, y, allElements)) {
                 Tree tree = new Tree(new GameElement(x, y));
                 trees.add(tree);
                 addGameElement(tree);
@@ -158,10 +167,10 @@ public class Controller {
                 continue; // position non valide pour 2x2
             }
 
-            if (!GameElement.isOccupied(x, y, allElements)
-                    && !GameElement.isOccupied(x + 1, y, allElements)
-                    && !GameElement.isOccupied(x, y + 1, allElements)
-                    && !GameElement.isOccupied(x + 1, y + 1, allElements)) {
+            if (GameElement.isOccupied(x, y, allElements)
+                    && GameElement.isOccupied(x + 1, y, allElements)
+                    && GameElement.isOccupied(x, y + 1, allElements)
+                    && GameElement.isOccupied(x + 1, y + 1, allElements)) {
                 Stone stone = new Stone(new GameElement(x, y));
                 stones.add(stone);
                 addGameElement(stone);

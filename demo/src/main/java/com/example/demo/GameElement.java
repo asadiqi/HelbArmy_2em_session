@@ -43,10 +43,10 @@ public class GameElement {
     public static boolean isOccupied(int x, int y, List<GameElement> elements) {
         for (GameElement element : elements) {
             if (element.getX() == x && element.getY() == y) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 
