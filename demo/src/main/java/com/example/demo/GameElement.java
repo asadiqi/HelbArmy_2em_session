@@ -1,6 +1,8 @@
 package com.example.demo;
 
 
+import java.util.List;
+
 public class GameElement {
     protected int x;
     protected int y;
@@ -37,5 +39,15 @@ public class GameElement {
         int dy = other.getY() - this.getY();
         return Math.sqrt(dx * dx + dy * dy);
     }
+
+    public static boolean isOccupied(int x, int y, List<GameElement> elements) {
+        for (GameElement element : elements) {
+            if (element.getX() == x && element.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

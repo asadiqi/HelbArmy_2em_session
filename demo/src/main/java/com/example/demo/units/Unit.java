@@ -50,21 +50,14 @@ public class Unit extends GameElement {
             int newY = coord.getY() + dy[i];
             GameElement adjacent = new GameElement(newX, newY);
 
-            if (isCoordinateInBoard(adjacent, maxX, maxY) && !isOccupied(adjacent, occupied)) {
+            if (isCoordinateInBoard(adjacent, maxX, maxY) && !GameElement.isOccupied(adjacent.getX(),adjacent.getY(), occupied)) {
                 result.add(adjacent);
             }
         }
         return result;
     }
 
-    private boolean isOccupied(GameElement coord, List<GameElement> occupied) {
-        for (GameElement e : occupied) {
-            if (e.getX() == coord.getX() && e.getY() == coord.getY()) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public GameElement getNextCoordinateForTarget(GameElement current, GameElement target, int maxX, int maxY, List<GameElement> occupied) {
         double minDistance = maxX + maxY;
@@ -128,12 +121,7 @@ public class Unit extends GameElement {
     private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;
 
-        for (GameElement e : occupied) {
-            if (e.getX() == x && e.getY() == y) {
-                return false;
-            }
-        }
-        return true;
+        return !GameElement.isOccupied(x,y,occupied);
     }
 
 

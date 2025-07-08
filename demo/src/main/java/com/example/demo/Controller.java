@@ -49,8 +49,8 @@ public class Controller {
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),false, false);
 
-        addGameElement(collecter);
-        addGameElement(collecter1);
+        //addGameElement(collecter);
+        //addGameElement(collecter1);
 
         setupGameLoop();
 
@@ -74,6 +74,7 @@ public class Controller {
             generateCollecter();
             moveUnits();          // <- ici on fait bouger les unités
             view.drawAllElements();
+
         }));
 
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -134,13 +135,13 @@ public class Controller {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
 
-            if (!isOccupied(x, y)) {
+            if (!GameElement.isOccupied(x, y, allElements)) {
                 Tree tree = new Tree(new GameElement(x, y));
                 trees.add(tree);
                 addGameElement(tree);
-                System.out.println("Tree placé en: " + x + " " + y);
+                //System.out.println("Tree placé en: " + x + " " + y);
             } else {
-                System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+            //    System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
             }
         }
     }
@@ -157,16 +158,19 @@ public class Controller {
                 continue; // position non valide pour 2x2
             }
 
-            if (!isOccupied(x, y) && !isOccupied(x + 1, y) && !isOccupied(x, y + 1) && !isOccupied(x + 1, y + 1)) {
+            if (!GameElement.isOccupied(x, y, allElements)
+                    && !GameElement.isOccupied(x + 1, y, allElements)
+                    && !GameElement.isOccupied(x, y + 1, allElements)
+                    && !GameElement.isOccupied(x + 1, y + 1, allElements)) {
                 Stone stone = new Stone(new GameElement(x, y));
                 stones.add(stone);
                 addGameElement(stone);
                 // On ajoute aussi les cellules occupées par la pierre (zone 2x2)
                 allElements.addAll(stone.getOccupiedCells());
 
-                System.out.println("Rochers 2x2 placé en: " + x + " " + y);
+             //   System.out.println("Rochers 2x2 placé en: " + x + " " + y);
             } else {
-                System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
+              //  System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
             }
         }
     }
@@ -175,7 +179,7 @@ public class Controller {
         Random random = new Random();
         boolean isLumberjack = random.nextBoolean(); // soit c'est un bouchron soit c'est un piocheur
         createCollecterForCity(northCity, true, isLumberjack);
-        System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
+       // System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
 
 
         isLumberjack = random.nextBoolean();
@@ -206,20 +210,13 @@ public class Controller {
         allElements.add(northCity);
         allElements.add(southCity);
 
-        System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
-        System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
+       // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
+       // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
 
 
-    private boolean isOccupied(int x, int y) {
-        for (GameElement element : allElements) {
-            if (element.getX() == x && element.getY() == y) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 
 }
