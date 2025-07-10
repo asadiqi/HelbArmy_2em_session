@@ -5,6 +5,7 @@ package com.example.demo;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
 import com.example.demo.units.Collecter;
+import com.example.demo.units.Seeder;
 import com.example.demo.units.Unit;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -79,7 +80,8 @@ public class Controller {
             elapsedTimeMs+=GAMELOOP_INERVAL_MS;
 
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
-                generateCollecter();
+                //generateCollecter();
+                genrateSeeder();
                 elapsedTimeMs=0;
             }
 
@@ -194,6 +196,35 @@ public class Controller {
         isLumberjack = random.nextBoolean();
         createCollecterForCity(southCity, false, isLumberjack);
         //System.out.println("south city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
+    }
+
+    public void genrateSeeder() {
+
+        Random random = new Random();
+
+        GameElement posNorth = Unit.findNearestFreePosition(northCity,maxDistance,gridCols,gridRows,allElements);
+        if (posNorth != null) { // justifer je pourrais mettre -1,-1 (ca va crée une unité dehors de la grille ) mais null c'est plus propre
+            Seeder northSeeder = new Seeder(posNorth,true);
+            String targetTypeNorth = random.nextBoolean() ? "tree" : "stone";
+            northSeeder.setTargerRessourceType(targetTypeNorth);
+            addGameElement(northSeeder);
+            System.out.println("Nord Seeder créé en "+ posNorth.getX()+","+posNorth.getY()+ " ciblant "+targetTypeNorth);
+        }
+        else {
+            System.out.println("Pas dee position libre pour Seeder nord");
+        }
+
+        GameElement posSouth = Unit.findNearestFreePosition(southCity,maxDistance,gridCols,gridRows,allElements);
+        if (posSouth != null) { // justifer je pourrais mettre -1,-1 (ca va crée une unité dehors de la grille ) mais null c'est plus propre
+            Seeder southSeeder = new Seeder(posSouth,false);
+            String targetTypeSouth = random.nextBoolean() ? "tree" : "stone";
+            southSeeder.setTargerRessourceType(targetTypeSouth);
+            addGameElement(southSeeder);
+            System.out.println("sud Seeder créé en "+ posSouth.getX()+","+posSouth.getY()+ " ciblant "+targetTypeSouth);
+        }
+        else {
+            System.out.println("Pas dee position libre pour Seeder sud");
+        }
     }
 
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
