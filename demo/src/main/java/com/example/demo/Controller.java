@@ -47,14 +47,22 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-        generateRandomTrees();
+        //generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),false, false);
-
         //addGameElement(collecter);
         //addGameElement(collecter1);
+
+
+        Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
+        Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
+        northSeeder.setTargetRessourceType("tree");
+        southSeeder.setTargetRessourceType("stone");
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
+
 
         setupGameLoop();
 
@@ -81,7 +89,7 @@ public class Controller {
 
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
                 //generateCollecter();
-                genrateSeeder();
+                //genrateSeeder();
                 elapsedTimeMs=0;
             }
 
@@ -96,6 +104,16 @@ public class Controller {
     private void moveUnits() {
 
         for (GameElement element : new ArrayList<>(allElements)) {
+
+            if (element instanceof Seeder seeder) {
+                if (seeder.isNorthSeeder && "tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
+                    seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                }
+                seeder.moveTowardsTarget(gridCols, gridRows, allElements);
+
+            }
+
+
             if (element instanceof Collecter collecter) {
 
                 if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
@@ -200,31 +218,7 @@ public class Controller {
 
     public void genrateSeeder() {
 
-        Random random = new Random();
 
-        GameElement posNorth = Unit.findNearestFreePosition(northCity,maxDistance,gridCols,gridRows,allElements);
-        if (posNorth != null) { // justifer je pourrais mettre -1,-1 (ca va crée une unité dehors de la grille ) mais null c'est plus propre
-            Seeder northSeeder = new Seeder(posNorth,true);
-            String targetTypeNorth = random.nextBoolean() ? "tree" : "stone";
-            northSeeder.setTargerRessourceType(targetTypeNorth);
-            addGameElement(northSeeder);
-            System.out.println("Nord Seeder créé en "+ posNorth.getX()+","+posNorth.getY()+ " ciblant "+targetTypeNorth);
-        }
-        else {
-            System.out.println("Pas dee position libre pour Seeder nord");
-        }
-
-        GameElement posSouth = Unit.findNearestFreePosition(southCity,maxDistance,gridCols,gridRows,allElements);
-        if (posSouth != null) { // justifer je pourrais mettre -1,-1 (ca va crée une unité dehors de la grille ) mais null c'est plus propre
-            Seeder southSeeder = new Seeder(posSouth,false);
-            String targetTypeSouth = random.nextBoolean() ? "tree" : "stone";
-            southSeeder.setTargerRessourceType(targetTypeSouth);
-            addGameElement(southSeeder);
-            System.out.println("sud Seeder créé en "+ posSouth.getX()+","+posSouth.getY()+ " ciblant "+targetTypeSouth);
-        }
-        else {
-            System.out.println("Pas dee position libre pour Seeder sud");
-        }
     }
 
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {

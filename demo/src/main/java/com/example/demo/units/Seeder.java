@@ -1,13 +1,18 @@
 package com.example.demo.units;
 
 import com.example.demo.GameElement;
+import com.example.demo.ressource.Tree;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Seeder extends Unit{
 
     public static String northSeederPath = "img/white/northSeeder.png";
     public static String southSeederPath = "img/black/southSeeder.png";
     public boolean isNorthSeeder;
-    private String targerRessourceType;
+    private String targetRessourceType;
 
     public Seeder(GameElement position, boolean isNorthSeeder) {
         super(position);
@@ -21,14 +26,51 @@ public class Seeder extends Unit{
         return isNorthSeeder ? northSeederPath : southSeederPath;
     }
 
-    public String getTargerRessourceType() {
-        return targerRessourceType;
+    public String getTargetRessourceType() {
+        return targetRessourceType;
     }
 
 
-    public void setTargerRessourceType(String type) {
-        this.targerRessourceType = type;
+    public void setTargetRessourceType(String type) {
+        this.targetRessourceType = type;
     }
+
+    public void chooseRandomTreeAsTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
+        if (!isNorthSeeder || !"tree".equalsIgnoreCase(targetRessourceType)) {
+            return;
+        }
+
+        Random random = new Random();
+
+        if (trees.isEmpty()) {
+            // Choisir une position libre aléatoire sur la grille
+            List<GameElement> freePositions = new ArrayList<>();
+
+            for (int x = 0; x < maxX; x++) {
+                for (int y = 0; y < maxY; y++) {
+                    if (GameElement.isOccupied(x, y, occupied)) {
+                        freePositions.add(new GameElement(x, y));
+                    }
+                }
+            }
+
+            if (!freePositions.isEmpty()) {
+                GameElement randomFree = freePositions.get(random.nextInt(freePositions.size()));
+                setTarget(randomFree);
+
+                System.out.println("Seeder nord n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
+                        randomFree.getX() + ", " + randomFree.getY() + ")");
+            }
+
+        } else {
+            Tree selectedTree = trees.get(random.nextInt(trees.size()));
+            setTarget(selectedTree);
+
+            System.out.println("Seeder nord a choisi un arbre en position : (" +
+                    selectedTree.getX() + ", " + selectedTree.getY() + ")");
+        }
+    }
+
 
 
 }
