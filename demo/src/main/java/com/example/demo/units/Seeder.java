@@ -71,6 +71,23 @@ public class Seeder extends Unit{
         }
     }
 
+    public void plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
+        if (!hasValidTarget()) return;
+        List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target,maxX,maxY,occupied);
+
+        if (!freeAdjacent.isEmpty()) {
+            GameElement plantingTree = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
+            Tree newTree = new Tree(plantingTree);
+            trees.add(newTree);
+            occupied.add(newTree);
+            System.out.println("Nouveau tree planté en : "+plantingTree.getX() + ", " + plantingTree.getY());
+        }
+        else {
+            System.out.println("Aucun case libre autour de l'arbre pour planter un nouveau tree");
+        }
+
+    }
+
 
 
 }

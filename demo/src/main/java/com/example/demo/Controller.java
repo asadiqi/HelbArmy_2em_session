@@ -47,7 +47,7 @@ public class Controller {
         this.stones=new ArrayList<Stone>();
 
         setupCity();
-        //generateRandomTrees();
+        generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),true, true);
@@ -109,7 +109,14 @@ public class Controller {
                 if (seeder.isNorthSeeder && "tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
                 }
+                boolean reached = seeder.hasReachedTarget();
                 seeder.moveTowardsTarget(gridCols, gridRows, allElements);
+
+                if (reached) {
+                    seeder.plantTree(allElements,trees,gridCols,gridRows);
+                    seeder.setTarget(null);
+                    seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                }
 
             }
 
