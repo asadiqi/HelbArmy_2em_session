@@ -84,6 +84,7 @@ public class Controller {
     private void setupGameLoop() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
             moveUnits();          // <- ici on fait bouger les unités
+            growPlantedTrees();
             view.drawAllElements();
             elapsedTimeMs+=GAMELOOP_INERVAL_MS;
 
@@ -100,12 +101,40 @@ public class Controller {
         timeline.play();
     }
 
+    private void growPlantedTrees() {
+        for (Tree tree: trees) {
+            if (tree.isGrowing() && !tree.isMature()) {
+                int before = tree.getCurrentWoodAmount();
+                tree.grow(20);
+                int after = tree.getCurrentWoodAmount();
+
+                System.out.println("Arbre en ( "+ tree.getX()+ ", "+tree.getY()+ " bois total : "+ (after - before) + " bois total : "+after);
+
+                if (tree.isMature()) {
+                    tree.setGrowing(false);
+                    System.out.println("Arbre à ( "+ tree.getX()+", "+tree.getY()+ " est maintenant mature ");
+                }
+            }
+        }
+    }
 
     private void moveUnits() {
 
         for (GameElement element : new ArrayList<>(allElements)) {
 
             if (element instanceof Seeder seeder) {
+
+                if (seeder.getPlantedTree()!= null)  {
+                    if (seeder.getPlantedTree().isMature()) {
+                        System.out.println("Seeder reprend sa mission , arebre planté arrivé à maturité");
+                        seeder.setPlantedTree(null);
+                        seeder.setTarget(null);
+                    }else  {
+                        System.out.println("Seeder attend que l'arbre planté pousse "+ seeder.getPlantedTree().getCurrentWoodAmount() + "/"+ 100);
+                        continue;
+                    }
+                }
+
                 if (seeder.isNorthSeeder && "tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
                 }
@@ -113,13 +142,15 @@ public class Controller {
                 seeder.moveTowardsTarget(gridCols, gridRows, allElements);
 
                 if (reached) {
-                    seeder.plantTree(allElements,trees,gridCols,gridRows);
-                    seeder.setTarget(null);
-                    seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                    Tree planted = seeder.plantTree(allElements,trees,gridCols,gridRows);
+                    if (planted!=null) {
+                        seeder.setTarget(planted);
+                        seeder.setTarget(null);
+                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+
+                    }
                 }
-
             }
-
 
             if (element instanceof Collecter collecter) {
 

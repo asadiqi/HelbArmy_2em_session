@@ -13,6 +13,7 @@ public class Seeder extends Unit{
     public static String southSeederPath = "img/black/southSeeder.png";
     public boolean isNorthSeeder;
     private String targetRessourceType;
+    private Tree plantedTree = null;
 
     public Seeder(GameElement position, boolean isNorthSeeder) {
         super(position);
@@ -34,7 +35,7 @@ public class Seeder extends Unit{
     public void setTargetRessourceType(String type) {
         this.targetRessourceType = type;
     }
-
+    
     public void chooseRandomTreeAsTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
         if (!isNorthSeeder || !"tree".equalsIgnoreCase(targetRessourceType)) {
             return;
@@ -71,21 +72,42 @@ public class Seeder extends Unit{
         }
     }
 
-    public void plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
-        if (!hasValidTarget()) return;
-        List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target,maxX,maxY,occupied);
+
+
+
+
+
+
+
+
+    public Tree plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
+        if (!hasValidTarget()) return null;
+
+        List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target, maxX, maxY, occupied);
 
         if (!freeAdjacent.isEmpty()) {
-            GameElement plantingTree = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
-            Tree newTree = new Tree(plantingTree);
+            GameElement plantingSpot = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
+            Tree newTree = new Tree(plantingSpot);
+            newTree.setWoodAmount(0);
+            newTree.setGrowing(true);
             trees.add(newTree);
             occupied.add(newTree);
-            System.out.println("Nouveau tree planté en : "+plantingTree.getX() + ", " + plantingTree.getY());
+            this.plantedTree = newTree;
+            System.out.println("Arbre planté à (" + plantingSpot.getX() + ", " + plantingSpot.getY() + ") → croissance démarrée");
+            return newTree;  // retourne l'arbre planté
+        } else {
+            System.out.println("Aucune case libre autour de l’arbre pour planter.");
+            return null;  // échec
         }
-        else {
-            System.out.println("Aucun case libre autour de l'arbre pour planter un nouveau tree");
-        }
+    }
 
+
+    public Tree getPlantedTree() {
+        return plantedTree;
+    }
+
+    public void setPlantedTree(Tree tree) {
+        this.plantedTree = tree;
     }
 
 
