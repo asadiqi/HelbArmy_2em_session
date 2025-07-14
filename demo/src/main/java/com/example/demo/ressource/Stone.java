@@ -11,6 +11,7 @@ public class Stone extends GameElement {
     private int mineralAmount;
     private static final int DEFULT_MINREAL_AMOUNT=100;
     private static final int MAX_MINREAL_AMOUNT =200;
+    private boolean isGrowing = false;
 
     public  static  String stonePath = "img/stone.png";
     private double stoneRatio=2.0;
@@ -63,6 +64,29 @@ public class Stone extends GameElement {
 
     public boolean isDepleted() {
         return mineralAmount <= 0;
+    }
+
+
+    public boolean isGrowing() {
+        return isGrowing;
+    }
+
+    public void setMineralAmount(int mineralAmount) {
+        this.mineralAmount = mineralAmount;
+    }
+
+    public void setGrowing(boolean growing) {
+        isGrowing = growing;
+    }
+
+    public boolean isMature() {
+        return mineralAmount >= MAX_MINREAL_AMOUNT;
+    }
+
+    public void grow(int amount) {
+        if (!isMature()) {
+            mineralAmount = Math.min(MAX_MINREAL_AMOUNT, mineralAmount + amount);
+        }
     }
 
 
