@@ -1,5 +1,6 @@
 package com.example.demo.units;
 
+import com.example.demo.Controller;
 import com.example.demo.GameElement;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
@@ -145,35 +146,65 @@ public class Seeder extends Unit {
         }
     }
 
-    public Stone plantStone(List<GameElement> occupied, List<Stone> stones) {
+    public Stone plantStone(List<GameElement> occupied, List<Stone> stones, int gridCols, int gridRows) {
         if (!hasValidTarget()) return null;
 
         int x = target.getX();
         int y = target.getY();
 
-        List<GameElement> filtered = new ArrayList<>(occupied);
-        filtered.remove(this);
-
-        boolean zoneLibre = GameElement.isFree(x, y, filtered) &&
-                GameElement.isFree(x + 1, y, filtered) &&
-                GameElement.isFree(x, y + 1, filtered) &&
-                GameElement.isFree(x + 1, y + 1, filtered);
-
-        if (zoneLibre) {
-            Stone stone = new Stone(new GameElement(x, y));
-            stone.setMineralAmount(0);
-            stone.setGrowing(true);
-            stones.add(stone);
-            occupied.add(stone);
-            occupied.addAll(stone.getOccupiedCells());
-
-            this.plantedStone = stone;  // mémoriser la pierre plantée
-
-            System.out.println("Pierre plantée à (" + x + ", " + y + ") → croissance démarrée");
-            return stone;
+        if (x + 1 >= gridCols || y + 1 >= gridRows) {
+            System.out.println("Impossible de planter : zone hors de la grille.");
+            return null;
         }
 
-        System.out.println("Impossible de planter la pierre : zone occupée.");
-        return null;
+        if (!GameElement.isFree(x, y, occupied) ||
+                !GameElement.isFree(x + 1, y, occupied) ||
+                !GameElement.isFree(x, y + 1, occupied) ||
+                !GameElement.isFree(x + 1, y + 1, occupied)) {
+            System.out.println("Impossible de planter la pierre : zone occupée.");
+            return null;
+        }
+
+        if ((this.getX() == x && this.getY() == y) ||
+                (this.getX() == x + 1 && this.getY() == y) ||
+                (this.getX() == x && this.getY() == y + 1) ||
+                (this.getX() == x + 1 && this.getY() == y + 1)) {
+            System.out.println("Impossible de planter : le Seeder est dans la zone cible !");
+            return null;
+        }
+
+        Stone stone = new Stone(new GameElement(x, y));
+        stone.setMineralAmount(0);
+        stone.setGrowing(true);
+        stones.add(stone);
+        occupied.add(stone);
+        occupied.addAll(stone.getOccupiedCells());
+
+        this.plantedStone = stone;
+        System.out.println("Pierre plantée à (" + x + ", " + y + ") → croissance démarrée");
+
+        return stone;
     }
+
+    public boolean isAdjacentToTargetZone() {
+        if (!hasValidTarget()) return false;
+
+        int tx = target.getX();
+        int ty = target.getY();
+
+        // Zone 2x2 : (tx, ty), (tx+1, ty), (tx, ty+1), (tx+1, ty+1)
+        // On veut savoir si le Seeder est sur une case autour de cette zone
+        for (int dx = -1; dx <= 2; dx++) {
+            for (int dy = -1; dy <= 2; dy++) {
+                if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1) continue; // Ignorer les 4 cases de la zone
+                if (this.getX() == tx + dx && this.getY() == ty + dy) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
 }

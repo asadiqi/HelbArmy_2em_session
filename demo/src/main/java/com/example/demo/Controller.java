@@ -174,8 +174,11 @@ public class Controller {
                     seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
                 }
 
-                boolean reached = seeder.hasReachedTarget();
                 seeder.moveTowardsTarget(gridCols, gridRows, allElements);
+
+                boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
+                        ? seeder.hasReachedTarget()
+                        : seeder.isAdjacentToTargetZone();
 
                 if (reached) {
                     if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
@@ -186,14 +189,15 @@ public class Controller {
                             seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
                         }
                     } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        Stone planted = seeder.plantStone(allElements, stones);
+                        Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
                         if (planted != null) {
-                            seeder.setPlantedStone(planted);  // <== On mémorise la pierre plantée ici
+                            seeder.setPlantedStone(planted);
                             seeder.setTarget(null);
                             seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
                         }
                     }
                 }
+
             }
 
             if (element instanceof Collecter collecter) {
