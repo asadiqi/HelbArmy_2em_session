@@ -60,7 +60,7 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("tree");
         southSeeder.setTargetRessourceType("stone");
-        addGameElement(northSeeder);
+        //addGameElement(northSeeder);
         addGameElement(southSeeder);
 
 
@@ -84,6 +84,7 @@ public class Controller {
     private void setupGameLoop() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
             moveUnits();          // <- ici on fait bouger les unités
+            growPlantedStones();
             growPlantedTrees();
             view.drawAllElements();
             elapsedTimeMs+=GAMELOOP_INERVAL_MS;
@@ -118,36 +119,79 @@ public class Controller {
         }
     }
 
+    private void growPlantedStones() {
+        for (Stone stone : stones) {
+            if (stone.isGrowing() && !stone.isMature()) {
+                int before = stone.getCurrentMineralAmount();
+                stone.grow(20);  // valeur de croissance par tick (ajustable)
+                int after = stone.getCurrentMineralAmount();
+
+                System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") a grandi de " +
+                        (after - before) + " → total: " + after);
+
+                if (stone.isMature()) {
+                    stone.setGrowing(false);
+                    System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") est maintenant mature !");
+                }
+            }
+        }
+    }
+
     private void moveUnits() {
 
         for (GameElement element : new ArrayList<>(allElements)) {
 
             if (element instanceof Seeder seeder) {
 
-                if (seeder.getPlantedTree()!= null)  {
+                // Gestion arbre (Seeder nord)
+                if (seeder.getPlantedTree() != null)  {
                     if (seeder.getPlantedTree().isMature()) {
-                        System.out.println("Seeder reprend sa mission , arebre planté arrivé à maturité");
+                        System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
                         seeder.setPlantedTree(null);
                         seeder.setTarget(null);
-                    }else  {
-                        System.out.println("Seeder attend que l'arbre planté pousse "+ seeder.getPlantedTree().getCurrentWoodAmount() + "/"+ 100);
-                        continue;
+                    } else {
+                        continue;  // ne bouge pas, attend la croissance
                     }
                 }
 
+                // Gestion pierre (Seeder sud)
+                if (!seeder.isNorthSeeder && seeder.getPlantedStone() != null) {
+                    Stone plantedStone = seeder.getPlantedStone();
+                    if (plantedStone.isMature()) {
+                        System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
+                        seeder.setPlantedStone(null);
+                        seeder.setTarget(null);
+                    } else {
+
+                        continue;  // attend croissance pierre
+                    }
+                }
+
+                // Choisir une nouvelle cible si aucune cible valide
                 if (seeder.isNorthSeeder && "tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                } else if (!seeder.isNorthSeeder && "stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
+                    seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
                 }
+
                 boolean reached = seeder.hasReachedTarget();
                 seeder.moveTowardsTarget(gridCols, gridRows, allElements);
 
                 if (reached) {
-                    Tree planted = seeder.plantTree(allElements,trees,gridCols,gridRows);
-                    if (planted!=null) {
-                        seeder.setTarget(planted);
-                        seeder.setTarget(null);
-                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-
+                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                        Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
+                        if (planted != null) {
+                            seeder.setPlantedTree(planted);
+                            seeder.setTarget(null);
+                            seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                        }
+                    } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                        Stone planted = seeder.plantStone(allElements, stones);
+                        if (planted != null) {
+                            seeder.setPlantedStone(planted);  // <== On mémorise la pierre plantée ici
+                            seeder.setTarget(null);
+                            seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
+                        }
                     }
                 }
             }
@@ -164,18 +208,17 @@ public class Controller {
                 trees.removeIf(tree -> {
                     if (tree.isDepleted()) {
                         allElements.remove(tree);
-                        System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getX());
+                        System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
                         return true;
                     }
                     return false;
                 });
 
-
                 stones.removeIf(stone -> {
                     if (stone.isDepleted()) {
                         allElements.remove(stone);
                         allElements.removeAll(stone.getOccupiedCells());
-                        System.out.println("Pierre retiré: " + stone.getX() + "," + stone.getX());
+                        System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
                         return true;
                     }
                     return false;
@@ -184,7 +227,6 @@ public class Controller {
             }
         }
     }
-
 
 
 
@@ -208,7 +250,7 @@ public class Controller {
                 addGameElement(tree);
                 //System.out.println("Tree placé en: " + x + " " + y);
             } else {
-            //    System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+                //    System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
             }
         }
     }
@@ -235,9 +277,9 @@ public class Controller {
                 // On ajoute aussi les cellules occupées par la pierre (zone 2x2)
                 allElements.addAll(stone.getOccupiedCells());
 
-             //   System.out.println("Rochers 2x2 placé en: " + x + " " + y);
+                //   System.out.println("Rochers 2x2 placé en: " + x + " " + y);
             } else {
-              //  System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
+                //  System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
             }
         }
     }
@@ -246,7 +288,7 @@ public class Controller {
         Random random = new Random();
         boolean isLumberjack = random.nextBoolean(); // soit c'est un bouchron soit c'est un piocheur
         createCollecterForCity(northCity, true, isLumberjack);
-       // System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
+        // System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
 
 
         isLumberjack = random.nextBoolean();
@@ -264,7 +306,7 @@ public class Controller {
         if (pos != null) {
             Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter);
             addGameElement(collecter);
-          //  System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
+            //  System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
 
         } else {
             System.out.println("Aucune position libre trouvée pour collecter de la ville " + (city.isNorth ? "nord" : "sud"));
@@ -282,8 +324,8 @@ public class Controller {
         allElements.add(northCity);
         allElements.add(southCity);
 
-       // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
-       // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
+        // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
+        // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
 

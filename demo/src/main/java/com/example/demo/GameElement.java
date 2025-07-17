@@ -22,16 +22,17 @@ public class GameElement {
     }
 
     public String getImagePath() {
-       return  null;   //justifier car c'est une classe mère et elle ne connais pas encore le chemain d'image de la classe fille
-       //si non on pourrait mettre : return "img/default.png";
+        return  null;   //justifier car c'est une classe mère et elle ne connais pas encore le chemain d'image de la classe fille
+        //si non on pourrait mettre : return "img/default.png";
     }
 
-     public double getWidthRatio() {
+    public double getWidthRatio() {
         return defaultRatio;
     }
 
     public double getHeightRatio() {
         return defaultRatio;
+
     }
 
     public double getDistanceWith(GameElement other) {
@@ -48,6 +49,15 @@ public class GameElement {
         }
         return true;
     }
+    public static boolean isFree(int x, int y, List<GameElement> elements) {
+        for (GameElement element : elements) {
+            if (element.getX() == x && element.getY() == y) {
+                return false; // occupé
+            }
+        }
+        return true; // libre
+    }
+
 
 
 }
