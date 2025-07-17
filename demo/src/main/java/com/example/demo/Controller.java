@@ -36,7 +36,7 @@ public class Controller {
     private City northCity;
     private City southCity;
     private static final int GAMELOOP_INERVAL_MS=1000;
-    private static final int UNIT_GENRATION_MS=2000;
+    private static final int UNIT_GENRATION_MS=10000;
     private int elapsedTimeMs = 0;
 
 
@@ -61,7 +61,7 @@ public class Controller {
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
         //addGameElement(northSeeder);
-        addGameElement(southSeeder);
+       // addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -90,8 +90,15 @@ public class Controller {
             elapsedTimeMs+=GAMELOOP_INERVAL_MS;
 
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
-                //generateCollecter();
-                //genrateSeeder();
+
+              int random = (int) (Math.random()*2);
+
+              if (random == 0) {
+                  generateCollecter();
+              } else {
+                  genrateSeeder();
+              }
+
                 elapsedTimeMs=0;
             }
 
@@ -143,27 +150,28 @@ public class Controller {
 
             if (element instanceof Seeder seeder) {
 
-                if (seeder.getPlantedTree() != null)  {
+                // Si le Seeder a planté un arbre et que son objectif est "tree"
+                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
                     if (seeder.getPlantedTree().isMature()) {
                         System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
                         seeder.setPlantedTree(null);
                         seeder.setTarget(null);
                     } else {
-                        continue;
+                        continue;  // en pause pour croissance de l’arbre
                     }
                 }
 
-                if (seeder.getPlantedStone() != null) {
-                    Stone plantedStone = seeder.getPlantedStone();
-                    if (plantedStone.isMature()) {
+                // Si le Seeder a planté une pierre et que son objectif est "stone"
+                if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
+                    if (seeder.getPlantedStone().isMature()) {
                         System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
                         seeder.setPlantedStone(null);
                         seeder.setTarget(null);
                     } else {
-
-                        continue;
+                        continue;  // en pause pour croissance de la pierre
                     }
                 }
+
 
                 if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
@@ -186,12 +194,22 @@ public class Controller {
                             seeder.setTarget(null);
                             seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
                         }
+                        else {
+                            seeder.setPlantedTree(null);
+                            seeder.setTarget(null);
+                            seeder.chooseRandomTreeAsTarget(trees,gridCols,gridRows,allElements);
+                        }
                     } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
                         Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
                         if (planted != null) {
                             seeder.setPlantedStone(planted);
                             seeder.setTarget(null);
                             seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
+                        }
+                        else {
+                            seeder.setPlantedStone(null);
+                            seeder.setTarget(null);
+                            seeder.chooseFurthestStoneSpot(stones,gridCols,gridRows,allElements);
                         }
                     }
                 }
@@ -299,9 +317,17 @@ public class Controller {
     }
 
     public void genrateSeeder() {
+        Random random = new Random();
 
+        // Seeder pour la ville nord
+        String northTarget = random.nextBoolean() ? "tree" : "stone";
+        createSeederForCity(northCity, true, northTarget);
 
+        // Seeder pour la ville sud
+        String southTarget = random.nextBoolean() ? "tree" : "stone";
+        createSeederForCity(southCity, false, southTarget);
     }
+
 
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
         GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
@@ -314,6 +340,19 @@ public class Controller {
             System.out.println("Aucune position libre trouvée pour collecter de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
+
+    private void createSeederForCity(City city, boolean isNorthSeeder, String targetResourceType) {
+        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
+        if (pos != null) {
+            Seeder seeder = new Seeder(pos, isNorthSeeder);
+            seeder.setTargetRessourceType(targetResourceType);
+            addGameElement(seeder);
+            // System.out.println((city.isNorth ? "Nord" : "Sud") + " Seeder créé pour planter: " + targetResourceType);
+        } else {
+            System.out.println("Aucune position libre trouvée pour Seeder de la ville " + (city.isNorth ? "nord" : "sud"));
+        }
+    }
+
 
 
     public void setupCity() {
