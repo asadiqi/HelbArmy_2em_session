@@ -54,7 +54,7 @@ public class Seeder extends Unit {
     }
 
     public void chooseRandomTreeAsTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
-        if (!isNorthSeeder || !"tree".equalsIgnoreCase(targetRessourceType)) {
+        if (!"tree".equalsIgnoreCase(targetRessourceType)) {
             return;
         }
 
@@ -106,7 +106,7 @@ public class Seeder extends Unit {
     }
 
     public void chooseFurthestStoneSpot(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
-        if (isNorthSeeder || !"stone".equalsIgnoreCase(targetRessourceType)) return;
+        if (!"stone".equalsIgnoreCase(targetRessourceType)) return;
 
         double maxTotalDistance = -1;
         GameElement bestSpot = null;

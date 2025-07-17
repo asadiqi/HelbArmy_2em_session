@@ -58,8 +58,8 @@ public class Controller {
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
-        northSeeder.setTargetRessourceType("tree");
-        southSeeder.setTargetRessourceType("stone");
+        northSeeder.setTargetRessourceType("stone");
+        southSeeder.setTargetRessourceType("tree");
         //addGameElement(northSeeder);
         addGameElement(southSeeder);
 
@@ -143,19 +143,17 @@ public class Controller {
 
             if (element instanceof Seeder seeder) {
 
-                // Gestion arbre (Seeder nord)
                 if (seeder.getPlantedTree() != null)  {
                     if (seeder.getPlantedTree().isMature()) {
                         System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
                         seeder.setPlantedTree(null);
                         seeder.setTarget(null);
                     } else {
-                        continue;  // ne bouge pas, attend la croissance
+                        continue;
                     }
                 }
 
-                // Gestion pierre (Seeder sud)
-                if (!seeder.isNorthSeeder && seeder.getPlantedStone() != null) {
+                if (seeder.getPlantedStone() != null) {
                     Stone plantedStone = seeder.getPlantedStone();
                     if (plantedStone.isMature()) {
                         System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
@@ -163,16 +161,16 @@ public class Controller {
                         seeder.setTarget(null);
                     } else {
 
-                        continue;  // attend croissance pierre
+                        continue;
                     }
                 }
 
-                // Choisir une nouvelle cible si aucune cible valide
-                if (seeder.isNorthSeeder && "tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
+                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-                } else if (!seeder.isNorthSeeder && "stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
+                } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
                     seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
                 }
+
 
                 seeder.moveTowardsTarget(gridCols, gridRows, allElements);
 
