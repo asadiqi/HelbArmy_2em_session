@@ -11,21 +11,22 @@ public class Collecter extends Unit {
 
     public static String northCollecterPath = "img/white/northCollecter.png";
     public static String southCollecterPath = "img/black/southCollecter.png";
-    private boolean isNorthCollecter;
     private boolean isLumberjackCollecter;
 
+    private City city; // dans Collecter
 
-    public Collecter(GameElement position, boolean isNorthCollecter, boolean isLumberjackCollecter) {
+    public Collecter(GameElement position, City city, boolean isLumberjackCollecter) {
         super(position);
-        this.isNorthCollecter = isNorthCollecter;
+        this.city = city;
         this.isLumberjackCollecter = isLumberjackCollecter;
     }
 
 
     @Override
     public String getImagePath() {
-        return isNorthCollecter ? northCollecterPath : southCollecterPath;
+        return city.isNorth ? northCollecterPath : southCollecterPath;
     }
+
 
     public int getBonus(String ressourceType) {
         // ressourceType=ressourceType.toLowerCase();
@@ -96,7 +97,7 @@ public class Collecter extends Unit {
             tree.decreaseWood(bonus);
             City city = getCityOfCollecter(northCity, southCity);
             city.incrementStock(bonus);
-            System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
+            System.out.println("Collecteur " + (city.isNorth ? "nord" : "sud") +
                     " a récolté "+ bonus + " bois, stock : " + city.getStock());
         }
     }
@@ -107,7 +108,7 @@ public class Collecter extends Unit {
             stone.decreaseMineral(bonus);
             City city = getCityOfCollecter(northCity, southCity);
             city.incrementStock(bonus);
-            System.out.println("Collecteur " + (isNorthCollecter ? "nord" : "sud") +
+            System.out.println("Collecteur " + (city.isNorth ? "nord" : "sud") +
                     " a récolté "+ bonus+ "minerai, stock : " + city.getStock());
         }
     }
@@ -123,7 +124,7 @@ public class Collecter extends Unit {
 
 
     private City getCityOfCollecter(City northCity, City southCity) {
-        return isNorthCollecter ? northCity : southCity;
+        return city.isNorth ? northCity : southCity;
     }
 
 

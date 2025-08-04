@@ -39,8 +39,6 @@ public class Controller {
     private static final int UNIT_GENRATION_MS=10000;
     private int elapsedTimeMs = 0;
 
-
-
     public Controller(View view) {
         this.view = view;
         this.trees = new ArrayList<Tree>();
@@ -50,18 +48,18 @@ public class Controller {
         generateRandomTrees();
         generateRandomStones();
         view.initView(this);
-        Collecter collecter = new Collecter(new GameElement(1,1),true, true);
-        Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),false, false);
+        Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
+        Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
         //addGameElement(collecter);
-        //addGameElement(collecter1);
+       // addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+       // addGameElement(northSeeder);
+       // addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -78,6 +76,27 @@ public class Controller {
 
     public List<GameElement> getGameElements() {
         return allElements;
+    }
+
+
+    // Méthode pour ajouter un élément dans allElements (centralisation)
+    private void addGameElement(GameElement element) {
+        allElements.add(element);
+    }
+
+
+    public void setupCity() {
+        int lastRow = gridRows - LAST_INDEX_OFFSET;
+        int lastCol = gridCols - LAST_INDEX_OFFSET;
+
+        northCity = new City(new GameElement(INITIAT_INDEX, INITIAT_INDEX), true);
+        southCity = new City(new GameElement(lastRow, lastCol), false);
+
+        allElements.add(northCity);
+        allElements.add(southCity);
+
+        // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
+        // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
 
@@ -145,115 +164,97 @@ public class Controller {
     }
 
     private void moveUnits() {
-
         for (GameElement element : new ArrayList<>(allElements)) {
-
             if (element instanceof Seeder seeder) {
-
-                // Si le Seeder a planté un arbre et que son objectif est "tree"
-                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
-                    if (seeder.getPlantedTree().isMature()) {
-                        System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
-                        seeder.setPlantedTree(null);
-                        seeder.setTarget(null);
-                    } else {
-                        continue;  // en pause pour croissance de l’arbre
-                    }
-                }
-
-                // Si le Seeder a planté une pierre et que son objectif est "stone"
-                if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
-                    if (seeder.getPlantedStone().isMature()) {
-                        System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
-                        seeder.setPlantedStone(null);
-                        seeder.setTarget(null);
-                    } else {
-                        continue;  // en pause pour croissance de la pierre
-                    }
-                }
-
-
-                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
-                    seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-                } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && !seeder.hasValidTarget()) {
-                    seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
-                }
-
-
-                seeder.moveTowardsTarget(gridCols, gridRows, allElements);
-
-                boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
-                        ? seeder.hasReachedTarget()
-                        : seeder.isAdjacentToTargetZone();
-
-                if (reached) {
-                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
-                        if (planted != null) {
-                            seeder.setPlantedTree(planted);
-                            seeder.setTarget(null);
-                            seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-                        }
-                        else {
-                            seeder.setPlantedTree(null);
-                            seeder.setTarget(null);
-                            seeder.chooseRandomTreeAsTarget(trees,gridCols,gridRows,allElements);
-                        }
-                    } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
-                        if (planted != null) {
-                            seeder.setPlantedStone(planted);
-                            seeder.setTarget(null);
-                            seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
-                        }
-                        else {
-                            seeder.setPlantedStone(null);
-                            seeder.setTarget(null);
-                            seeder.chooseFurthestStoneSpot(stones,gridCols,gridRows,allElements);
-                        }
-                    }
-                }
-
+                handleSeederMovement(seeder);
+            } else if (element instanceof Collecter collecter) {
+                handleCollecterMovement(collecter);
             }
+        }
+    }
 
-            if (element instanceof Collecter collecter) {
+    private void handleSeederMovement(Seeder seeder) {
+        // Pause si la plante pousse encore
+        if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
+            if (seeder.getPlantedTree().isMature()) {
+                System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
+                seeder.setPlantedTree(null);
+                seeder.setTarget(null);
+            } else return;
+        }
 
-                if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
-                    collecter.findNearestResource(trees, stones);
-                }
+        if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
+            if (seeder.getPlantedStone().isMature()) {
+                System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
+                seeder.setPlantedStone(null);
+                seeder.setTarget(null);
+            } else return;
+        }
 
-                collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-                collecter.collectRessource(trees, stones, northCity, southCity);
+        // Choisir une cible si pas encore définie
+        if (!seeder.hasValidTarget()) {
+            if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+            } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
+            }
+        }
 
-                trees.removeIf(tree -> {
-                    if (tree.isDepleted()) {
-                        allElements.remove(tree);
-                        System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
-                        return true;
-                    }
-                    return false;
-                });
+        // Avancer
+        seeder.moveTowardsTarget(gridCols, gridRows, allElements);
 
-                stones.removeIf(stone -> {
-                    if (stone.isDepleted()) {
-                        allElements.remove(stone);
-                        allElements.removeAll(stone.getOccupiedCells());
-                        System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
-                        return true;
-                    }
-                    return false;
-                });
+        // Vérifie si atteint la zone cible
+        boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
+                ? seeder.hasReachedTarget()
+                : seeder.isAdjacentToTargetZone();
 
+        if (reached) {
+            if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
+                seeder.setPlantedTree(planted);
+                seeder.setTarget(null);
+                seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+            } else {
+                Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
+                seeder.setPlantedStone(planted);
+                seeder.setTarget(null);
+                seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
             }
         }
     }
 
 
+    private void handleCollecterMovement(Collecter collecter) {
+        if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
+            collecter.findNearestResource(trees, stones);
+        }
 
-    // Méthode pour ajouter un élément dans allElements (centralisation)
-    private void addGameElement(GameElement element) {
-        allElements.add(element);
+        collecter.moveTowardsTarget(gridCols, gridRows, allElements);
+        collecter.collectRessource(trees, stones,northCity, southCity);
+
+        trees.removeIf(tree -> {
+            if (tree.isDepleted()) {
+                allElements.remove(tree);
+                System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
+                return true;
+            }
+            return false;
+        });
+
+        stones.removeIf(stone -> {
+            if (stone.isDepleted()) {
+                allElements.remove(stone);
+                allElements.removeAll(stone.getOccupiedCells());
+                System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
+                return true;
+            }
+            return false;
+        });
     }
+
+
+
+
 
 
     private void generateRandomTrees() {
@@ -332,7 +333,7 @@ public class Controller {
     private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
         GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
         if (pos != null) {
-            Collecter collecter = new Collecter(pos, isNorthCollecter, isLumberjackCollecter);
+            Collecter collecter = new Collecter(pos, city, isLumberjackCollecter);
             addGameElement(collecter);
             //  System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
 
@@ -352,26 +353,4 @@ public class Controller {
             System.out.println("Aucune position libre trouvée pour Seeder de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
-
-
-
-    public void setupCity() {
-        int lastRow = gridRows - LAST_INDEX_OFFSET;
-        int lastCol = gridCols - LAST_INDEX_OFFSET;
-
-        northCity = new City(new GameElement(INITIAT_INDEX, INITIAT_INDEX), true);
-        southCity = new City(new GameElement(lastRow, lastCol), false);
-
-        allElements.add(northCity);
-        allElements.add(southCity);
-
-        // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
-        // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
-    }
-
-
-
-
-
-
 }
