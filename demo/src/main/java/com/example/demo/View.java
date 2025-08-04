@@ -29,9 +29,6 @@ public class View {
     private int cols;
     private static final int INITIAT_INDEX = 0;
 
-    private final int NORTH = 0;
-    private final int SOUTH = 1;
-
     private Canvas canvas;
     private Pane pane;
     private GraphicsContext gc;
@@ -93,8 +90,8 @@ public class View {
         // Ensuite, on dessine les éléments à leurs positions actuelles
         for (GameElement element : controller.getGameElements()) {
             String path = element.getImagePath();
-            Image img = imagePath.get(path);
-                img = new Image("file:" + path);
+            
+            Image img = new Image("file:" + path);
                 imagePath.put(path, img);
 
             double x = element.getX() * cellWidth;
