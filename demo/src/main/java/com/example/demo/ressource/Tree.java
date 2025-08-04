@@ -2,19 +2,15 @@ package com.example.demo.ressource;
 
 import com.example.demo.GameElement;
 
-public class Tree extends GameElement {
+public class Tree extends Resource {
 
-    private int woodAmount;
-    private static final int DEFULT_WOOD_AMOUNT = 50;
-    private static final int MAX_WOOD_AMOUNT = 100;
     public static String treePath = "img/tree.png";
-    private boolean isGrowing = false;
+    private static final int DEFAULT_WOOD_AMOUNT = 50;
+    private static final int MAX_WOOD_AMOUNT = 100;
 
     public Tree(GameElement position) {
-        super(position.getX(), position.getY());
-        this.woodAmount = DEFULT_WOOD_AMOUNT;
+        super(position.getX(), position.getY(), DEFAULT_WOOD_AMOUNT, MAX_WOOD_AMOUNT);
     }
-
 
     @Override
     public String getImagePath() {
@@ -22,37 +18,14 @@ public class Tree extends GameElement {
     }
 
     public int getCurrentWoodAmount() {
-        return woodAmount;
+        return amount;
     }
 
-    public void decreaseWood(int amount) {
-        woodAmount = Math.max(0, woodAmount - amount);
+    public void decreaseWood(int value) {
+        decreaseAmount(value);
     }
 
-    public boolean isDepleted() {
-        return woodAmount <= 0;
-    }
-
-    public boolean isMature() {
-        return woodAmount >= MAX_WOOD_AMOUNT;
-    }
-
-    public void grow(int amount) {
-        if (!isMature()) {
-            woodAmount = Math.min(MAX_WOOD_AMOUNT, woodAmount + amount);
-        }
-    }
-
-    public void setWoodAmount(int amount) {
-        this.woodAmount = Math.max(0, Math.min(MAX_WOOD_AMOUNT, amount));
-    }
-
-
-    public boolean isGrowing() {
-        return isGrowing;
-    }
-
-    public void setGrowing(boolean growing) {
-        isGrowing = growing;
+    public void setWoodAmount(int value) {
+        setAmount(value);
     }
 }
