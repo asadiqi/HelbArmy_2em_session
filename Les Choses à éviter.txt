@@ -18,7 +18,7 @@ si demain je supprime le collecteur alors on supprime la classe collecteurs , da
 5) il faut pas avoir  la logique applicatif dans la view 
 j'avis setupgameLoop dans la view j'avis un peu mixé le Controller et la view
 
-6) updateUnitImages n'été pas bon car le prof attant que on fait l'usage de polymorphisme (généricité) pour que les unités soit dessiner de la même façon.
+6) updateUnitImages n'été pas bon car le prof attend que on fait l'usage de polymorphisme (généricité) pour que les unités soit dessiner de la même façon.
 le code d'afficher le collecteur c'est la même que afficher un assainis 
 donc il faut for unit unitliste update unit 
 j'ai fait si c'est un collecteur fait ca si c'est un assassins fait ca (duplication du code).
@@ -34,7 +34,7 @@ dans mon projet c'été dans units
 10) logique de stone est bien de stone mais units depande de la logique de la stone c'est pas top car demain je supprime stone je vais juste supprimer la classe et enlever le code de flag dans le Controller mais je dois pas supprimer quelques chose dans la classe units car units est indépendant de la stone.
 
 11) dans Controller j'ai placé le flag et pierre de manière aléatoire. et j'avis une méthode createflgifneed qui appelle createflag.
- il faut bien implémenter la méthode de flag qui vérifie qui vérifie que si une case est occupé il crée pas le flag à cette place et elle cherche une autre case vide pour créer le flag
+ il faut bien implémenter la méthode de flag qui vérifie que si une case est occupé il crée pas le flag à cette place et elle cherche une autre case vide pour créer le flag
 dans le projet ce n'été pas le cas 
 
 12) il faut avoir meme nom par example createflag et create magicstone avec la vérification de case vide et faut pas avoir la duplication entre la creation d'un flag et magicstone. car la logique de placement est la même donc il faut avoir une fonction pour les faire. 

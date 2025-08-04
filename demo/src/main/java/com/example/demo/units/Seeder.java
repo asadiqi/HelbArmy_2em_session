@@ -2,6 +2,7 @@ package com.example.demo.units;
 
 import com.example.demo.Controller;
 import com.example.demo.GameElement;
+import com.example.demo.ressource.Resource;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
 
@@ -84,28 +85,7 @@ public class Seeder extends Unit {
         }
     }
 
-    public Tree plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
-        if (!hasValidTarget()) return null;
-
-        List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target, maxX, maxY, occupied);
-
-        if (!freeAdjacent.isEmpty()) {
-            GameElement plantingSpot = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
-            Tree newTree = new Tree(plantingSpot);
-            newTree.setWoodAmount(0);
-            newTree.setGrowing(true);
-            trees.add(newTree);
-            occupied.add(newTree);
-            this.plantedTree = newTree;
-            System.out.println("Arbre planté à (" + plantingSpot.getX() + ", " + plantingSpot.getY() + ") → croissance démarrée");
-            return newTree;
-        } else {
-            System.out.println("Aucune case libre autour de l’arbre pour planter.");
-            return null;
-        }
-    }
-
-    public void chooseFurthestStoneSpot(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
+    public void chooseFurthestStoneAsTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
         if (!"stone".equalsIgnoreCase(targetRessourceType)) return;
 
         double maxTotalDistance = -1;
@@ -146,44 +126,70 @@ public class Seeder extends Unit {
         }
     }
 
-    public Stone plantStone(List<GameElement> occupied, List<Stone> stones, int gridCols, int gridRows) {
+    private void plantResourceAt(GameElement position,
+                                 List<GameElement> occupied,
+                                 List<? extends Resource> resourceList,
+                                 boolean isTree,
+                                 int gridCols,
+                                 int gridRows) {
+        if (isTree) {
+            Tree tree = new Tree(position);
+            tree.setWoodAmount(0);
+            tree.setGrowing(true);
+            ((List<Tree>) resourceList).add(tree);
+            occupied.add(tree);
+            this.plantedTree = tree;
+            System.out.println("Arbre planté à (" + position.getX() + ", " + position.getY() + ") → croissance démarrée");
+        } else {
+            if (position.getX() + 1 >= gridCols || position.getY() + 1 >= gridRows) {
+                System.out.println("Impossible de planter la pierre : zone hors de la grille.");
+                return;
+            }
+
+            if (!GameElement.isOccupied(position.getX(), position.getY(), occupied) ||
+                    !GameElement.isOccupied(position.getX() + 1, position.getY(), occupied) ||
+                    !GameElement.isOccupied(position.getX(), position.getY() + 1, occupied) ||
+                    !GameElement.isOccupied(position.getX() + 1, position.getY() + 1, occupied)) {
+                System.out.println("Impossible de planter la pierre : zone occupée.");
+                return;
+            }
+
+            if ((this.getX() >= position.getX() && this.getX() <= position.getX() + 1) &&
+                    (this.getY() >= position.getY() && this.getY() <= position.getY() + 1)) {
+                System.out.println("Impossible de planter : le Seeder est dans la zone cible !");
+                return;
+            }
+
+            Stone stone = new Stone(position);
+            stone.setMineralAmount(0);
+            stone.setGrowing(true);
+            ((List<Stone>) resourceList).add(stone);
+            occupied.add(stone);
+            occupied.addAll(stone.getOccupiedCells());
+            this.plantedStone = stone;
+            System.out.println("Pierre plantée à (" + position.getX() + ", " + position.getY() + ") → croissance démarrée");
+        }
+    }
+
+    public Tree plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
         if (!hasValidTarget()) return null;
 
-        int x = target.getX();
-        int y = target.getY();
+        List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target, maxX, maxY, occupied);
 
-        if (x + 1 >= gridCols || y + 1 >= gridRows) {
-            System.out.println("Impossible de planter : zone hors de la grille.");
+        if (!freeAdjacent.isEmpty()) {
+            GameElement spot = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
+            plantResourceAt(spot, occupied, trees, true, maxX, maxY);
+            return plantedTree;
+        } else {
+            System.out.println("Aucune case libre autour de l’arbre pour planter.");
             return null;
         }
+    }
 
-        if (!GameElement.isOccupied(x, y, occupied) ||
-                !GameElement.isOccupied(x + 1, y, occupied) ||
-                !GameElement.isOccupied(x, y + 1, occupied) ||
-                !GameElement.isOccupied(x + 1, y + 1, occupied)) {
-            System.out.println("Impossible de planter la pierre : zone occupée.");
-            return null;
-        }
-
-        if ((this.getX() == x && this.getY() == y) ||
-                (this.getX() == x + 1 && this.getY() == y) ||
-                (this.getX() == x && this.getY() == y + 1) ||
-                (this.getX() == x + 1 && this.getY() == y + 1)) {
-            System.out.println("Impossible de planter : le Seeder est dans la zone cible !");
-            return null;
-        }
-
-        Stone stone = new Stone(new GameElement(x, y));
-        stone.setMineralAmount(0);
-        stone.setGrowing(true);
-        stones.add(stone);
-        occupied.add(stone);
-        occupied.addAll(stone.getOccupiedCells());
-
-        this.plantedStone = stone;
-        System.out.println("Pierre plantée à (" + x + ", " + y + ") → croissance démarrée");
-
-        return stone;
+    public Stone plantStone(List<GameElement> occupied, List<Stone> stones, int gridCols, int gridRows) {
+        if (!hasValidTarget()) return null;
+        plantResourceAt(target, occupied, stones, false, gridCols, gridRows);
+        return plantedStone;
     }
 
     public boolean isAdjacentToTargetZone() {

@@ -151,9 +151,7 @@ public class Controller {
                 int before = stone.getCurrentMineralAmount();
                 stone.grow(20);  // valeur de croissance par tick (ajustable)
                 int after = stone.getCurrentMineralAmount();
-
-                System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") a grandi de " +
-                        (after - before) + " → total: " + after);
+                System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") a grandi de " + (after - before) + " → total: " + after);
 
                 if (stone.isMature()) {
                     stone.setGrowing(false);
@@ -166,95 +164,80 @@ public class Controller {
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Seeder seeder) {
-                handleSeederMovement(seeder);
+                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
+                    if (seeder.getPlantedTree().isMature()) {
+                        System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
+                        seeder.setPlantedTree(null);
+                        seeder.setTarget(null);
+                    } else return;
+                }
+
+                if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
+                    if (seeder.getPlantedStone().isMature()) {
+                        System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
+                        seeder.setPlantedStone(null);
+                        seeder.setTarget(null);
+                    } else return;
+                }
+
+                // Choisir une cible si pas encore définie
+                if (!seeder.hasValidTarget()) {
+                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                    } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                        seeder.chooseFurthestStoneAsTarget(stones, gridCols, gridRows, allElements);
+                    }
+                }
+
+                // Avancer
+                seeder.moveTowardsTarget(gridCols, gridRows, allElements);
+
+                // Vérifie si atteint la zone cible
+                boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
+                        ? seeder.hasReachedTarget()
+                        : seeder.isAdjacentToTargetZone();
+
+                if (reached) {
+                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
+                        Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
+                        seeder.setPlantedTree(planted);
+                        seeder.setTarget(null);
+                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                    } else {
+                        Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
+                        seeder.setPlantedStone(planted);
+                        seeder.setTarget(null);
+                        seeder.chooseFurthestStoneAsTarget(stones, gridCols, gridRows, allElements);
+                    }
+                }
             } else if (element instanceof Collecter collecter) {
-                handleCollecterMovement(collecter);
-            }
+                if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
+                    collecter.findNearestResource(trees, stones);
+                }
+
+                collecter.moveTowardsTarget(gridCols, gridRows, allElements);
+                collecter.collectRessource(trees, stones,northCity, southCity);
+
+                trees.removeIf(tree -> {
+                    if (tree.isDepleted()) {
+                        allElements.remove(tree);
+                        System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
+                        return true;
+                    }
+                    return false;
+                });
+
+                stones.removeIf(stone -> {
+                    if (stone.isDepleted()) {
+                        allElements.remove(stone);
+                        allElements.removeAll(stone.getOccupiedCells());
+                        System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
+                        return true;
+                    }
+                    return false;
+                });            }
         }
     }
-
-    private void handleSeederMovement(Seeder seeder) {
-        // Pause si la plante pousse encore
-        if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
-            if (seeder.getPlantedTree().isMature()) {
-                System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
-                seeder.setPlantedTree(null);
-                seeder.setTarget(null);
-            } else return;
-        }
-
-        if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
-            if (seeder.getPlantedStone().isMature()) {
-                System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
-                seeder.setPlantedStone(null);
-                seeder.setTarget(null);
-            } else return;
-        }
-
-        // Choisir une cible si pas encore définie
-        if (!seeder.hasValidTarget()) {
-            if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-            } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
-            }
-        }
-
-        // Avancer
-        seeder.moveTowardsTarget(gridCols, gridRows, allElements);
-
-        // Vérifie si atteint la zone cible
-        boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
-                ? seeder.hasReachedTarget()
-                : seeder.isAdjacentToTargetZone();
-
-        if (reached) {
-            if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
-                seeder.setPlantedTree(planted);
-                seeder.setTarget(null);
-                seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
-            } else {
-                Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
-                seeder.setPlantedStone(planted);
-                seeder.setTarget(null);
-                seeder.chooseFurthestStoneSpot(stones, gridCols, gridRows, allElements);
-            }
-        }
-    }
-
-
-    private void handleCollecterMovement(Collecter collecter) {
-        if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
-            collecter.findNearestResource(trees, stones);
-        }
-
-        collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-        collecter.collectRessource(trees, stones,northCity, southCity);
-
-        trees.removeIf(tree -> {
-            if (tree.isDepleted()) {
-                allElements.remove(tree);
-                System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
-                return true;
-            }
-            return false;
-        });
-
-        stones.removeIf(stone -> {
-            if (stone.isDepleted()) {
-                allElements.remove(stone);
-                allElements.removeAll(stone.getOccupiedCells());
-                System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
-                return true;
-            }
-            return false;
-        });
-    }
-
-
-
-
 
 
     private void generateRandomTrees() {

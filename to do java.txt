@@ -1,10 +1,14 @@
 - optimiser le code : 
    il faut éviter un max les null ou alors avoir une justification claire et précise 
    éviter la duplication lorsque c'est possible  
-   bien séparer la responsabilité (regarder toutes les méthodes di projet) 
+   bien séparer la responsabilité (regarder toutes les méthodes de projet) 
    il faut pas du code compliqué , je dois comprendre le code facilement 
    rendre le code lisible et propre 
    
 - création d'assassins 
 
 - génération des unités par l'influence 
+
+
+Méthode move unit 
+si on veut que les city occupe 2*2 case comment on fait 
