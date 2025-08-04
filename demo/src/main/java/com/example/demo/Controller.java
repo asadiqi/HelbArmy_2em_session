@@ -60,8 +60,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        //addGameElement(northSeeder);
-       // addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
 
         setupGameLoop();

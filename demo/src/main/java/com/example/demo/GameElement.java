@@ -49,15 +49,4 @@ public class GameElement {
         }
         return true;
     }
-    public static boolean isFree(int x, int y, List<GameElement> elements) {
-        for (GameElement element : elements) {
-            if (element.getX() == x && element.getY() == y) {
-                return false; // occupé
-            }
-        }
-        return true; // libre
-    }
-
-
-
 }

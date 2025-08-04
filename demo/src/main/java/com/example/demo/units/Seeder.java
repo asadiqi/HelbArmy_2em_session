@@ -64,7 +64,7 @@ public class Seeder extends Unit {
             List<GameElement> freePositions = new ArrayList<>();
             for (int x = 0; x < maxX; x++) {
                 for (int y = 0; y < maxY; y++) {
-                    if (GameElement.isFree(x, y, occupied)) {
+                    if (GameElement.isOccupied(x, y, occupied)) {
                         freePositions.add(new GameElement(x, y));
                     }
                 }
@@ -117,10 +117,10 @@ public class Seeder extends Unit {
 
         for (int x = 0; x < maxX - 1; x++) {
             for (int y = 0; y < maxY - 1; y++) {
-                if (GameElement.isFree(x, y, filtered) &&
-                        GameElement.isFree(x + 1, y, filtered) &&
-                        GameElement.isFree(x, y + 1, filtered) &&
-                        GameElement.isFree(x + 1, y + 1, filtered)) {
+                if (GameElement.isOccupied(x, y, filtered) &&
+                        GameElement.isOccupied(x + 1, y, filtered) &&
+                        GameElement.isOccupied(x, y + 1, filtered) &&
+                        GameElement.isOccupied(x + 1, y + 1, filtered)) {
 
                     GameElement center = new GameElement(x, y);
                     double totalDistance = 0;
@@ -157,10 +157,10 @@ public class Seeder extends Unit {
             return null;
         }
 
-        if (!GameElement.isFree(x, y, occupied) ||
-                !GameElement.isFree(x + 1, y, occupied) ||
-                !GameElement.isFree(x, y + 1, occupied) ||
-                !GameElement.isFree(x + 1, y + 1, occupied)) {
+        if (!GameElement.isOccupied(x, y, occupied) ||
+                !GameElement.isOccupied(x + 1, y, occupied) ||
+                !GameElement.isOccupied(x, y + 1, occupied) ||
+                !GameElement.isOccupied(x + 1, y + 1, occupied)) {
             System.out.println("Impossible de planter la pierre : zone occupée.");
             return null;
         }
