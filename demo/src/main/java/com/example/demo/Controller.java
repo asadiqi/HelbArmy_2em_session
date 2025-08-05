@@ -36,7 +36,7 @@ public class Controller {
     private City northCity;
     private City southCity;
     private static final int GAMELOOP_INERVAL_MS=1000;
-    private static final int UNIT_GENRATION_MS=10000;
+    private static final int UNIT_GENRATION_MS=1000;
     private int elapsedTimeMs = 0;
 
     public Controller(View view) {
@@ -58,8 +58,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-       // addGameElement(northSeeder);
-       // addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -113,9 +113,10 @@ public class Controller {
               int random = (int) (Math.random()*2);
 
               if (random == 0) {
-                  generateCollecter();
+                  //generateCollecter();
+                 // genrateSeeder();
               } else {
-                  genrateSeeder();
+                  //genrateSeeder();
               }
 
                 elapsedTimeMs=0;
