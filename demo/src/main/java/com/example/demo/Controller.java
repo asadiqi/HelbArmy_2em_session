@@ -58,8 +58,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-       // addGameElement(northSeeder);
-        //addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -241,53 +241,48 @@ public class Controller {
     }
 
 
-    private void generateRandomTrees() {
-        int numberToGenerate = (int) (gridRows * gridCols * treeRatio);
+    private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
+        int numberToGenerate = (int) (gridRows * gridCols * ratio);
         Random rand = new Random();
 
-        while (trees.size() < numberToGenerate) {
+        while (resources.size() < numberToGenerate) {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
 
-            if (GameElement.isOccupied(x, y, allElements)) {
-                Tree tree = new Tree(new GameElement(x, y));
-                trees.add(tree);
-                addGameElement(tree);
-                //System.out.println("Tree placé en: " + x + " " + y);
+            if (isStone) {
+                // Pour pierre 2x2
+                if (x + 1 >= gridCols || y + 1 >= gridRows) {
+                    continue;
+                }
+                if (GameElement.isOccupied(x, y, allElements) &&
+                        GameElement.isOccupied(x + 1, y, allElements) &&
+                        GameElement.isOccupied(x, y + 1, allElements) &&
+                        GameElement.isOccupied(x + 1, y + 1, allElements)) {
+                    Stone stone = new Stone(new GameElement(x, y));
+                    ((List<Stone>)resources).add(stone);
+                    addGameElement(stone);
+                    allElements.addAll(stone.getOccupiedCells());
+                }
             } else {
-                //    System.out.println("Case occupée: " + x + " " + y + ", nouvelle tentative...");
+                // Pour arbre 1x1
+                if (GameElement.isOccupied(x, y, allElements)) {
+                    Tree tree = new Tree(new GameElement(x, y));
+                    ((List<Tree>)resources).add(tree);
+                    addGameElement(tree);
+                }
             }
         }
+    }
+
+    private void generateRandomTrees() {
+        generateResources(trees, treeRatio, false);
     }
 
     private void generateRandomStones() {
-        int numberToGenerate = (int) (gridRows * gridCols * stoneRatio);
-        Random rand = new Random();
-
-        while (stones.size() < numberToGenerate) {
-            int x = rand.nextInt(gridCols);
-            int y = rand.nextInt(gridRows);
-
-            if (x + 1 >= gridCols || y + 1 >= gridRows) {
-                continue; // position non valide pour 2x2
-            }
-
-            if (GameElement.isOccupied(x, y, allElements)
-                    && GameElement.isOccupied(x + 1, y, allElements)
-                    && GameElement.isOccupied(x, y + 1, allElements)
-                    && GameElement.isOccupied(x + 1, y + 1, allElements)) {
-                Stone stone = new Stone(new GameElement(x, y));
-                stones.add(stone);
-                addGameElement(stone);
-                // On ajoute aussi les cellules occupées par la pierre (zone 2x2)
-                allElements.addAll(stone.getOccupiedCells());
-
-                //   System.out.println("Rochers 2x2 placé en: " + x + " " + y);
-            } else {
-                //  System.out.println("Zone 2x2 occupée à: " + x + " " + y + ", nouvelle tentative...");
-            }
-        }
+        generateResources(stones, stoneRatio, true);
     }
+
+
 
     public void generateCollecter() {
         Random random = new Random();

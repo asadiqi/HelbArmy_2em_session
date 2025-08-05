@@ -12,3 +12,48 @@
 
 Méthode move unit 
 si on veut que les city occupe 2*2 case comment on fait 
+
+
+---------------------------------------------------------------------------------------------
+
+Méthodes très proches :
+
+generateRandomTrees() et generateRandomStones() ont une structure presque identique :
+
+Calcul du nombre d'éléments à générer
+
+Boucle while jusqu'à atteindre ce nombre
+
+Choix d'une position aléatoire
+
+Vérification si la position est libre
+
+Ajout de l'élément et mise à jour de la liste globale
+
+La seule vraie différence est la taille occupée (1 case pour l'arbre, 2x2 pour la pierre) et la liste d’éléments spécifique (trees vs stones).
+
+Création de collecter/seeder :
+
+Les méthodes createCollecterForCity() et createSeederForCity() sont très similaires aussi :
+
+Cherchent une position libre autour de la ville
+
+Créent un objet (Collecter ou Seeder)
+
+L’ajoutent à la liste des éléments
+
+Affichent un message de log (commenté ou non)
+
+Là aussi, la logique est quasi identique, seules les classes et paramètres diffèrent.
+
+Boucles de suppression dans moveUnits() :
+
+Le code qui retire les arbres et les pierres épuisés est très similaire :
+
+Parcourt la liste
+
+Supprime les éléments épuisés des listes et de la liste globale
+
+Affiche un message
+
+---------------------------------------------------------------------------------------------
