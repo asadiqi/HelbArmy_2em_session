@@ -184,9 +184,9 @@ public class Controller {
                 // Choisir une cible si pas encore définie
                 if (!seeder.hasValidTarget()) {
                     if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                        seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
                     } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        seeder.chooseFurthestStoneAsTarget(stones, gridCols, gridRows, allElements);
+                        seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
                     }
                 }
 
@@ -203,12 +203,12 @@ public class Controller {
                         Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
                         seeder.setPlantedTree(planted);
                         seeder.setTarget(null);
-                        seeder.chooseRandomTreeAsTarget(trees, gridCols, gridRows, allElements);
+                        seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
                     } else {
                         Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
                         seeder.setPlantedStone(planted);
                         seeder.setTarget(null);
-                        seeder.chooseFurthestStoneAsTarget(stones, gridCols, gridRows, allElements);
+                        seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
                     }
                 }
             } else if (element instanceof Collecter collecter) {

@@ -54,11 +54,21 @@ public class Seeder extends Unit {
         this.plantedTree = tree;
     }
 
-    public void chooseRandomTreeAsTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
-        if (!"tree".equalsIgnoreCase(targetRessourceType)) {
-            return;
-        }
 
+
+    public void chooseTarget(String resourceType, List<? extends Resource> resources,
+                             int maxX, int maxY, List<GameElement> occupied) {
+
+        this.targetRessourceType = resourceType;
+
+        if ("tree".equalsIgnoreCase(resourceType)) {
+            chooseTreeTarget((List<Tree>) resources, maxX, maxY, occupied);
+        } else if ("stone".equalsIgnoreCase(resourceType)) {
+            chooseStoneTarget((List<Stone>) resources, maxX, maxY, occupied);
+        }
+    }
+
+    private void chooseTreeTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
         Random random = new Random();
 
         if (trees.isEmpty()) {
@@ -74,24 +84,24 @@ public class Seeder extends Unit {
             if (!freePositions.isEmpty()) {
                 GameElement randomFree = freePositions.get(random.nextInt(freePositions.size()));
                 setTarget(randomFree);
-                System.out.println("Seeder nord n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
+                System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+                        " n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
                         randomFree.getX() + ", " + randomFree.getY() + ")");
             }
         } else {
             Tree selectedTree = trees.get(random.nextInt(trees.size()));
             setTarget(selectedTree);
-            System.out.println("Seeder nord a choisi un arbre en position : (" +
+            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+                    " a choisi un arbre en position : (" +
                     selectedTree.getX() + ", " + selectedTree.getY() + ")");
         }
     }
 
-    public void chooseFurthestStoneAsTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
-        if (!"stone".equalsIgnoreCase(targetRessourceType)) return;
 
+    private void chooseStoneTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
         double maxTotalDistance = -1;
         GameElement bestSpot = null;
 
-        // Filtrer pour ignorer le Seeder lui-même
         List<GameElement> filtered = new ArrayList<>(occupied);
         filtered.remove(this);
 
@@ -119,12 +129,17 @@ public class Seeder extends Unit {
 
         if (bestSpot != null) {
             setTarget(bestSpot);
-            System.out.println("Seeder sud a choisi une position éloignée pour une pierre : (" +
+            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+                    " a choisi une position éloignée pour une pierre : (" +
                     bestSpot.getX() + ", " + bestSpot.getY() + ")");
         } else {
-            System.out.println("Seeder sud n’a trouvé aucune position 2x2 libre pour planter une pierre.");
+            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+                    " n’a trouvé aucune position 2x2 libre pour planter une pierre.");
         }
     }
+
+
+
 
     private void plantResourceAt(GameElement position,
                                  List<GameElement> occupied,
