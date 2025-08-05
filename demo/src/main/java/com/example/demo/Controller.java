@@ -50,16 +50,16 @@ public class Controller {
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
-        //addGameElement(collecter);
-       // addGameElement(collecter1);
+        addGameElement(collecter);
+        addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+       // addGameElement(northSeeder);
+        //addGameElement(southSeeder);
 
 
         setupGameLoop();
