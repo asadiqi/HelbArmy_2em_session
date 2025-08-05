@@ -54,8 +54,8 @@ public class Controller {
         //addGameElement(collecter1);
 
 
-        Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
-        Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
+        Seeder northSeeder = new Seeder(new GameElement(1,1),northCity); // cible arbre
+        Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
         addGameElement(northSeeder);
@@ -161,6 +161,7 @@ public class Controller {
             }
         }
     }
+
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Seeder seeder) {
@@ -329,7 +330,7 @@ public class Controller {
                 Collecter collecter = new Collecter(pos, city, isLumberjackOrNorthSeeder);
                 addGameElement(collecter);
             } else if ("seeder".equalsIgnoreCase(unitType)) {
-                Seeder seeder = new Seeder(pos, isNorth);
+                Seeder seeder = new Seeder(pos,city);
                 seeder.setTargetRessourceType(targetResourceType);
                 addGameElement(seeder);
             }

@@ -1,5 +1,6 @@
 package com.example.demo.units;
 
+import com.example.demo.City;
 import com.example.demo.Controller;
 import com.example.demo.GameElement;
 import com.example.demo.ressource.Resource;
@@ -14,20 +15,20 @@ public class Seeder extends Unit {
 
     public static String northSeederPath = "img/white/northSeeder.png";
     public static String southSeederPath = "img/black/southSeeder.png";
-    public boolean isNorthSeeder;
+    private City city;
     private String targetRessourceType;
     private Tree plantedTree = null;
     private Stone plantedStone = null;
 
 
-    public Seeder(GameElement position, boolean isNorthSeeder) {
+    public Seeder(GameElement position,City city) {
         super(position);
-        this.isNorthSeeder = isNorthSeeder;
+        this.city = city;
     }
 
     @Override
     public String getImagePath() {
-        return isNorthSeeder ? northSeederPath : southSeederPath;
+        return city.isNorth ? northSeederPath : southSeederPath;
     }
 
     public String getTargetRessourceType() {
@@ -103,14 +104,14 @@ public class Seeder extends Unit {
             if (!freePositions.isEmpty()) {
                 GameElement randomFree = freePositions.get(random.nextInt(freePositions.size()));
                 setTarget(randomFree);
-                System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+                System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                         " n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
                         randomFree.getX() + ", " + randomFree.getY() + ")");
             }
         } else {
             Tree selectedTree = trees.get(random.nextInt(trees.size()));
             setTarget(selectedTree);
-            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+            System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                     " a choisi un arbre en position : (" +
                     selectedTree.getX() + ", " + selectedTree.getY() + ")");
         }
@@ -140,11 +141,11 @@ public class Seeder extends Unit {
 
         if (bestSpot != null) {
             setTarget(bestSpot);
-            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+            System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                     " a choisi une position éloignée pour une pierre : (" +
                     bestSpot.getX() + ", " + bestSpot.getY() + ")");
         } else {
-            System.out.println("Seeder " + (isNorthSeeder ? "nord" : "sud") +
+            System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                     " n’a trouvé aucune position 2x2 libre pour planter une pierre.");
         }
     }

@@ -57,3 +57,11 @@ Supprime les éléments épuisés des listes et de la liste globale
 Affiche un message
 
 ---------------------------------------------------------------------------------------------
+
+
+
+Partie concernée	Duplication ?	Peut être factorisée ?
+handleSeeder()	✅ Oui	✅ Oui
+growPlantedTrees() / Stones()	✅ Oui	✅ Oui
+removeDepletedResources()	✅ Oui	✅ Oui
+generateCollecter() / Seeder()	✅ Oui	✅ Oui
