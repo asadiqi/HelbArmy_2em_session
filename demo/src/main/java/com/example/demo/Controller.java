@@ -35,7 +35,7 @@ public class Controller {
     private double stoneRatio=0.03;
     private City northCity;
     private City southCity;
-    private static final int GAMELOOP_INERVAL_MS=1000;
+    private static final int GAMELOOP_INERVAL_MS=500;
     private static final int UNIT_GENRATION_MS=1000;
     private int elapsedTimeMs = 0;
 
@@ -50,16 +50,16 @@ public class Controller {
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
-        //addGameElement(collecter);
-        //addGameElement(collecter1);
+        addGameElement(collecter);
+        addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+       // addGameElement(northSeeder);
+        // addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -161,71 +161,90 @@ public class Controller {
             }
         }
     }
-
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Seeder seeder) {
-                if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedTree() != null) {
-                    if (seeder.getPlantedTree().isMature()) {
-                        System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
-                        seeder.setPlantedTree(null);
-                        seeder.setTarget(null);
-                    } else return;
-                }
-
-                if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType()) && seeder.getPlantedStone() != null) {
-                    if (seeder.getPlantedStone().isMature()) {
-                        System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
-                        seeder.setPlantedStone(null);
-                        seeder.setTarget(null);
-                    } else return;
-                }
-
-                // Choisir une cible si pas encore définie
-                if (!seeder.hasValidTarget()) {
-                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
-                    } else if ("stone".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
-                    }
-                }
-
-                // Avancer
-                seeder.moveTowardsTarget(gridCols, gridRows, allElements);
-
-                // Vérifie si atteint la zone cible
-                boolean reached = "tree".equalsIgnoreCase(seeder.getTargetRessourceType())
-                        ? seeder.hasReachedTarget()
-                        : seeder.isAdjacentToTargetZone();
-
-                if (reached) {
-                    if ("tree".equalsIgnoreCase(seeder.getTargetRessourceType())) {
-                        Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
-                        seeder.setPlantedTree(planted);
-                        seeder.setTarget(null);
-                        seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
-                    } else {
-                        Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
-                        seeder.setPlantedStone(planted);
-                        seeder.setTarget(null);
-                        seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
-                    }
-                }
+                handleSeeder(seeder);
             } else if (element instanceof Collecter collecter) {
-                if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
-                    collecter.findNearestResource(trees, stones);
-                }
-
-                collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-                collecter.collectRessource(trees, stones, northCity, southCity);
-
-
-            removeDepletedResources("tree");
-            removeDepletedResources("stone");
-
+                handleCollecter(collecter);
             }
         }
     }
+
+    private void handleCollecter(Collecter collecter) {
+        if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
+            collecter.findNearestResource(trees, stones);
+        }
+
+        collecter.moveTowardsTarget(gridCols, gridRows, allElements);
+        collecter.collectRessource(trees, stones, northCity, southCity);
+
+        removeDepletedResources("tree");
+        removeDepletedResources("stone");
+    }
+
+
+    private void handleSeeder(Seeder seeder) {
+        String type = seeder.getTargetRessourceType();
+
+        // Si une ressource est plantée et pas encore mature, on attend
+        if (type.equalsIgnoreCase("tree") && seeder.getPlantedTree() != null && !seeder.getPlantedTree().isMature()) {
+            return;
+        }
+
+        if (type.equalsIgnoreCase("stone") && seeder.getPlantedStone() != null && !seeder.getPlantedStone().isMature()) {
+            return;
+        }
+
+        // Si la ressource plantée est mature, on efface
+        if (type.equalsIgnoreCase("tree") && seeder.getPlantedTree() != null && seeder.getPlantedTree().isMature()) {
+            System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
+            seeder.setPlantedTree(null);
+            seeder.setTarget(null);
+        }
+
+        if (type.equalsIgnoreCase("stone") && seeder.getPlantedStone() != null && seeder.getPlantedStone().isMature()) {
+            System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
+            seeder.setPlantedStone(null);
+            seeder.setTarget(null);
+        }
+
+        // Choix de cible si pas encore défini
+        if (!seeder.hasValidTarget()) {
+            if (type.equalsIgnoreCase("tree")) {
+                seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
+            } else if (type.equalsIgnoreCase("stone")) {
+                seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
+            }
+        }
+
+        // Avancer vers la cible
+        seeder.moveTowardsTarget(gridCols, gridRows, allElements);
+
+        // Vérifie si la cible est atteinte
+        boolean reached = type.equalsIgnoreCase("tree")
+                ? seeder.hasReachedTarget()
+                : seeder.isAdjacentToTargetZone();
+
+        if (reached) {
+            if (type.equalsIgnoreCase("tree")) {
+                Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
+                seeder.setPlantedTree(planted);
+            } else if (type.equalsIgnoreCase("stone")) {
+                Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
+                seeder.setPlantedStone(planted);
+            }
+
+            seeder.setTarget(null);
+
+            if (type.equalsIgnoreCase("tree")) {
+                seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
+            } else if (type.equalsIgnoreCase("stone")) {
+                seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
+            }
+        }
+    }
+
 
     private void removeDepletedResources(String resourceType) {
         if ("tree".equalsIgnoreCase(resourceType)) {
