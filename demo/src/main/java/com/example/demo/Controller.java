@@ -50,16 +50,16 @@ public class Controller {
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
-        addGameElement(collecter);
-        addGameElement(collecter1);
+        //addGameElement(collecter);
+        //addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+        //addGameElement(northSeeder);
+       // addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -287,12 +287,12 @@ public class Controller {
     public void generateCollecter() {
         Random random = new Random();
         boolean isLumberjack = random.nextBoolean(); // soit c'est un bouchron soit c'est un piocheur
-        createCollecterForCity(northCity, true, isLumberjack);
+        createUnitForCity(northCity, true, "collecter", true, null);
         // System.out.println("north city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
 
 
         isLumberjack = random.nextBoolean();
-        createCollecterForCity(southCity, false, isLumberjack);
+        createUnitForCity(southCity, false, "collecter", false, null);
         //System.out.println("south city added a collecter "+ (isLumberjack ? "bouchron": "piocheur"));
     }
 
@@ -301,35 +301,28 @@ public class Controller {
 
         // Seeder pour la ville nord
         String northTarget = random.nextBoolean() ? "tree" : "stone";
-        createSeederForCity(northCity, true, northTarget);
+        createUnitForCity(northCity, true, "seeder", true, "tree");
 
         // Seeder pour la ville sud
         String southTarget = random.nextBoolean() ? "tree" : "stone";
-        createSeederForCity(southCity, false, southTarget);
+        createUnitForCity(southCity, false, "seeder", false, "stone");
     }
 
 
-    private void createCollecterForCity(City city, boolean isNorthCollecter, boolean isLumberjackCollecter) {
+    private void createUnitForCity(City city, boolean isNorth, String unitType, boolean isLumberjackOrNorthSeeder, String targetResourceType) {
         GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
         if (pos != null) {
-            Collecter collecter = new Collecter(pos, city, isLumberjackCollecter);
-            addGameElement(collecter);
-            //  System.out.println((city.isNorth ? "North" : "South") + " collecter créé en: " + pos.getX() + " " + pos.getY());
-
+            if ("collecter".equalsIgnoreCase(unitType)) {
+                Collecter collecter = new Collecter(pos, city, isLumberjackOrNorthSeeder);
+                addGameElement(collecter);
+            } else if ("seeder".equalsIgnoreCase(unitType)) {
+                Seeder seeder = new Seeder(pos, isNorth);
+                seeder.setTargetRessourceType(targetResourceType);
+                addGameElement(seeder);
+            }
         } else {
-            System.out.println("Aucune position libre trouvée pour collecter de la ville " + (city.isNorth ? "nord" : "sud"));
+            System.out.println("Aucune position libre trouvée pour " + unitType + " de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
 
-    private void createSeederForCity(City city, boolean isNorthSeeder, String targetResourceType) {
-        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
-        if (pos != null) {
-            Seeder seeder = new Seeder(pos, isNorthSeeder);
-            seeder.setTargetRessourceType(targetResourceType);
-            addGameElement(seeder);
-            // System.out.println((city.isNorth ? "Nord" : "Sud") + " Seeder créé pour planter: " + targetResourceType);
-        } else {
-            System.out.println("Aucune position libre trouvée pour Seeder de la ville " + (city.isNorth ? "nord" : "sud"));
-        }
-    }
 }
