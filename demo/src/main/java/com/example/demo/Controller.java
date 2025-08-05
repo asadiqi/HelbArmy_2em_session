@@ -50,16 +50,16 @@ public class Controller {
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
-        addGameElement(collecter);
-        addGameElement(collecter1);
+        //addGameElement(collecter);
+        //addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1,1),true); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),false); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-       // addGameElement(northSeeder);
-        // addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -187,63 +187,46 @@ public class Controller {
     private void handleSeeder(Seeder seeder) {
         String type = seeder.getTargetRessourceType();
 
-        // Si une ressource est plantée et pas encore mature, on attend
-        if (type.equalsIgnoreCase("tree") && seeder.getPlantedTree() != null && !seeder.getPlantedTree().isMature()) {
-            return;
-        }
+        boolean isTree = type.equalsIgnoreCase("tree");
+        boolean isStone = type.equalsIgnoreCase("stone");
 
-        if (type.equalsIgnoreCase("stone") && seeder.getPlantedStone() != null && !seeder.getPlantedStone().isMature()) {
-            return;
-        }
+        if (isTree && seeder.getPlantedTree() != null && !seeder.getPlantedTree().isMature()) return;
+        if (isStone && seeder.getPlantedStone() != null && !seeder.getPlantedStone().isMature()) return;
 
-        // Si la ressource plantée est mature, on efface
-        if (type.equalsIgnoreCase("tree") && seeder.getPlantedTree() != null && seeder.getPlantedTree().isMature()) {
+        if (isTree && seeder.getPlantedTree() != null && seeder.getPlantedTree().isMature()) {
             System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
             seeder.setPlantedTree(null);
             seeder.setTarget(null);
         }
 
-        if (type.equalsIgnoreCase("stone") && seeder.getPlantedStone() != null && seeder.getPlantedStone().isMature()) {
+        if (isStone && seeder.getPlantedStone() != null && seeder.getPlantedStone().isMature()) {
             System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
             seeder.setPlantedStone(null);
             seeder.setTarget(null);
         }
 
-        // Choix de cible si pas encore défini
         if (!seeder.hasValidTarget()) {
-            if (type.equalsIgnoreCase("tree")) {
-                seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
-            } else if (type.equalsIgnoreCase("stone")) {
-                seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
-            }
+            seeder.chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
         }
 
-        // Avancer vers la cible
         seeder.moveTowardsTarget(gridCols, gridRows, allElements);
 
-        // Vérifie si la cible est atteinte
-        boolean reached = type.equalsIgnoreCase("tree")
-                ? seeder.hasReachedTarget()
-                : seeder.isAdjacentToTargetZone();
+        boolean reached = isTree ? seeder.hasReachedTarget() : seeder.isAdjacentToTargetZone();
 
         if (reached) {
-            if (type.equalsIgnoreCase("tree")) {
+            if (isTree) {
                 Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
                 seeder.setPlantedTree(planted);
-            } else if (type.equalsIgnoreCase("stone")) {
+            } else {
                 Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
                 seeder.setPlantedStone(planted);
             }
 
             seeder.setTarget(null);
-
-            if (type.equalsIgnoreCase("tree")) {
-                seeder.chooseTarget("tree", trees, gridCols, gridRows, allElements);
-            } else if (type.equalsIgnoreCase("stone")) {
-                seeder.chooseTarget("stone", stones, gridCols, gridRows, allElements);
-            }
+            seeder.chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
         }
     }
+
 
 
     private void removeDepletedResources(String resourceType) {
