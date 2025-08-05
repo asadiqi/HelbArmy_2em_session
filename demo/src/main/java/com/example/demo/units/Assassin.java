@@ -9,7 +9,7 @@ public class Assassin extends Unit {
     public static String northAssassinPath = "img/white/northAssassin.png";
     public static String southAssassinPath = "img/black/southAssassin.png";
 
-    private City city; // dans Collecter
+    public City city; // dans Collecter
 
     public Assassin(GameElement position, City city) {
         super(position);
@@ -22,6 +22,12 @@ public class Assassin extends Unit {
     }
 
 
+    public boolean canAttack(Unit other) {
+        if (other instanceof Assassin enemy && enemy.city.isNorth != this.city.isNorth) {
+            return this.hasValidTarget() && this.hasReachedTarget();
+        }
+        return false;
+    }
 
 }
 

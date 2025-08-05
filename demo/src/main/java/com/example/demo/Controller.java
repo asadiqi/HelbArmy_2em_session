@@ -172,9 +172,12 @@ public class Controller {
                 handleSeeder(seeder);
             } else if (element instanceof Collecter collecter) {
                 handleCollecter(collecter);
+            } else if (element instanceof  Assassin assassin) {
+                handleAssassin(assassin);
             }
         }
     }
+
 
     private void handleCollecter(Collecter collecter) {
         if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
@@ -230,6 +233,35 @@ public class Controller {
             seeder.setTarget(null);
             seeder.chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
         }
+    }
+
+    private void handleAssassin(Assassin assassin) {
+        if (!assassin.hasValidTarget() || assassin.hasReachedTarget()) {
+            Assassin closesEnemy = findClosesEnemyAssassin(assassin);
+            if (closesEnemy != null) {
+                assassin.setTarget(new GameElement(closesEnemy.getX(), closesEnemy.getY()));
+            } else {
+                assassin.setTarget(null);
+            }
+        }
+
+        assassin.moveTowardsTarget(gridCols, gridRows, allElements);
+    }
+
+    private Assassin findClosesEnemyAssassin (Assassin assassin) {
+        double minDistance = Double.MAX_VALUE;
+        Assassin closest = null;
+
+        for (GameElement element : allElements) {
+            if (element instanceof Assassin other && other != assassin && other.city.isNorth != assassin.city.isNorth ) {
+                double distance = assassin.getDistanceWith(other);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closest =other;
+                }
+            }
+        }
+        return closest;
     }
 
 
