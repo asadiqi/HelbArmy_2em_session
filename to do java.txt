@@ -88,3 +88,61 @@ Problème : Même boucle pour supprimer les ressources épuisées.
 
 Solution possible : Refactor avec une méthode paramétrée sur le type de ressource.
 
+
+
+_______________________________
+
+controller génération de unités dans controller 
+
+ public void generateCollecter() {
+        initCollecter(northCity, random.nextBoolean());
+        initCollecter(southCity, random.nextBoolean());
+    }
+
+    public void generateSeeder() {
+        initSeeder(northCity, random.nextBoolean() ? "tree" : "stone");
+        initSeeder(southCity, random.nextBoolean() ? "tree" : "stone");
+    }
+
+    public void generateAssassin() {
+        initAssassin(northCity);
+        initAssassin(southCity);
+    }
+
+
+    private GameElement locateFreePosition(City city, String unitName) {
+        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
+        if (pos == null) {
+            System.out.println("Aucune position libre pour " + unitName + " de la ville " + (city.isNorth ? "nord" : "sud"));
+        }
+        return pos;
+    }
+
+    private void initCollecter(City city, boolean isLumberjack) {
+        GameElement pos = locateFreePosition(city, "collecter");
+        if (pos != null) {
+            Collecter collecter = new Collecter(pos, city, isLumberjack);
+            addGameElement(collecter);
+        }
+    }
+
+    private void initSeeder(City city, String targetResourceType) {
+        GameElement pos = locateFreePosition(city, "seeder");
+        if (pos != null) {
+            Seeder seeder = new Seeder(pos, city);
+            seeder.setTargetRessourceType(targetResourceType);
+            addGameElement(seeder);
+        }
+    }
+
+    private void initAssassin(City city) {
+        GameElement pos = locateFreePosition(city, "assassin");
+        if (pos != null) {
+            Assassin assassin = new Assassin(pos, city);
+            addGameElement(assassin);
+        }
+    }
+________________________________________
+
+
+

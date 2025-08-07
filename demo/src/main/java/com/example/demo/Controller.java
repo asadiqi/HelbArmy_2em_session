@@ -25,7 +25,7 @@ public class Controller {
     private View view;
     private int gridRows = 15;
     private int gridCols = 15;
-    private int maxDistance=gridRows-1;
+    private int maxDistance = gridRows - 1;
     private List<Tree> trees;
     private List<Stone> stones;
 
@@ -33,43 +33,41 @@ public class Controller {
     private final int LAST_INDEX_OFFSET = 1;
     private final Random random = new Random();
     private List<GameElement> allElements = new ArrayList<>();
-    private double treeRatio=0.05;
-    private double stoneRatio=0.03;
+    private double treeRatio = 0.05;
+    private double stoneRatio = 0.03;
     private City northCity;
     private City southCity;
-    private static final int GAMELOOP_INERVAL_MS=500;
-    private static final int UNIT_GENRATION_MS=1000;
+    private static final int GAMELOOP_INERVAL_MS = 500;
+    private static final int UNIT_GENRATION_MS = 1000;
     private int elapsedTimeMs = 0;
 
 
     public Controller(View view) {
         this.view = view;
         this.trees = new ArrayList<Tree>();
-        this.stones=new ArrayList<Stone>();
+        this.stones = new ArrayList<Stone>();
 
         setupCity();
         generateRandomTrees();
         generateRandomStones();
         view.initView(this);
-        Collecter collecter = new Collecter(new GameElement(1,1),northCity, true);
-        Collecter collecter1 = new Collecter(new GameElement(gridRows-1,gridCols-1),southCity, false);
+        Collecter collecter = new Collecter(new GameElement(1, 1), northCity, true);
+        Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
         //addGameElement(collecter);
         //addGameElement(collecter1);
 
 
-        Seeder northSeeder = new Seeder(new GameElement(1,1),northCity); // cible arbre
-        Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),southCity); // cible stone
+        Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity); // cible arbre
+        Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
         //addGameElement(northSeeder);
         //addGameElement(southSeeder);
 
-        Assassin northAssassin = new Assassin(new GameElement(1,1),northCity);
-        Assassin southAssassin = new Assassin(new GameElement(gridRows-2,gridCols-2),southCity);
-        addGameElement(northAssassin);
-        addGameElement(southAssassin);
-
-
+        Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
+        Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
+        //addGameElement(northAssassin);
+        //addGameElement(southAssassin);
 
 
         setupGameLoop();
@@ -116,23 +114,22 @@ public class Controller {
             growPlantedStones();
             growPlantedTrees();
             view.drawAllElements();
-            elapsedTimeMs+=GAMELOOP_INERVAL_MS;
+            elapsedTimeMs += GAMELOOP_INERVAL_MS;
 
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
+                int random = (int) (Math.random() * 2);
 
-              int random = (int) (Math.random()*2);
+                if (random == 0) {
+                     //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                    //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
 
-              if (random == 0) {
-                  //generateCollecter();
-                  //generateSeeder();
-                  //generateAssassin();
-
-              } else {
-                  //genrateSeeder();
-                 // generateAssassin();
-              }
-
-                elapsedTimeMs=0;
+                    //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
+                    //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
+                } else {
+                     //northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                    //southCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                }
+                elapsedTimeMs = 0;
             }
 
 
@@ -143,17 +140,17 @@ public class Controller {
     }
 
     private void growPlantedTrees() {
-        for (Tree tree: trees) {
+        for (Tree tree : trees) {
             if (tree.isGrowing() && !tree.isMature()) {
                 int before = tree.getCurrentWoodAmount();
                 tree.grow(20);
                 int after = tree.getCurrentWoodAmount();
 
-                System.out.println("Arbre en ( "+ tree.getX()+ ", "+tree.getY()+ " bois total : "+ (after - before) + " bois total : "+after);
+                System.out.println("Arbre en ( " + tree.getX() + ", " + tree.getY() + " bois total : " + (after - before) + " bois total : " + after);
 
                 if (tree.isMature()) {
                     tree.setGrowing(false);
-                    System.out.println("Arbre à ( "+ tree.getX()+", "+tree.getY()+ " est maintenant mature ");
+                    System.out.println("Arbre à ( " + tree.getX() + ", " + tree.getY() + " est maintenant mature ");
                 }
             }
         }
@@ -181,7 +178,7 @@ public class Controller {
                 handleSeeder(seeder);
             } else if (element instanceof Collecter collecter) {
                 handleCollecter(collecter);
-            } else if (element instanceof  Assassin assassin) {
+            } else if (element instanceof Assassin assassin) {
                 handleAssassin(assassin);
             }
         }
@@ -257,22 +254,21 @@ public class Controller {
         assassin.moveTowardsTarget(gridCols, gridRows, allElements);
     }
 
-    private Assassin findClosesEnemyAssassin (Assassin assassin) {
+    private Assassin findClosesEnemyAssassin(Assassin assassin) {
         double minDistance = Double.MAX_VALUE;
         Assassin closest = null;
 
         for (GameElement element : allElements) {
-            if (element instanceof Assassin other && other != assassin && other.city.isNorth != assassin.city.isNorth ) {
+            if (element instanceof Assassin other && other != assassin && other.city.isNorth != assassin.city.isNorth) {
                 double distance = assassin.getDistanceWith(other);
                 if (distance < minDistance) {
                     minDistance = distance;
-                    closest =other;
+                    closest = other;
                 }
             }
         }
         return closest;
     }
-
 
 
     private void removeDepletedResources(String resourceType) {
@@ -318,7 +314,7 @@ public class Controller {
                         GameElement.isOccupied(x, y + 1, allElements) &&
                         GameElement.isOccupied(x + 1, y + 1, allElements)) {
                     Stone stone = new Stone(new GameElement(x, y));
-                    ((List<Stone>)resources).add(stone);
+                    ((List<Stone>) resources).add(stone);
                     addGameElement(stone);
                     allElements.addAll(stone.getOccupiedCells());
                 }
@@ -326,7 +322,7 @@ public class Controller {
                 // Pour arbre 1x1
                 if (GameElement.isOccupied(x, y, allElements)) {
                     Tree tree = new Tree(new GameElement(x, y));
-                    ((List<Tree>)resources).add(tree);
+                    ((List<Tree>) resources).add(tree);
                     addGameElement(tree);
                 }
             }
@@ -341,57 +337,8 @@ public class Controller {
         generateResources(stones, stoneRatio, true);
     }
 
-
-
-    public void generateCollecter() {
-        initCollecter(northCity, random.nextBoolean());
-        initCollecter(southCity, random.nextBoolean());
-    }
-
-    public void generateSeeder() {
-        initSeeder(northCity, random.nextBoolean() ? "tree" : "stone");
-        initSeeder(southCity, random.nextBoolean() ? "tree" : "stone");
-    }
-
-    public void generateAssassin() {
-        initAssassin(northCity);
-        initAssassin(southCity);
-    }
-
-
-    private GameElement locateFreePosition(City city, String unitName) {
-        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
-        if (pos == null) {
-            System.out.println("Aucune position libre pour " + unitName + " de la ville " + (city.isNorth ? "nord" : "sud"));
-        }
-        return pos;
-    }
-
-    private void initCollecter(City city, boolean isLumberjack) {
-        GameElement pos = locateFreePosition(city, "collecter");
-        if (pos != null) {
-            Collecter collecter = new Collecter(pos, city, isLumberjack);
-            addGameElement(collecter);
-        }
-    }
-
-    private void initSeeder(City city, String targetResourceType) {
-        GameElement pos = locateFreePosition(city, "seeder");
-        if (pos != null) {
-            Seeder seeder = new Seeder(pos, city);
-            seeder.setTargetRessourceType(targetResourceType);
-            addGameElement(seeder);
-        }
-    }
-
-    private void initAssassin(City city) {
-        GameElement pos = locateFreePosition(city, "assassin");
-        if (pos != null) {
-            Assassin assassin = new Assassin(pos, city);
-            addGameElement(assassin);
-        }
-    }
-
-
-
 }
+/*
+
+*/
+
