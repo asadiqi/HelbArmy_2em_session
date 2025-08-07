@@ -31,6 +31,7 @@ public class Controller {
 
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
+    private final Random random = new Random();
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio=0.05;
     private double stoneRatio=0.03;
@@ -39,6 +40,7 @@ public class Controller {
     private static final int GAMELOOP_INERVAL_MS=500;
     private static final int UNIT_GENRATION_MS=1000;
     private int elapsedTimeMs = 0;
+
 
     public Controller(View view) {
         this.view = view;
@@ -59,8 +61,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+        //addGameElement(northSeeder);
+        //addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -115,12 +117,12 @@ public class Controller {
 
               if (random == 0) {
                   //generateCollecter();
-                 // genrateSeeder();
-                  generateAssassin();
+                  generateSeeder();
+                  //generateAssassin();
 
               } else {
                   //genrateSeeder();
-                  generateAssassin();
+                 // generateAssassin();
               }
 
                 elapsedTimeMs=0;
@@ -335,29 +337,20 @@ public class Controller {
 
 
     public void generateCollecter() {
-        Random random = new Random();
-
-        boolean isLumberjackNorth = random.nextBoolean();
-        spawnCollecter(northCity, isLumberjackNorth);
-
-        boolean isLumberjackSouth = random.nextBoolean();
-        spawnCollecter(southCity, isLumberjackSouth);
+        spawnCollecter(northCity, random.nextBoolean());
+        spawnCollecter(southCity, random.nextBoolean());
     }
 
     public void generateSeeder() {
-        Random random = new Random();
-
-        String northTarget = random.nextBoolean() ? "tree" : "stone";
-        spawnSeeder(northCity, northTarget);
-
-        String southTarget = random.nextBoolean() ? "tree" : "stone";
-        spawnSeeder(southCity, southTarget);
+        spawnSeeder(northCity, random.nextBoolean() ? "tree" : "stone");
+        spawnSeeder(southCity, random.nextBoolean() ? "tree" : "stone");
     }
 
     public void generateAssassin() {
         spawnAssassin(northCity);
         spawnAssassin(southCity);
     }
+
 
 
     private void spawnCollecter(City city, boolean isLumberjack) {
