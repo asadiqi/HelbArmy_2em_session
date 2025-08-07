@@ -2,6 +2,8 @@ package com.example.demo.ressource;
 
 import com.example.demo.GameElement;
 
+import java.util.List;
+
 public abstract class Resource extends GameElement {
 
     protected int amount;
@@ -71,9 +73,17 @@ public abstract class Resource extends GameElement {
     protected abstract String getResourceName();
 
 
-    public boolean shouldBeRemoved() {
-        return isDepleted();
+
+    public boolean removeIfDepleted(List<GameElement> allElements) {
+        if (isDepleted()) {
+            allElements.remove(this);
+            System.out.println(getResourceName() + " retiré: " + getX() + "," + getY());
+            return true;
+        }
+        return false;
     }
+
+
 
 
 

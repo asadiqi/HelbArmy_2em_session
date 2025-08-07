@@ -252,8 +252,8 @@ public class Controller {
 
 
     private void removeDepletedResources() {
-        trees.removeAll(Tree.filterDepleted(trees, allElements));
-        stones.removeAll(Stone.filterDepleted(stones, allElements));
+        trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
+        stones.removeAll(Stone.removeDepletedStones(stones, allElements));
     }
 
 

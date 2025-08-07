@@ -37,17 +37,16 @@ public class Tree extends Resource {
         return "Arbre";
     }
 
-    public static List<Tree> filterDepleted(List<Tree> trees, List<GameElement> allElements) {
+    public static List<Tree> removeDepletedTrees(List<Tree> trees, List<GameElement> allElements) {
         List<Tree> toRemove = new ArrayList<>();
         for (Tree tree : trees) {
-            if (tree.shouldBeRemoved()) {
-                allElements.remove(tree);
-                System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
+            if (tree.removeIfDepleted(allElements)) {
                 toRemove.add(tree);
             }
         }
         return toRemove;
     }
+
 
 
 
