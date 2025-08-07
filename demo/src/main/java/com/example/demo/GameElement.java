@@ -2,6 +2,7 @@ package com.example.demo;
 
 
 import java.util.List;
+import java.util.Random;
 
 public class GameElement {
     protected int x;
@@ -48,5 +49,19 @@ public class GameElement {
             }
         }
         return true;
+    }
+
+    public static GameElement getRandomFreeCell(int gridCols, int gridRows, List<GameElement> allElements) {
+        Random rand = new Random();
+        int maxAttempts = 100;
+
+        for (int i = 0; i < maxAttempts; i++) {
+            int x = rand.nextInt(gridCols);
+            int y = rand.nextInt(gridRows);
+            if (!isOccupied(x, y, allElements)) {
+                return new GameElement(x, y);
+            }
+        }
+        return null;
     }
 }

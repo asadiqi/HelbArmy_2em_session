@@ -12,6 +12,7 @@ public class Assassin extends Unit {
     public static String southAssassinPath = "img/black/southAssassin.png";
 
     public City city; // dans Collecter
+    private boolean waiting = false;
 
     public Assassin(GameElement position, City city) {
         super(position);
@@ -37,6 +38,27 @@ public class Assassin extends Unit {
             }
         }
         return closest;
+    }
+
+    public void update (int gridCols, int gridRows, List<GameElement> allElements) {
+        Assassin closesEnemy = findClosestEnemyAssassin(allElements);
+
+        if (closesEnemy != null){
+            waiting = false ;
+            setTarget(new GameElement(closesEnemy.getX(), closesEnemy.getY()));
+        } else {
+            if (waiting) {
+                if (!hasReachedTarget()) {
+                    moveTowardsTarget(gridCols, gridRows, allElements);
+                }
+                return;
+            } else {
+                GameElement randomFreeCell = GameElement.getRandomFreeCell(gridCols,gridRows,allElements);
+                setTarget(randomFreeCell);
+                waiting = true;
+            }
+        }
+        moveTowardsTarget(gridCols, gridRows, allElements);
     }
 }
 

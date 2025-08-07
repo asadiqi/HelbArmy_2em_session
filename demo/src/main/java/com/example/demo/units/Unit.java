@@ -93,7 +93,7 @@ public class Unit extends GameElement {
     }
 
 
-    public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
+    public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> free) {
         for (int dist = 1; dist <= maxDistance; dist++) {
             for (int dx = -dist; dx <= dist; dx++) {
                 int dy = dist - Math.abs(dx);
@@ -101,7 +101,7 @@ public class Unit extends GameElement {
                 int x1 = startPos.getX() + dx;
                 int y1 = startPos.getY() + dy;
 
-                if (isValidAndFree(x1, y1, maxX, maxY, occupied)) {
+                if (isValidAndFree(x1, y1, maxX, maxY, free)) {
                     return new GameElement(x1, y1);
                 }
 
@@ -109,7 +109,7 @@ public class Unit extends GameElement {
                     int x2 = startPos.getX() + dx;
                     int y2 = startPos.getY() - dy;
 
-                    if (isValidAndFree(x2, y2, maxX, maxY, occupied)) {
+                    if (isValidAndFree(x2, y2, maxX, maxY, free)) {
                         return new GameElement(x2, y2);
                     }
                 }
@@ -119,10 +119,10 @@ public class Unit extends GameElement {
     }
 
 
-    private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
+    private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> free) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;
 
-        return GameElement.isOccupied(x, y, occupied);
+        return GameElement.isOccupied(x, y, free);
     }
 
 
