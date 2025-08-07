@@ -37,7 +37,7 @@ public class Controller {
     private double stoneRatio = 0.03;
     private City northCity;
     private City southCity;
-    private static final int GAMELOOP_INERVAL_MS = 1000;
+    private static final int GAMELOOP_INERVAL_MS = 500;
     private static final int UNIT_GENRATION_MS = 1000;
     private int elapsedTimeMs = 0;
 
@@ -53,16 +53,16 @@ public class Controller {
         view.initView(this);
         Collecter collecter = new Collecter(new GameElement(1, 1), northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
-        //addGameElement(collecter);
-        //addGameElement(collecter1);
+        addGameElement(collecter);
+        addGameElement(collecter1);
 
 
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(northSeeder);
-        addGameElement(southSeeder);
+        //addGameElement(northSeeder);
+        //addGameElement(southSeeder);
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
@@ -173,8 +173,8 @@ public class Controller {
         collecter.moveTowardsTarget(gridCols, gridRows, allElements);
         collecter.collectRessource(trees, stones, northCity, southCity);
 
-        removeDepletedResources("tree");
-        removeDepletedResources("stone");
+        removeDepletedResources();
+
     }
 
 
@@ -251,30 +251,12 @@ public class Controller {
     }
 
 
-    private void removeDepletedResources(String resourceType) {
-        if ("tree".equalsIgnoreCase(resourceType)) {
-            List<Tree> toRemove = new ArrayList<>();
-            for (Tree tree : trees) {
-                if (tree.isDepleted()) {
-                    allElements.remove(tree);
-                    System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
-                    toRemove.add(tree);
-                }
-            }
-            trees.removeAll(toRemove);
-        } else if ("stone".equalsIgnoreCase(resourceType)) {
-            List<Stone> toRemove = new ArrayList<>();
-            for (Stone stone : stones) {
-                if (stone.isDepleted()) {
-                    allElements.remove(stone);
-                    allElements.removeAll(stone.getOccupiedCells());
-                    System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
-                    toRemove.add(stone);
-                }
-            }
-            stones.removeAll(toRemove);
-        }
+    private void removeDepletedResources() {
+        trees.removeAll(Tree.filterDepleted(trees, allElements));
+        stones.removeAll(Stone.filterDepleted(stones, allElements));
     }
+
+
 
     private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
         int numberToGenerate = (int) (gridRows * gridCols * ratio);

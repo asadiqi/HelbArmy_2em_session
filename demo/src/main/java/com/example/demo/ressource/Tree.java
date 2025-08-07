@@ -2,6 +2,9 @@ package com.example.demo.ressource;
 
 import com.example.demo.GameElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tree extends Resource {
 
     public static String treePath = "img/tree.png";
@@ -33,6 +36,21 @@ public class Tree extends Resource {
     protected String getResourceName() {
         return "Arbre";
     }
+
+    public static List<Tree> filterDepleted(List<Tree> trees, List<GameElement> allElements) {
+        List<Tree> toRemove = new ArrayList<>();
+        for (Tree tree : trees) {
+            if (tree.shouldBeRemoved()) {
+                allElements.remove(tree);
+                System.out.println("Arbre retiré: " + tree.getX() + "," + tree.getY());
+                toRemove.add(tree);
+            }
+        }
+        return toRemove;
+    }
+
+
+
 
 
 }

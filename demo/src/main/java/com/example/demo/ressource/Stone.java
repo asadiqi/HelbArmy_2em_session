@@ -60,4 +60,18 @@ public class Stone extends Resource {
         return "Pierre";
     }
 
+
+    public static List<Stone> filterDepleted(List<Stone> stones, List<GameElement> allElements) {
+        List<Stone> toRemove = new ArrayList<>();
+        for (Stone stone : stones) {
+            if (stone.shouldBeRemoved()) {
+                allElements.remove(stone);
+                allElements.removeAll(stone.getOccupiedCells());
+                System.out.println("Pierre retirée: " + stone.getX() + "," + stone.getY());
+                toRemove.add(stone);
+            }
+        }
+        return toRemove;
+    }
+
 }

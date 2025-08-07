@@ -71,5 +71,11 @@ public abstract class Resource extends GameElement {
     protected abstract String getResourceName();
 
 
+    public boolean shouldBeRemoved() {
+        return isDepleted();
+    }
+
+
+
 
 }
