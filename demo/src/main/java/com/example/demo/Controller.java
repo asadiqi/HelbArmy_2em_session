@@ -11,7 +11,6 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 public class Controller {
@@ -50,16 +49,15 @@ public class Controller {
 
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
         northSeeder.setTargetRessourceType("stone");
-        //addGameElement(northSeeder);
-
+        addGameElement(northSeeder);
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
         southSeeder.setTargetRessourceType("tree");
-        //addGameElement(southSeeder);
+        addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
+        addGameElement(northAssassin);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        //addGameElement(northAssassin);
         addGameElement(southAssassin);
 
         setupGameLoop();
@@ -145,7 +143,7 @@ public class Controller {
             } else if (element instanceof Collecter collecter) {
                 handleCollecter(collecter);
             } else if (element instanceof Assassin assassin) {
-                assassin.update(gridCols, gridRows, allElements);
+                assassin.handleAssassin(gridCols, gridRows, allElements);
             }
         }
     }
@@ -205,10 +203,6 @@ public class Controller {
         }
     }
 
-
-
-
-
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
         stones.removeAll(Stone.removeDepletedStones(stones, allElements));
@@ -216,30 +210,26 @@ public class Controller {
 
     private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
         int numberToGenerate = (int) (gridRows * gridCols * ratio);
-        Random rand = new Random();
 
         while (resources.size() < numberToGenerate) {
-            int x = rand.nextInt(gridCols);
-            int y = rand.nextInt(gridRows);
-
             if (isStone) {
                 // Pour pierre 2x2
-                if (x + 1 >= gridCols || y + 1 >= gridRows) {
-                    continue;
-                }
-                if (GameElement.isOccupied(x, y, allElements) &&
-                        GameElement.isOccupied(x + 1, y, allElements) &&
-                        GameElement.isOccupied(x, y + 1, allElements) &&
-                        GameElement.isOccupied(x + 1, y + 1, allElements)) {
-                    Stone stone = new Stone(new GameElement(x, y));
+                GameElement cell = GameElement.getRandomFreeCell(gridCols - 1, gridRows - 1, allElements);
+                if (cell != null &&
+                        !GameElement.isOccupied(cell.getX() + 1, cell.getY(), allElements) &&
+                        !GameElement.isOccupied(cell.getX(), cell.getY() + 1, allElements) &&
+                        !GameElement.isOccupied(cell.getX() + 1, cell.getY() + 1, allElements)) {
+
+                    Stone stone = new Stone(new GameElement(cell.getX(), cell.getY()));
                     ((List<Stone>) resources).add(stone);
                     addGameElement(stone);
                     allElements.addAll(stone.getOccupiedCells());
                 }
             } else {
                 // Pour arbre 1x1
-                if (GameElement.isOccupied(x, y, allElements)) {
-                    Tree tree = new Tree(new GameElement(x, y));
+                GameElement cell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
+                if (cell != null) {
+                    Tree tree = new Tree(new GameElement(cell.getX(), cell.getY()));
                     ((List<Tree>) resources).add(tree);
                     addGameElement(tree);
                 }

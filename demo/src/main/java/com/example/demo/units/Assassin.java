@@ -7,11 +7,10 @@ import java.util.List;
 
 public class Assassin extends Unit {
 
-
     public static String northAssassinPath = "img/white/northAssassin.png";
     public static String southAssassinPath = "img/black/southAssassin.png";
 
-    public City city; // dans Collecter
+    public City city;
     private boolean waiting = false;
 
     public Assassin(GameElement position, City city) {
@@ -24,12 +23,15 @@ public class Assassin extends Unit {
         return city.isNorth ? northAssassinPath : southAssassinPath;
     }
 
-    public Assassin findClosestEnemyAssassin(java.util.List<GameElement> allElements) {
+    public Assassin findClosestEnemyAssassin(List<GameElement> allElements) {
         double minDistance = Double.MAX_VALUE;
         Assassin closest = null;
 
         for (GameElement element : allElements) {
-            if (element instanceof Assassin other && other != this && other.city.isNorth != this.city.isNorth) {
+            if (element instanceof Assassin other &&
+                    other != this &&
+                    other.city.isNorth != this.city.isNorth) {
+
                 double distance = this.getDistanceWith(other);
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -40,12 +42,12 @@ public class Assassin extends Unit {
         return closest;
     }
 
-    public void update (int gridCols, int gridRows, List<GameElement> allElements) {
-        Assassin closesEnemy = findClosestEnemyAssassin(allElements);
+    public void handleAssassin(int gridCols, int gridRows, List<GameElement> allElements) {
+        Assassin closestEnemy = findClosestEnemyAssassin(allElements);
 
-        if (closesEnemy != null){
-            waiting = false ;
-            setTarget(new GameElement(closesEnemy.getX(), closesEnemy.getY()));
+        if (closestEnemy != null) {
+            waiting = false;
+            setTarget(new GameElement(closestEnemy.getX(), closestEnemy.getY()));
         } else {
             if (waiting) {
                 if (!hasReachedTarget()) {
@@ -53,13 +55,13 @@ public class Assassin extends Unit {
                 }
                 return;
             } else {
-                GameElement randomFreeCell = GameElement.getRandomFreeCell(gridCols,gridRows,allElements);
-                setTarget(randomFreeCell);
-                waiting = true;
+                GameElement randomFreeCell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
+                if (randomFreeCell != null) { // évite null si pas de case libre
+                    setTarget(randomFreeCell);
+                    waiting = true;
+                }
             }
         }
         moveTowardsTarget(gridCols, gridRows, allElements);
     }
 }
-
-

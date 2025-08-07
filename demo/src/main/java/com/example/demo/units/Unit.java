@@ -8,12 +8,9 @@ import java.util.List;
 public class Unit extends GameElement {
     protected GameElement target = new GameElement(-1, -1);
 
-
-
     public Unit(GameElement position) {
-        super(position.getX(),position.getY());
+        super(position.getX(), position.getY());
     }
-
 
     public GameElement getTarget() {
         return target;
@@ -37,7 +34,8 @@ public class Unit extends GameElement {
     }
 
     public boolean isCoordinateInBoard(GameElement coord, int maxX, int maxY) {
-        return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < maxX && coord.getY() < maxY;
+        return coord.getX() >= 0 && coord.getY() >= 0
+                && coord.getX() < maxX && coord.getY() < maxY;
     }
 
     public List<GameElement> getAccessibleAdjacentCoordinates(GameElement coord, int maxX, int maxY, List<GameElement> occupied) {
@@ -50,14 +48,14 @@ public class Unit extends GameElement {
             int newY = coord.getY() + dy[i];
             GameElement adjacent = new GameElement(newX, newY);
 
-            if (isCoordinateInBoard(adjacent, maxX, maxY) && GameElement.isOccupied(adjacent.getX(), adjacent.getY(), occupied)) {
+            // case accessible = dans le plateau ET non occupée
+            if (isCoordinateInBoard(adjacent, maxX, maxY) &&
+                    !GameElement.isOccupied(adjacent.getX(), adjacent.getY(), occupied)) {
                 result.add(adjacent);
             }
         }
         return result;
     }
-
-
 
     public GameElement getNextCoordinateForTarget(GameElement current, GameElement target, int maxX, int maxY, List<GameElement> occupied) {
         double minDistance = maxX + maxY;
@@ -92,8 +90,7 @@ public class Unit extends GameElement {
         }
     }
 
-
-    public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> free) {
+    public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
         for (int dist = 1; dist <= maxDistance; dist++) {
             for (int dx = -dist; dx <= dist; dx++) {
                 int dy = dist - Math.abs(dx);
@@ -101,7 +98,7 @@ public class Unit extends GameElement {
                 int x1 = startPos.getX() + dx;
                 int y1 = startPos.getY() + dy;
 
-                if (isValidAndFree(x1, y1, maxX, maxY, free)) {
+                if (isValidAndFree(x1, y1, maxX, maxY, occupied)) {
                     return new GameElement(x1, y1);
                 }
 
@@ -109,22 +106,19 @@ public class Unit extends GameElement {
                     int x2 = startPos.getX() + dx;
                     int y2 = startPos.getY() - dy;
 
-                    if (isValidAndFree(x2, y2, maxX, maxY, free)) {
+                    if (isValidAndFree(x2, y2, maxX, maxY, occupied)) {
                         return new GameElement(x2, y2);
                     }
                 }
             }
         }
-        return null ; // justifier retun new GameElement(-1,-1); // position invalide au lieu de null
+        return null; // position invalide
     }
 
-
-    private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> free) {
+    private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;
 
-        return GameElement.isOccupied(x, y, free);
+        // libre si NON occupé
+        return !GameElement.isOccupied(x, y, occupied);
     }
-
-
 }
-

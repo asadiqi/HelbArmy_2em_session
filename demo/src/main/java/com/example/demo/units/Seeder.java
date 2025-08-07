@@ -19,8 +19,7 @@ public class Seeder extends Unit {
     private Tree plantedTree = null;
     private Stone plantedStone = null;
 
-
-    public Seeder(GameElement position,City city) {
+    public Seeder(GameElement position, City city) {
         super(position);
         this.city = city;
     }
@@ -54,8 +53,6 @@ public class Seeder extends Unit {
         this.plantedTree = tree;
     }
 
-
-
     public void chooseTarget(String resourceType, List<? extends Resource> resources,
                              int maxX, int maxY, List<GameElement> occupied) {
 
@@ -68,44 +65,18 @@ public class Seeder extends Unit {
         }
     }
 
-    private List<GameElement> findPositions(String resourceType, int maxX, int maxY, List<GameElement> occupied) {
-        List<GameElement> freePositions = new ArrayList<>();
-        if ("tree".equalsIgnoreCase(resourceType)) {
-            // Recherche des cases libres
-            for (int x = 0; x < maxX; x++) {
-                for (int y = 0; y < maxY; y++) {
-                    if (GameElement.isOccupied(x, y, occupied)) {
-                        freePositions.add(new GameElement(x, y));
-                    }
-                }
-            }
-        } else if ("stone".equalsIgnoreCase(resourceType)) {
-            // Recherche des positions 2x2 libres
-            for (int x = 0; x < maxX - 1; x++) {
-                for (int y = 0; y < maxY - 1; y++) {
-                    if (GameElement.isOccupied(x, y, occupied) &&
-                            GameElement.isOccupied(x + 1, y, occupied) &&
-                            GameElement.isOccupied(x, y + 1, occupied) &&
-                            GameElement.isOccupied(x + 1, y + 1, occupied)) {
-                        freePositions.add(new GameElement(x, y));
-                    }
-                }
-            }
-        }
-        return freePositions;
-    }
-
     private void chooseTreeTarget(List<Tree> trees, int maxX, int maxY, List<GameElement> occupied) {
         Random random = new Random();
 
         if (trees.isEmpty()) {
-            List<GameElement> freePositions = findPositions("tree", maxX, maxY, occupied);
-            if (!freePositions.isEmpty()) {
-                GameElement randomFree = freePositions.get(random.nextInt(freePositions.size()));
+            GameElement randomFree = GameElement.getRandomFreeCell(maxX, maxY, occupied);
+            if (randomFree != null) {
                 setTarget(randomFree);
                 System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                         " n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
                         randomFree.getX() + ", " + randomFree.getY() + ")");
+            } else {
+                System.out.println("Aucune case libre trouvée pour planter un arbre.");
             }
         } else {
             Tree selectedTree = trees.get(random.nextInt(trees.size()));
@@ -117,24 +88,30 @@ public class Seeder extends Unit {
     }
 
     private void chooseStoneTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
+        // On conserve la logique spéciale pour la pierre (2x2)
         double maxTotalDistance = -1;
         GameElement bestSpot = null;
 
         List<GameElement> filtered = new ArrayList<>(occupied);
         filtered.remove(this);
 
-        List<GameElement> candidatePositions = findPositions("stone", maxX, maxY, filtered);
+        for (int x = 0; x < maxX - 1; x++) {
+            for (int y = 0; y < maxY - 1; y++) {
+                if (!GameElement.isOccupied(x, y, filtered) &&
+                        !GameElement.isOccupied(x + 1, y, filtered) &&
+                        !GameElement.isOccupied(x, y + 1, filtered) &&
+                        !GameElement.isOccupied(x + 1, y + 1, filtered)) {
 
-        for (GameElement center : candidatePositions) {
-            double totalDistance = 0;
-
-            for (Stone s : stones) {
-                totalDistance += center.getDistanceWith(s);
-            }
-
-            if (totalDistance > maxTotalDistance) {
-                maxTotalDistance = totalDistance;
-                bestSpot = center;
+                    GameElement center = new GameElement(x, y);
+                    double totalDistance = 0;
+                    for (Stone s : stones) {
+                        totalDistance += center.getDistanceWith(s);
+                    }
+                    if (totalDistance > maxTotalDistance) {
+                        maxTotalDistance = totalDistance;
+                        bestSpot = center;
+                    }
+                }
             }
         }
 
@@ -149,8 +126,9 @@ public class Seeder extends Unit {
         }
     }
 
-
-    private void plantResourceAt(GameElement position, List<GameElement> occupied, List<? extends Resource> resourceList, boolean isTree, int gridCols, int gridRows) {
+    private void plantResourceAt(GameElement position, List<GameElement> occupied,
+                                 List<? extends Resource> resourceList, boolean isTree,
+                                 int gridCols, int gridRows) {
         if (isTree) {
             Tree tree = new Tree(position);
             tree.setWoodAmount(0);
@@ -164,15 +142,13 @@ public class Seeder extends Unit {
                 System.out.println("Impossible de planter la pierre : zone hors de la grille.");
                 return;
             }
-
-            if (!GameElement.isOccupied(position.getX(), position.getY(), occupied) ||
-                    !GameElement.isOccupied(position.getX() + 1, position.getY(), occupied) ||
-                    !GameElement.isOccupied(position.getX(), position.getY() + 1, occupied) ||
-                    !GameElement.isOccupied(position.getX() + 1, position.getY() + 1, occupied)) {
+            if (GameElement.isOccupied(position.getX(), position.getY(), occupied) ||
+                    GameElement.isOccupied(position.getX() + 1, position.getY(), occupied) ||
+                    GameElement.isOccupied(position.getX(), position.getY() + 1, occupied) ||
+                    GameElement.isOccupied(position.getX() + 1, position.getY() + 1, occupied)) {
                 System.out.println("Impossible de planter la pierre : zone occupée.");
                 return;
             }
-
             if ((this.getX() >= position.getX() && this.getX() <= position.getX() + 1) &&
                     (this.getY() >= position.getY() && this.getY() <= position.getY() + 1)) {
                 System.out.println("Impossible de planter : le Seeder est dans la zone cible !");
@@ -190,12 +166,10 @@ public class Seeder extends Unit {
         }
     }
 
-
     public Tree plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
         if (!hasValidTarget()) return null;
 
         List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target, maxX, maxY, occupied);
-
         if (!freeAdjacent.isEmpty()) {
             GameElement spot = freeAdjacent.get(new Random().nextInt(freeAdjacent.size()));
             plantResourceAt(spot, occupied, trees, true, maxX, maxY);
@@ -205,7 +179,6 @@ public class Seeder extends Unit {
             return null;
         }
     }
-
 
     public Stone plantStone(List<GameElement> occupied, List<Stone> stones, int gridCols, int gridRows) {
         if (!hasValidTarget()) return null;
@@ -219,19 +192,14 @@ public class Seeder extends Unit {
         int tx = target.getX();
         int ty = target.getY();
 
-        // Zone 2x2 : (tx, ty), (tx+1, ty), (tx, ty+1), (tx+1, ty+1)
-        // On veut savoir si le Seeder est sur une case autour de cette zone
         for (int dx = -1; dx <= 2; dx++) {
             for (int dy = -1; dy <= 2; dy++) {
-                if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1) continue; // Ignorer les 4 cases de la zone
+                if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1) continue;
                 if (this.getX() == tx + dx && this.getY() == ty + dy) {
                     return true;
                 }
             }
         }
-
         return false;
     }
-
-
 }

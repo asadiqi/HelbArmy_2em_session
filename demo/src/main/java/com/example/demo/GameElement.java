@@ -1,13 +1,12 @@
 package com.example.demo;
 
-
 import java.util.List;
 import java.util.Random;
 
 public class GameElement {
     protected int x;
     protected int y;
-    protected double defaultRatio=1.0;
+    protected double defaultRatio = 1.0;
 
     public GameElement(int x, int y) {
         this.x = x;
@@ -23,8 +22,7 @@ public class GameElement {
     }
 
     public String getImagePath() {
-        return  null;   //justifier car c'est une classe mère et elle ne connais pas encore le chemain d'image de la classe fille
-        //si non on pourrait mettre : return "img/default.png";
+        return null; // Classe mère → pas de chemin d'image par défaut
     }
 
     public double getWidthRatio() {
@@ -33,7 +31,6 @@ public class GameElement {
 
     public double getHeightRatio() {
         return defaultRatio;
-
     }
 
     public double getDistanceWith(GameElement other) {
@@ -42,15 +39,21 @@ public class GameElement {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    /**
+     * Renvoie true si la case (x,y) est occupée par un GameElement.
+     */
     public static boolean isOccupied(int x, int y, List<GameElement> elements) {
         for (GameElement element : elements) {
             if (element.getX() == x && element.getY() == y) {
-                return false;
+                return true; // occupée
             }
         }
-        return true;
+        return false; // libre
     }
 
+    /**
+     * Renvoie une case libre aléatoire dans la grille.
+     */
     public static GameElement getRandomFreeCell(int gridCols, int gridRows, List<GameElement> allElements) {
         Random rand = new Random();
         int maxAttempts = 100;
@@ -58,10 +61,10 @@ public class GameElement {
         for (int i = 0; i < maxAttempts; i++) {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
-            if (!isOccupied(x, y, allElements)) {
+            if (!isOccupied(x, y, allElements)) { // on veut une case libre
                 return new GameElement(x, y);
             }
         }
-        return null;
+        return null; // pas trouvé
     }
 }
