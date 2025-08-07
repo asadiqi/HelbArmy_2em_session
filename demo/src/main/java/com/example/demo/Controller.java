@@ -120,8 +120,8 @@ public class Controller {
                 int random = (int) (Math.random() * 2);
 
                 if (random == 0) {
-                     //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
-                    //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                     northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                     southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
 
                     //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
                     //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);

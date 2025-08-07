@@ -93,7 +93,7 @@ public class Unit extends GameElement {
     }
 
 
-    public static GameElement findNearestFreePosition(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
+    public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
         for (int dist = 1; dist <= maxDistance; dist++) {
             for (int dx = -dist; dx <= dist; dx++) {
                 int dy = dist - Math.abs(dx);
@@ -117,6 +117,7 @@ public class Unit extends GameElement {
         }
         return null ; // justifier retun new GameElement(-1,-1); // position invalide au lieu de null
     }
+
 
     private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;

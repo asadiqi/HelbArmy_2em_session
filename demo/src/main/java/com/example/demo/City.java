@@ -36,16 +36,18 @@ public class City extends GameElement {
     }
 
 
-    public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows,int maxDistance) {
-        GameElement pos = Unit.findNearestFreePosition(this, maxDistance, gridCols, gridRows, allElements);
-        if (pos != null) {
-            Collecter collecter = new Collecter(pos, this, true);
-            allElements.add(collecter);
-        }
+    private GameElement findPlacementForUnit(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
+        return Unit.findNearestFreeCoordinate(this, maxDistance, gridCols, gridRows, allElements);
     }
 
-    public void generateSeeder(List<GameElement> allElements, int gridCols, int gridRows, String targetType,int maxDistance) {
-        GameElement pos = Unit.findNearestFreePosition(this, maxDistance, gridCols, gridRows, allElements);
+
+    public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+        if (pos != null) allElements.add(new Collecter(pos, this, true));
+    }
+
+    public void generateSeeder(List<GameElement> allElements, int gridCols, int gridRows, String targetType, int maxDistance) {
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
         if (pos != null) {
             Seeder seeder = new Seeder(pos, this);
             seeder.setTargetRessourceType(targetType);
@@ -53,13 +55,12 @@ public class City extends GameElement {
         }
     }
 
-    public void generateAssassin(List<GameElement> allElements, int gridCols, int gridRows,int maxDistance) {
-        GameElement pos = Unit.findNearestFreePosition(this, maxDistance, gridCols, gridRows, allElements);
-        if (pos != null) {
-            Assassin assassin = new Assassin(pos, this);
-            allElements.add(assassin);
-        }
+    public void generateAssassin(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+        if (pos != null) allElements.add(new Assassin(pos, this));
     }
+
+
 
 
 
