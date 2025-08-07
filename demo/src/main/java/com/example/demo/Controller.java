@@ -44,20 +44,22 @@ public class Controller {
         view.initView(this);
 
         Collecter collecter = new Collecter(new GameElement(1, 1), northCity, true);
-        Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
         //addGameElement(collecter);
+        Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
         //addGameElement(collecter1);
-        Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity); // cible arbre
-        Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity); // cible stone
+
+        Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
         northSeeder.setTargetRessourceType("stone");
-        southSeeder.setTargetRessourceType("tree");
         //addGameElement(northSeeder);
+
+        Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
+        southSeeder.setTargetRessourceType("tree");
         //addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        addGameElement(northAssassin);
+        //addGameElement(northAssassin);
         addGameElement(southAssassin);
 
         setupGameLoop();
@@ -119,13 +121,13 @@ public class Controller {
                 int random = (int) (Math.random() * 2);
 
                 if (random == 0) {
-                     //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
-                  //   southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                    //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                    //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
 
                     //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
                     //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
                 } else {
-                     //northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                    //northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
                     //southCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
                 }
                 elapsedTimeMs = 0;
@@ -143,7 +145,7 @@ public class Controller {
             } else if (element instanceof Collecter collecter) {
                 handleCollecter(collecter);
             } else if (element instanceof Assassin assassin) {
-                handleAssassin(assassin);
+                assassin.update(gridCols, gridRows, allElements);
             }
         }
     }
@@ -203,18 +205,6 @@ public class Controller {
         }
     }
 
-    private void handleAssassin(Assassin assassin) {
-        if (!assassin.hasValidTarget() || assassin.hasReachedTarget()) {
-            Assassin closesEnemy = assassin.findClosestEnemyAssassin(allElements);
-            if (closesEnemy != null) {
-                assassin.setTarget(new GameElement(closesEnemy.getX(), closesEnemy.getY()));
-            } else {
-                assassin.setTarget(null);
-            }
-        }
-
-        assassin.moveTowardsTarget(gridCols, gridRows, allElements);
-    }
 
 
 
