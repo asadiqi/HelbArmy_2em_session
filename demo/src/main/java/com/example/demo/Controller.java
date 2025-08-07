@@ -141,13 +141,13 @@ public class Controller {
 
     private void growPlantedTrees() {
         for (Tree tree : trees) {
-            tree.growTick();
+            tree.growResource();
         }
     }
 
     private void growPlantedStones() {
         for (Stone stone : stones) {
-            stone.growTick();
+            stone.growResource();
         }
     }
 
@@ -318,7 +318,5 @@ public class Controller {
     }
 
 }
-/*
 
-*/
 

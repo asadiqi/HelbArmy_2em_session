@@ -51,4 +51,25 @@ public abstract class Resource extends GameElement {
     // getImagePath() reste abstraite ici
     @Override
     public abstract String getImagePath();
+
+
+    public void growResource() {
+        if (isGrowing() && !isMature()) {
+            int before = amount;
+            grow(20);
+            int after = amount;
+
+            System.out.println(getResourceName() + " en (" + getX() + ", " + getY() + ") a poussé de " + (after - before));
+
+            if (isMature()) {
+                setGrowing(false);
+                System.out.println(getResourceName() + " en (" + getX() + ", " + getY() + ") est mature");
+            }
+        }
+    }
+
+    protected abstract String getResourceName();
+
+
+
 }

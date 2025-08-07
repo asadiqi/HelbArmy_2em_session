@@ -55,19 +55,9 @@ public class Stone extends Resource {
     }
 
 
-    public void growTick() {
-        if (isGrowing() && !isMature()) {
-            int before = getCurrentMineralAmount();
-            grow(20);
-            int after = getCurrentMineralAmount();
-
-            System.out.println("Pierre en (" + getX() + ", " + getY() + ") a poussé de " + (after - before));
-
-            if (isMature()) {
-                setGrowing(false);
-                System.out.println("Pierre en (" + getX() + ", " + getY() + ") est mature");
-            }
-        }
+    @Override
+    protected String getResourceName() {
+        return "Pierre";
     }
 
 }

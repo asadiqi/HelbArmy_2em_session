@@ -29,20 +29,10 @@ public class Tree extends Resource {
         setAmount(value);
     }
 
-
-    public void growTick() {
-        if (isGrowing() && !isMature()) {
-            int before = getCurrentWoodAmount();
-            grow(20);
-            int after = getCurrentWoodAmount();
-
-            System.out.println("Arbre en (" + getX() + ", " + getY() + ") a poussé de " + (after - before));
-
-            if (isMature()) {
-                setGrowing(false);
-                System.out.println("Arbre en (" + getX() + ", " + getY() + ") est mature");
-            }
-        }
+    @Override
+    protected String getResourceName() {
+        return "Arbre";
     }
+
 
 }
