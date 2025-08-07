@@ -37,7 +37,7 @@ public class Controller {
     private double stoneRatio = 0.03;
     private City northCity;
     private City southCity;
-    private static final int GAMELOOP_INERVAL_MS = 500;
+    private static final int GAMELOOP_INERVAL_MS = 1000;
     private static final int UNIT_GENRATION_MS = 1000;
     private int elapsedTimeMs = 0;
 
@@ -61,8 +61,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        //addGameElement(northSeeder);
-        //addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
@@ -120,8 +120,8 @@ public class Controller {
                 int random = (int) (Math.random() * 2);
 
                 if (random == 0) {
-                     northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
-                     southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                     //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                     //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
 
                     //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
                     //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
@@ -141,36 +141,16 @@ public class Controller {
 
     private void growPlantedTrees() {
         for (Tree tree : trees) {
-            if (tree.isGrowing() && !tree.isMature()) {
-                int before = tree.getCurrentWoodAmount();
-                tree.grow(20);
-                int after = tree.getCurrentWoodAmount();
-
-                System.out.println("Arbre en ( " + tree.getX() + ", " + tree.getY() + " bois total : " + (after - before) + " bois total : " + after);
-
-                if (tree.isMature()) {
-                    tree.setGrowing(false);
-                    System.out.println("Arbre à ( " + tree.getX() + ", " + tree.getY() + " est maintenant mature ");
-                }
-            }
+            tree.growTick();
         }
     }
 
     private void growPlantedStones() {
         for (Stone stone : stones) {
-            if (stone.isGrowing() && !stone.isMature()) {
-                int before = stone.getCurrentMineralAmount();
-                stone.grow(20);  // valeur de croissance par tick (ajustable)
-                int after = stone.getCurrentMineralAmount();
-                System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") a grandi de " + (after - before) + " → total: " + after);
-
-                if (stone.isMature()) {
-                    stone.setGrowing(false);
-                    System.out.println("Pierre à (" + stone.getX() + ", " + stone.getY() + ") est maintenant mature !");
-                }
-            }
+            stone.growTick();
         }
     }
+
 
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
