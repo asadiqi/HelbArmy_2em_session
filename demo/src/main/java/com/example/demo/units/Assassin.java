@@ -3,6 +3,8 @@ package com.example.demo.units;
 import com.example.demo.City;
 import com.example.demo.GameElement;
 
+import java.util.List;
+
 public class Assassin extends Unit {
 
 
@@ -21,14 +23,21 @@ public class Assassin extends Unit {
         return city.isNorth ? northAssassinPath : southAssassinPath;
     }
 
+    public Assassin findClosestEnemyAssassin(java.util.List<GameElement> allElements) {
+        double minDistance = Double.MAX_VALUE;
+        Assassin closest = null;
 
-    public boolean canAttack(Unit other) {
-        if (other instanceof Assassin enemy && enemy.city.isNorth != this.city.isNorth) {
-            return this.hasValidTarget() && this.hasReachedTarget();
+        for (GameElement element : allElements) {
+            if (element instanceof Assassin other && other != this && other.city.isNorth != this.city.isNorth) {
+                double distance = this.getDistanceWith(other);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closest = other;
+                }
+            }
         }
-        return false;
+        return closest;
     }
-
 }
 
 

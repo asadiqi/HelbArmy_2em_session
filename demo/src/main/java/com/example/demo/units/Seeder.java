@@ -1,7 +1,6 @@
 package com.example.demo.units;
 
 import com.example.demo.City;
-import com.example.demo.Controller;
 import com.example.demo.GameElement;
 import com.example.demo.ressource.Resource;
 import com.example.demo.ressource.Stone;

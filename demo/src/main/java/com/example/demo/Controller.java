@@ -1,5 +1,3 @@
-
-
 package com.example.demo;
 
 import com.example.demo.ressource.Stone;
@@ -7,14 +5,10 @@ import com.example.demo.ressource.Tree;
 import com.example.demo.units.Assassin;
 import com.example.demo.units.Collecter;
 import com.example.demo.units.Seeder;
-import com.example.demo.units.Unit;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,13 +19,10 @@ public class Controller {
     private View view;
     private int gridRows = 15;
     private int gridCols = 15;
-    private int maxDistance = gridRows - 1;
     private List<Tree> trees;
     private List<Stone> stones;
-
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
-    private final Random random = new Random();
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio = 0.05;
     private double stoneRatio = 0.03;
@@ -51,12 +42,11 @@ public class Controller {
         generateRandomTrees();
         generateRandomStones();
         view.initView(this);
+
         Collecter collecter = new Collecter(new GameElement(1, 1), northCity, true);
         Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
-        addGameElement(collecter);
-        addGameElement(collecter1);
-
-
+        //addGameElement(collecter);
+        //addGameElement(collecter1);
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity); // cible arbre
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
@@ -64,14 +54,13 @@ public class Controller {
         //addGameElement(northSeeder);
         //addGameElement(southSeeder);
 
+
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        //addGameElement(northAssassin);
-        //addGameElement(southAssassin);
-
+        addGameElement(northAssassin);
+        addGameElement(southAssassin);
 
         setupGameLoop();
-
     }
 
     public int getGridRows() {
@@ -86,8 +75,18 @@ public class Controller {
         return allElements;
     }
 
+    private void growPlantedTrees() {
+        for (Tree tree : trees) {
+            tree.growResource();
+        }
+    }
 
-    // Méthode pour ajouter un élément dans allElements (centralisation)
+    private void growPlantedStones() {
+        for (Stone stone : stones) {
+            stone.growResource();
+        }
+    }
+
     private void addGameElement(GameElement element) {
         allElements.add(element);
     }
@@ -110,7 +109,7 @@ public class Controller {
 
     private void setupGameLoop() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
-            moveUnits();          // <- ici on fait bouger les unités
+            moveUnits();
             growPlantedStones();
             growPlantedTrees();
             view.drawAllElements();
@@ -121,7 +120,7 @@ public class Controller {
 
                 if (random == 0) {
                      //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
-                     //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                  //   southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
 
                     //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
                     //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
@@ -131,26 +130,11 @@ public class Controller {
                 }
                 elapsedTimeMs = 0;
             }
-
-
         }));
 
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
-
-    private void growPlantedTrees() {
-        for (Tree tree : trees) {
-            tree.growResource();
-        }
-    }
-
-    private void growPlantedStones() {
-        for (Stone stone : stones) {
-            stone.growResource();
-        }
-    }
-
 
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
@@ -164,7 +148,6 @@ public class Controller {
         }
     }
 
-
     private void handleCollecter(Collecter collecter) {
         if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
             collecter.findNearestResource(trees, stones);
@@ -176,7 +159,6 @@ public class Controller {
         removeDepletedResources();
 
     }
-
 
     private void handleSeeder(Seeder seeder) {
         String type = seeder.getTargetRessourceType();
@@ -223,7 +205,7 @@ public class Controller {
 
     private void handleAssassin(Assassin assassin) {
         if (!assassin.hasValidTarget() || assassin.hasReachedTarget()) {
-            Assassin closesEnemy = findClosesEnemyAssassin(assassin);
+            Assassin closesEnemy = assassin.findClosestEnemyAssassin(allElements);
             if (closesEnemy != null) {
                 assassin.setTarget(new GameElement(closesEnemy.getX(), closesEnemy.getY()));
             } else {
@@ -234,29 +216,13 @@ public class Controller {
         assassin.moveTowardsTarget(gridCols, gridRows, allElements);
     }
 
-    private Assassin findClosesEnemyAssassin(Assassin assassin) {
-        double minDistance = Double.MAX_VALUE;
-        Assassin closest = null;
 
-        for (GameElement element : allElements) {
-            if (element instanceof Assassin other && other != assassin && other.city.isNorth != assassin.city.isNorth) {
-                double distance = assassin.getDistanceWith(other);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closest = other;
-                }
-            }
-        }
-        return closest;
-    }
 
 
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
         stones.removeAll(Stone.removeDepletedStones(stones, allElements));
     }
-
-
 
     private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
         int numberToGenerate = (int) (gridRows * gridCols * ratio);
