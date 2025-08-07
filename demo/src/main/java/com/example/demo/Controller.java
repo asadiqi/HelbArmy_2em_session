@@ -25,6 +25,7 @@ public class Controller {
     private List<GameElement> allElements = new ArrayList<>();
     private double treeRatio = 0.05;
     private double stoneRatio = 0.03;
+    private int maxDistance = gridRows - 1;
     private City northCity;
     private City southCity;
     private static final int GAMELOOP_INERVAL_MS = 500;
@@ -49,10 +50,10 @@ public class Controller {
 
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
         northSeeder.setTargetRessourceType("stone");
-        addGameElement(northSeeder);
+        //addGameElement(northSeeder);
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(southSeeder);
+        //addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
@@ -246,5 +247,3 @@ public class Controller {
     }
 
 }
-
-

@@ -83,7 +83,6 @@ public class View {
     }
 
     public void drawAllElements() {
-
         // D'abord, on redessine toute la grille (efface l'ancien affichage)
         drawGrid();
 
@@ -104,6 +103,4 @@ public class View {
 
         }
     }
-
-
 }
