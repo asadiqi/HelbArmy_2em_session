@@ -61,8 +61,8 @@ public class Controller {
         Seeder southSeeder = new Seeder(new GameElement(gridRows-2,gridCols-2),southCity); // cible stone
         northSeeder.setTargetRessourceType("stone");
         southSeeder.setTargetRessourceType("tree");
-        //addGameElement(northSeeder);
-        //addGameElement(southSeeder);
+        addGameElement(northSeeder);
+        addGameElement(southSeeder);
 
 
         setupGameLoop();
@@ -117,7 +117,7 @@ public class Controller {
 
               if (random == 0) {
                   //generateCollecter();
-                  generateSeeder();
+                  //generateSeeder();
                   //generateAssassin();
 
               } else {
@@ -337,52 +337,54 @@ public class Controller {
 
 
     public void generateCollecter() {
-        spawnCollecter(northCity, random.nextBoolean());
-        spawnCollecter(southCity, random.nextBoolean());
+        initCollecter(northCity, random.nextBoolean());
+        initCollecter(southCity, random.nextBoolean());
     }
 
     public void generateSeeder() {
-        spawnSeeder(northCity, random.nextBoolean() ? "tree" : "stone");
-        spawnSeeder(southCity, random.nextBoolean() ? "tree" : "stone");
+        initSeeder(northCity, random.nextBoolean() ? "tree" : "stone");
+        initSeeder(southCity, random.nextBoolean() ? "tree" : "stone");
     }
 
     public void generateAssassin() {
-        spawnAssassin(northCity);
-        spawnAssassin(southCity);
+        initAssassin(northCity);
+        initAssassin(southCity);
     }
 
 
-
-    private void spawnCollecter(City city, boolean isLumberjack) {
+    private GameElement locateFreePosition(City city, String unitName) {
         GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
+        if (pos == null) {
+            System.out.println("Aucune position libre pour " + unitName + " de la ville " + (city.isNorth ? "nord" : "sud"));
+        }
+        return pos;
+    }
+
+    private void initCollecter(City city, boolean isLumberjack) {
+        GameElement pos = locateFreePosition(city, "collecter");
         if (pos != null) {
             Collecter collecter = new Collecter(pos, city, isLumberjack);
             addGameElement(collecter);
-        } else {
-            System.out.println("Aucune position libre pour collecter de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
 
-    private void spawnSeeder(City city, String targetResourceType) {
-        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
+    private void initSeeder(City city, String targetResourceType) {
+        GameElement pos = locateFreePosition(city, "seeder");
         if (pos != null) {
             Seeder seeder = new Seeder(pos, city);
             seeder.setTargetRessourceType(targetResourceType);
             addGameElement(seeder);
-        } else {
-            System.out.println("Aucune position libre pour seeder de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
 
-    private void spawnAssassin(City city) {
-        GameElement pos = Unit.findNearestFreePosition(city, maxDistance, gridCols, gridRows, allElements);
+    private void initAssassin(City city) {
+        GameElement pos = locateFreePosition(city, "assassin");
         if (pos != null) {
             Assassin assassin = new Assassin(pos, city);
             addGameElement(assassin);
-        } else {
-            System.out.println("Aucune position libre pour assassin de la ville " + (city.isNorth ? "nord" : "sud"));
         }
     }
+
 
 
 }
