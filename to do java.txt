@@ -65,3 +65,26 @@ handleSeeder()	✅ Oui	✅ Oui
 growPlantedTrees() / Stones()	✅ Oui	✅ Oui
 removeDepletedResources()	✅ Oui	✅ Oui
 generateCollecter() / Seeder()	✅ Oui	✅ Oui
+____________________________________________________________________________________________
+
+Duplication entre ces méthodes :
+1. generateCollecter(), generateSeeder(), generateAssassin()
+Problème : Même logique répétée pour générer des unités (choisir une ville, chercher une position libre, créer et ajouter l’unité).
+
+Solution possible : Une méthode générique pour spawner une unité selon un type.
+
+2. spawnCollecter(...), spawnSeeder(...), spawnAssassin(...)
+Problème : Même structure dans chaque méthode (trouver une position libre, créer une unité, ajouter à la liste).
+
+Solution possible : Créer une méthode spawnUnit(City city, String unitType, [String resourceType]).
+
+3. growPlantedTrees() et growPlantedStones()
+Problème : Même logique pour faire croître arbres et pierres.
+
+Solution possible : Regrouper dans une méthode générique growResources(List<? extends GrowableResource>).
+
+4. removeDepletedResources("tree") et removeDepletedResources("stone")
+Problème : Même boucle pour supprimer les ressources épuisées.
+
+Solution possible : Refactor avec une méthode paramétrée sur le type de ressource.
+
