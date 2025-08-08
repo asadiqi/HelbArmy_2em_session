@@ -132,10 +132,13 @@ public class Controller {
                     southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
 
                 } else if (random == 1) {
-                    northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
-                    southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
+                    String northType = Math.random() < 0.5 ? "stone" : "tree";
+                    String southType = Math.random() < 0.5 ? "stone" : "tree";
 
-                } else if (random == 2) {
+                    northCity.generateSeeder(allElements, gridCols, gridRows, northType, maxDistance);
+                    southCity.generateSeeder(allElements, gridCols, gridRows, southType, maxDistance);
+
+                 } else if (random == 2) {
                     int assassinsNorth = 0;
                     int assassinsSouth = 0;
                     for (GameElement e : allElements) {
@@ -166,7 +169,7 @@ public class Controller {
                             southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
                             System.out.println("Premier assassin généré de force côté sud");
                         }
-                    
+
                 } else {
                         if (Math.random() < probAssassinNorth) {
                             northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
