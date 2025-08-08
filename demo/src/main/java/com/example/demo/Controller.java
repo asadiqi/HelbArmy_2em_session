@@ -57,9 +57,9 @@ public class Controller {
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
-        addGameElement(northAssassin);
+        //addGameElement(northAssassin);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        addGameElement(southAssassin);
+       //addGameElement(southAssassin);
 
         setupGameLoop();
     }
@@ -120,14 +120,16 @@ public class Controller {
                 int random = (int) (Math.random() * 2);
 
                 if (random == 0) {
-                    //northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
-                    //southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance);
+                    northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance, Math.random() < 0.5);
+                    southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance , Math.random() < 0.5);
 
-                    //northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
-                    //southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
+                } else if ( random == 1){
+                   northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
+                   southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
+
                 } else {
-                    //northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
-                    //southCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                   northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                   southCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
                 }
                 elapsedTimeMs = 0;
             }

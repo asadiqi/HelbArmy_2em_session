@@ -41,9 +41,11 @@ public class City extends GameElement {
     }
 
 
-    public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
+    public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance, boolean isLumberjack) {
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        if (pos != null) allElements.add(new Collecter(pos, this, true));
+        if (pos != null) {
+            allElements.add(new Collecter(pos, this, isLumberjack));
+        }
     }
 
     public void generateSeeder(List<GameElement> allElements, int gridCols, int gridRows, String targetType, int maxDistance) {
