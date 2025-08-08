@@ -13,6 +13,10 @@ public class Assassin extends Unit {
     public City city;
     private boolean waiting = false;
 
+    public City getCity() {
+        return city;
+    }
+
     public Assassin(GameElement position, City city) {
         super(position);
         this.city = city;

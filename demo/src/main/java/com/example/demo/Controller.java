@@ -117,18 +117,39 @@ public class Controller {
             elapsedTimeMs += GAMELOOP_INERVAL_MS;
 
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
-                int random = (int) (Math.random() * 2);
+                int random = (int) (Math.random() * 3);
+
+                int assassinsNorth = 0;
+                int assassinsSouth = 0;
+                int totalAssassins = 0;
+
+                for (GameElement e : allElements) {
+                    if (e instanceof Assassin) {
+                        totalAssassins++;
+                        Assassin a = (Assassin) e;
+                        if (a.getCity().isNorth) {
+                            assassinsNorth++;
+                        } else {
+                            assassinsSouth++;
+                        }
+                    }
+                }
+
+                double maxProbability = 0.9;
+                double baseProbability = 0.1; // proba mini d'assassin même sans adversaire
+
+                // Calculer proba : base + facteur selon adversaires (ici facteur 5)
+                double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
+                double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
 
                 if (random == 0) {
-                    // Calcul du ratio de ressources présentes
                     int totalResources = trees.size() + stones.size();
-                    double lumberjackProbability = 0.5; // valeur par défaut
+                    double lumberjackProbability = 0.5;
 
                     if (totalResources > 0) {
                         lumberjackProbability = (double) trees.size() / totalResources;
                     }
 
-                    // Génération des collecteurs avec proba dynamique
                     northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
                     southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
 
@@ -136,9 +157,14 @@ public class Controller {
                     northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
                     southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
 
-                } else {
-                    northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                    southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                } else if (random == 2) {
+                    if (totalAssassins == 0) {
+                        northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                        System.out.println("Premier assassin généré de force côté nord");
+                    } else {
+                        northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                        southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                    }
                 }
 
                 elapsedTimeMs = 0;
@@ -148,6 +174,7 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
+
 
     private void moveUnits() {
         for (GameElement element : new ArrayList<>(allElements)) {
