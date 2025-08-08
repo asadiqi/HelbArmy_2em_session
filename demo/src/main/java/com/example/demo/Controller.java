@@ -28,8 +28,8 @@ public class Controller {
     private int maxDistance = gridRows - 1;
     private City northCity;
     private City southCity;
-    private static final int GAMELOOP_INERVAL_MS = 500;
-    private static final int UNIT_GENRATION_MS = 1000;
+    private static final int GAMELOOP_INERVAL_MS = 1000;
+    private static final int UNIT_GENRATION_MS = 3000;
     private int elapsedTimeMs = 0;
 
 
