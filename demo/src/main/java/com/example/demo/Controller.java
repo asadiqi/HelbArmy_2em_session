@@ -114,72 +114,10 @@ public class Controller {
             growPlantedStones();
             growPlantedTrees();
             view.drawAllElements();
+
             elapsedTimeMs += GAMELOOP_INERVAL_MS;
-
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
-                int random = (int) (Math.random() * 3);
-
-
-                if (random == 0) {
-                    int totalResources = trees.size() + stones.size();
-                    double lumberjackProbability = 0.5;
-
-                    if (totalResources > 0) {
-                        lumberjackProbability = (double) trees.size() / totalResources;
-                    }
-
-                    northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
-                    southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
-
-                } else if (random == 1) {
-                    String northType = Math.random() < 0.5 ? "stone" : "tree";
-                    String southType = Math.random() < 0.5 ? "stone" : "tree";
-
-                    northCity.generateSeeder(allElements, gridCols, gridRows, northType, maxDistance);
-                    southCity.generateSeeder(allElements, gridCols, gridRows, southType, maxDistance);
-
-                 } else if (random == 2) {
-                    int assassinsNorth = 0;
-                    int assassinsSouth = 0;
-                    for (GameElement e : allElements) {
-                        if (e instanceof Assassin) {
-                            Assassin a = (Assassin) e;
-                            if (a.getCity().isNorth) {
-                                assassinsNorth++;
-                            } else {
-                                assassinsSouth++;
-                            }
-                        }
-                    }
-
-                    double maxProbability = 0.9;
-                    double baseProbability = 0.1; // proba mini d'assassin même sans adversaire
-
-                    // Calculer proba : base + facteur selon adversaires (ici facteur 5)
-                    double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
-                    double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
-
-                    int totalAssassins = assassinsNorth + assassinsSouth;
-
-                    if (totalAssassins == 0) {
-                        if (Math.random() < 0.5) {
-                            northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                            System.out.println("Premier assassin généré de force côté nord");
-                        } else {
-                            southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                            System.out.println("Premier assassin généré de force côté sud");
-                        }
-
-                } else {
-                        if (Math.random() < probAssassinNorth) {
-                            northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                        }
-                        if (Math.random() < probAssassinSouth) {
-                            southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                        }
-                    }
-                }
-
+                generateUnits();
                 elapsedTimeMs = 0;
             }
         }));
@@ -187,6 +125,73 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
+
+    private void generateUnits() {
+        int random = (int) (Math.random() * 3);
+
+        switch(random) {
+            case 0 -> generateCollecters();
+            case 1 -> generateSeeders();
+            case 2 -> generateAssassins();
+        }
+    }
+
+    private void generateCollecters() {
+        int totalResources = trees.size() + stones.size();
+        double lumberjackProbability = 0.5;
+
+        if (totalResources > 0) {
+            lumberjackProbability = (double) trees.size() / totalResources;
+        }
+
+        northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+        southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+    }
+
+    private void generateSeeders() {
+        String northType = Math.random() < 0.5 ? "stone" : "tree";
+        String southType = Math.random() < 0.5 ? "stone" : "tree";
+
+        northCity.generateSeeder(allElements, gridCols, gridRows, northType, maxDistance);
+        southCity.generateSeeder(allElements, gridCols, gridRows, southType, maxDistance);
+    }
+
+    private void generateAssassins() {
+        int assassinsNorth = 0;
+        int assassinsSouth = 0;
+        for (GameElement e : allElements) {
+            if (e instanceof Assassin a) {
+                if (a.getCity().isNorth) assassinsNorth++;
+                else assassinsSouth++;
+            }
+        }
+
+        double maxProbability = 0.9;
+        double baseProbability = 0.1;
+
+        double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
+        double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
+
+        int totalAssassins = assassinsNorth + assassinsSouth;
+
+        if (totalAssassins == 0) {
+            if (Math.random() < 0.5) {
+                northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                System.out.println("Premier assassin généré de force côté nord");
+            } else {
+                southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                System.out.println("Premier assassin généré de force côté sud");
+            }
+        } else {
+            if (Math.random() < probAssassinNorth) {
+                northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            }
+            if (Math.random() < probAssassinSouth) {
+                southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            }
+        }
+    }
+
 
 
 
