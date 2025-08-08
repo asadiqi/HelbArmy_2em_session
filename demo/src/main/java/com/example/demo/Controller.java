@@ -119,28 +119,6 @@ public class Controller {
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
                 int random = (int) (Math.random() * 3);
 
-                int assassinsNorth = 0;
-                int assassinsSouth = 0;
-                int totalAssassins = 0;
-
-                for (GameElement e : allElements) {
-                    if (e instanceof Assassin) {
-                        totalAssassins++;
-                        Assassin a = (Assassin) e;
-                        if (a.getCity().isNorth) {
-                            assassinsNorth++;
-                        } else {
-                            assassinsSouth++;
-                        }
-                    }
-                }
-
-                double maxProbability = 0.9;
-                double baseProbability = 0.1; // proba mini d'assassin même sans adversaire
-
-                // Calculer proba : base + facteur selon adversaires (ici facteur 5)
-                double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
-                double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
 
                 if (random == 0) {
                     int totalResources = trees.size() + stones.size();
@@ -158,12 +136,44 @@ public class Controller {
                     southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
 
                 } else if (random == 2) {
+                    int assassinsNorth = 0;
+                    int assassinsSouth = 0;
+                    for (GameElement e : allElements) {
+                        if (e instanceof Assassin) {
+                            Assassin a = (Assassin) e;
+                            if (a.getCity().isNorth) {
+                                assassinsNorth++;
+                            } else {
+                                assassinsSouth++;
+                            }
+                        }
+                    }
+
+                    double maxProbability = 0.9;
+                    double baseProbability = 0.1; // proba mini d'assassin même sans adversaire
+
+                    // Calculer proba : base + facteur selon adversaires (ici facteur 5)
+                    double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
+                    double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
+
+                    int totalAssassins = assassinsNorth + assassinsSouth;
+
                     if (totalAssassins == 0) {
-                        northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                        System.out.println("Premier assassin généré de force côté nord");
-                    } else {
-                        northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                        southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                        if (Math.random() < 0.5) {
+                            northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                            System.out.println("Premier assassin généré de force côté nord");
+                        } else {
+                            southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                            System.out.println("Premier assassin généré de force côté sud");
+                        }
+                    
+                } else {
+                        if (Math.random() < probAssassinNorth) {
+                            northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                        }
+                        if (Math.random() < probAssassinSouth) {
+                            southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                        }
                     }
                 }
 
@@ -174,6 +184,7 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
+
 
 
     private void moveUnits() {
