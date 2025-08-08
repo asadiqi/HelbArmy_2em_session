@@ -120,17 +120,27 @@ public class Controller {
                 int random = (int) (Math.random() * 2);
 
                 if (random == 0) {
-                    northCity.generateCollecter(allElements, gridCols, gridRows,maxDistance, Math.random() < 0.5);
-                    southCity.generateCollecter(allElements, gridCols, gridRows,maxDistance , Math.random() < 0.5);
+                    // Calcul du ratio de ressources présentes
+                    int totalResources = trees.size() + stones.size();
+                    double lumberjackProbability = 0.5; // valeur par défaut
 
-                } else if ( random == 1){
-                   northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
-                   southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
+                    if (totalResources > 0) {
+                        lumberjackProbability = (double) trees.size() / totalResources;
+                    }
+
+                    // Génération des collecteurs avec proba dynamique
+                    northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+                    southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+
+                } else if (random == 1) {
+                    northCity.generateSeeder(allElements, gridCols, gridRows, "stone", maxDistance);
+                    southCity.generateSeeder(allElements, gridCols, gridRows, "tree", maxDistance);
 
                 } else {
-                   northCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
-                   southCity.generateAssassin(allElements, gridCols, gridRows,maxDistance);
+                    northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+                    southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
                 }
+
                 elapsedTimeMs = 0;
             }
         }));

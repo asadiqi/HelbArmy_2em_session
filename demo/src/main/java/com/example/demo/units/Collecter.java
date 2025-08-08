@@ -96,25 +96,29 @@ public class Collecter extends Unit {
             int bonus = getBonus(resourceType);
             City city = getCityOfCollecter(northCity, southCity);
 
+            // Affichage du type de collecteur
+            String typeCollecter = isLumberjackCollecter ? "Bûcheron" : "Piocheur";
+
             if ("tree".equals(resourceType)) {
                 Tree tree = (Tree) resource;
                 if (tree.getCurrentWoodAmount() > 0) {
                     tree.decreaseWood(bonus);
                     city.incrementStock(bonus);
-                    System.out.println("Collecteur " + (city.isNorth ? "nord" : "sud") +
-                            " a récolté " + bonus + " bois, stock : " + city.getStock());
+                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +
+                            ") a récolté " + bonus + " bois, stock : " + city.getStock());
                 }
             } else if ("stone".equals(resourceType)) {
                 Stone stone = (Stone) resource;
                 if (stone.getCurrentMineralAmount() > 0) {
                     stone.decreaseMineral(bonus);
                     city.incrementStock(bonus);
-                    System.out.println("Collecteur " + (city.isNorth ? "nord" : "sud") +
-                            " a récolté " + bonus + " minerai, stock : " + city.getStock());
+                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +
+                            ") a récolté " + bonus + " minerai, stock : " + city.getStock());
                 }
             }
         }
     }
+
 
 
 
