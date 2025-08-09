@@ -16,9 +16,6 @@ public abstract class Resource extends GameElement {
         this.maxAmount = maxAmount;
     }
 
-    public int getAmount() {
-        return amount;
-    }
 
     public void setAmount(int amount) {
         this.amount = Math.max(0, Math.min(maxAmount, amount));

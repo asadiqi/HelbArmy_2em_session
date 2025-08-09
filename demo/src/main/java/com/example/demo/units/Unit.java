@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Unit extends GameElement {
     protected GameElement target = new GameElement(-1, -1);
+    public static final GameElement NO_POSITION = new GameElement(-1, -1);
 
     public Unit(GameElement position) {
         super(position.getX(), position.getY());
@@ -112,7 +113,7 @@ public class Unit extends GameElement {
                 }
             }
         }
-        return null; // position invalide
+        return NO_POSITION; // position invalide
     }
 
     private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {

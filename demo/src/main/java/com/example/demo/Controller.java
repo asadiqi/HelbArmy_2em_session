@@ -50,10 +50,10 @@ public class Controller {
 
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
         northSeeder.setTargetRessourceType("stone");
-        //addGameElement(northSeeder);
+        addGameElement(northSeeder);
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
         southSeeder.setTargetRessourceType("tree");
-        //addGameElement(southSeeder);
+        addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
