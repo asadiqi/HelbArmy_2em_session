@@ -119,7 +119,8 @@ public class Unit extends GameElement {
         }
         // Si aucune case libre n'a été trouvée dans le rayon spécifié,
         // on retourne la constante NO_POSITION qui indique une position invalide ou "nulle".
-        return GameElement.NO_POSITION;    }
+        return GameElement.NO_POSITION;
+    }
 
     private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;

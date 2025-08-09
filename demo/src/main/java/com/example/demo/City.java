@@ -43,14 +43,14 @@ public class City extends GameElement {
 
     public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance, boolean isLumberjack) {
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        if (pos != null) {
+        if (!pos.equals(GameElement.NO_POSITION)) {
             allElements.add(new Collecter(pos, this, isLumberjack));
         }
     }
 
     public void generateSeeder(List<GameElement> allElements, int gridCols, int gridRows, String targetType, int maxDistance) {
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        if (pos != null) {
+        if (!pos.equals(GameElement.NO_POSITION)) {
             Seeder seeder = new Seeder(pos, this);
             seeder.setTargetRessourceType(targetType);
             allElements.add(seeder);
@@ -59,7 +59,7 @@ public class City extends GameElement {
 
     public void generateAssassin(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        if (pos != null) allElements.add(new Assassin(pos, this));
+        if (!pos.equals(GameElement.NO_POSITION)) allElements.add(new Assassin(pos, this));
     }
 
 
