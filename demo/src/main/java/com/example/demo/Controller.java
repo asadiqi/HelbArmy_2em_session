@@ -29,7 +29,7 @@ public class Controller {
     private City northCity;
     private City southCity;
     private static final int GAMELOOP_INERVAL_MS = 1000;
-    private static final int UNIT_GENRATION_MS = 3000;
+    private static final int UNIT_GENRATION_MS = 500;
     private int elapsedTimeMs = 0;
 
 
@@ -50,10 +50,10 @@ public class Controller {
 
         Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
         northSeeder.setTargetRessourceType("stone");
-        addGameElement(northSeeder);
+        //addGameElement(northSeeder);
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
         southSeeder.setTargetRessourceType("tree");
-        addGameElement(southSeeder);
+       // addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
@@ -130,9 +130,9 @@ public class Controller {
         int random = (int) (Math.random() * 3);
 
         switch(random) {
-            case 0 -> generateCollecters();
+           // case 0 -> generateCollecters();
             case 1 -> generateSeeders();
-            case 2 -> generateAssassins();
+           // case 2 -> generateAssassins();
         }
     }
 

@@ -68,6 +68,6 @@ public class GameElement {
                 return new GameElement(x, y);
             }
         }
-        return null; // pas trouvé
+        return NO_POSITION; // pas trouvé
     }
 }
