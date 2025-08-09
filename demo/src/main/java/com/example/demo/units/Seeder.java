@@ -39,31 +39,13 @@ public class Seeder extends Unit {
         return targetRessourceType;
     }
 
-    public Stone getPlantedStone() {
-        return plantedStone;
-    }
-
-    public void setPlantedStone(Stone stone) {
-        this.plantedStone = stone;
-    }
-
     public void setTargetRessourceType(String type) {
         this.targetRessourceType = type;
     }
 
-    public Tree getPlantedTree() {
-        return plantedTree;
-    }
-
-    public void setPlantedTree(Tree tree) {
-        this.plantedTree = tree;
-    }
-
-    public void chooseTarget(String resourceType, List<? extends Resource> resources,
-                             int maxX, int maxY, List<GameElement> occupied) {
+    public void chooseTarget(String resourceType, List<? extends Resource> resources, int maxX, int maxY, List<GameElement> occupied) {
 
         this.targetRessourceType = resourceType;
-
         if ("tree".equalsIgnoreCase(resourceType)) {
             chooseTreeTarget((List<Tree>) resources, maxX, maxY, occupied);
         } else if ("stone".equalsIgnoreCase(resourceType)) {
@@ -260,6 +242,4 @@ public class Seeder extends Unit {
             chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
         }
     }
-
-
 }

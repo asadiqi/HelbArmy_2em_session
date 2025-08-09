@@ -203,7 +203,6 @@ public class Controller {
         }
     }
 
-
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
         stones.removeAll(Stone.removeDepletedStones(stones, allElements));
