@@ -19,8 +19,8 @@ public class Seeder extends Unit {
     public static final Tree NO_TREE = new Tree(GameElement.NO_POSITION);
     public static final Stone NO_STONE = new Stone(GameElement.NO_POSITION);
 
-    private Tree plantedTree = null;
-    private Stone plantedStone = null;
+    private Tree plantedTree ;
+    private Stone plantedStone;
 
 
     public Seeder(GameElement position, City city) {
@@ -94,7 +94,7 @@ public class Seeder extends Unit {
     private void chooseStoneTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
         // On conserve la logique spéciale pour la pierre (2x2)
         double maxTotalDistance = -1;
-        GameElement bestSpot = null; //// On ne peut pas remplacer null car bestSpot doit être une position valide pour calculer les distances correctement
+        GameElement bestSpot = null; // On ne peut pas remplacer null car bestSpot doit être une position valide pour calculer les distances correctement
 
 
         List<GameElement> filtered = new ArrayList<>(occupied);

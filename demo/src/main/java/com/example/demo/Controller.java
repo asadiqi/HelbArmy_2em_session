@@ -53,13 +53,13 @@ public class Controller {
         //addGameElement(northSeeder);
         Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
         southSeeder.setTargetRessourceType("tree");
-       // addGameElement(southSeeder);
+        //addGameElement(southSeeder);
 
 
         Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
         //addGameElement(northAssassin);
         Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-       //addGameElement(southAssassin);
+        //addGameElement(southAssassin);
 
         setupGameLoop();
     }
@@ -130,9 +130,9 @@ public class Controller {
         int random = (int) (Math.random() * 3);
 
         switch(random) {
-           // case 0 -> generateCollecters();
-            case 1 -> generateSeeders();
-           // case 2 -> generateAssassins();
+           case 0 -> generateCollecters();
+            //case 1 -> generateSeeders();
+            //case 2 -> generateAssassins();
         }
     }
 
@@ -200,24 +200,15 @@ public class Controller {
             if (element instanceof Seeder seeder) {
                 handleSeeder(seeder);
             } else if (element instanceof Collecter collecter) {
-                handleCollecter(collecter);
+                collecter.handleCollecter(trees, stones, northCity, southCity, allElements, gridCols, gridRows);
+                removeDepletedResources();
             } else if (element instanceof Assassin assassin) {
                 assassin.handleAssassin(gridCols, gridRows, allElements);
             }
         }
     }
 
-    private void handleCollecter(Collecter collecter) {
-        if (!collecter.hasValidTarget() || collecter.hasReachedTarget()) {
-            collecter.findNearestResource(trees, stones);
-        }
 
-        collecter.moveTowardsTarget(gridCols, gridRows, allElements);
-        collecter.collectRessource(trees, stones, northCity, southCity);
-
-        removeDepletedResources();
-
-    }
 
     private void handleSeeder(Seeder seeder) {
         String type = seeder.getTargetRessourceType();

@@ -96,7 +96,6 @@ public class Collecter extends Unit {
             int bonus = getBonus(resourceType);
             City city = getCityOfCollecter(northCity, southCity);
 
-            // Affichage du type de collecteur
             String typeCollecter = isLumberjackCollecter ? "Bûcheron" : "Piocheur";
 
             if ("tree".equals(resourceType)) {
@@ -104,16 +103,14 @@ public class Collecter extends Unit {
                 if (tree.getCurrentWoodAmount() > 0) {
                     tree.decreaseWood(bonus);
                     city.incrementStock(bonus);
-                   // System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +
-                       //     ") a récolté " + bonus + " bois, stock : " + city.getStock());
+                   // System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " bois, stock : " + city.getStock());
                 }
             } else if ("stone".equals(resourceType)) {
                 Stone stone = (Stone) resource;
                 if (stone.getCurrentMineralAmount() > 0) {
                     stone.decreaseMineral(bonus);
                     city.incrementStock(bonus);
-                   // System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +
-                     //       ") a récolté " + bonus + " minerai, stock : " + city.getStock());
+                   // System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " minerai, stock : " + city.getStock());
                 }
             }
         }
@@ -131,6 +128,16 @@ public class Collecter extends Unit {
 
     private City getCityOfCollecter(City northCity, City southCity) {
         return city.isNorth ? northCity : southCity;
+    }
+
+
+    public void handleCollecter(List<Tree> trees, List<Stone> stones, City northCity, City southCity, List<GameElement> allElements, int gridCols, int gridRows) {
+        if (!hasValidTarget() || hasReachedTarget()) {
+            findNearestResource(trees, stones);
+        }
+
+        moveTowardsTarget(gridCols, gridRows, allElements);
+        collectRessource(trees, stones, northCity, southCity);
     }
 
 
