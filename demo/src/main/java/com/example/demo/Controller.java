@@ -11,6 +11,9 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.input.KeyCode;
+
+
 
 
 public class Controller {
@@ -142,22 +145,25 @@ public class Controller {
 
         switch(random) {
            //case 0 -> generateCollecters();
-            case 1 -> generateSeeders();
+           // case 1 -> generateSeeders();
             //case 2 -> generateAssassins();
         }
     }
 
     private void generateCollecters() {
-        int totalResources = trees.size() + stones.size();
-        double lumberjackProbability = 0.5;
-
-        if (totalResources > 0) {
-            lumberjackProbability = (double) trees.size() / totalResources;
-        }
+        double lumberjackProbability = calculateLumberjackProbability();
 
         northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
         southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
     }
+
+
+    private double calculateLumberjackProbability() {
+        int totalResources = trees.size() + stones.size();
+        if (totalResources == 0) return 0.5;
+        return (double) trees.size() / totalResources;
+    }
+
 
     private void generateSeeders() {
         String northType = Math.random() < 0.5 ? "stone" : "tree";
@@ -215,5 +221,24 @@ public class Controller {
     private void generateRandomStones() {
         Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
+
+
+
+
+
+    public void handleKeyPress(KeyCode code) {
+        switch (code) {
+            case A -> {
+                double lumberjackProbability = calculateLumberjackProbability();
+                northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+            }
+
+            default -> {}
+        }
+        view.drawAllElements();
+    }
+
+
+
 
 }
