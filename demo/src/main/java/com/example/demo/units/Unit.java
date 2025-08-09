@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Unit extends GameElement {
-    protected GameElement target = new GameElement(-1, -1);
-    public static final GameElement NO_POSITION = new GameElement(-1, -1);
+    protected GameElement target = GameElement.NO_POSITION; // Cible non définie (position invalide)
+
 
     public Unit(GameElement position) {
         super(position.getX(), position.getY());
@@ -86,10 +86,14 @@ public class Unit extends GameElement {
     }
 
     public void setTarget(GameElement target) {
-        if (target != null) {
+        if (target == null) {
+            // NO_POSITION pour signifie qu'il n'y a pas de cible valide
+            this.target = GameElement.NO_POSITION;
+        } else {
             this.target = target;
         }
     }
+
 
     public static GameElement findNearestFreeCoordinate(GameElement startPos, int maxDistance, int maxX, int maxY, List<GameElement> occupied) {
         for (int dist = 1; dist <= maxDistance; dist++) {
@@ -113,8 +117,9 @@ public class Unit extends GameElement {
                 }
             }
         }
-        return NO_POSITION; // position invalide
-    }
+        // Si aucune case libre n'a été trouvée dans le rayon spécifié,
+        // on retourne la constante NO_POSITION qui indique une position invalide ou "nulle".
+        return GameElement.NO_POSITION;    }
 
     private static boolean isValidAndFree(int x, int y, int maxX, int maxY, List<GameElement> occupied) {
         if (x < 0 || x >= maxX || y < 0 || y >= maxY) return false;

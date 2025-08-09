@@ -7,6 +7,9 @@ public class GameElement {
     protected int x;
     protected int y;
     protected double defaultRatio = 1.0;
+    public static final GameElement NO_POSITION = new GameElement(-1, -1); // Position invalide (aucune position)
+
+
 
     public GameElement(int x, int y) {
         this.x = x;
