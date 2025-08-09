@@ -60,7 +60,7 @@ public class Assassin extends Unit {
                 return;
             } else {
                 GameElement randomFreeCell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
-                if (randomFreeCell != null) { // évite null si pas de case libre
+                if (randomFreeCell != GameElement.NO_POSITION) {
                     setTarget(randomFreeCell);
                     waiting = true;
                 }
