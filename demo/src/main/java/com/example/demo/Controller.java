@@ -146,7 +146,7 @@ public class Controller {
         switch(random) {
            //case 0 -> generateCollecters();
            // case 1 -> generateSeeders();
-            //case 2 -> generateAssassins();
+            // case 2 -> generateAssassins();
         }
     }
 
@@ -222,23 +222,20 @@ public class Controller {
         Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
 
-
-
-
-
     public void handleKeyPress(KeyCode code) {
         switch (code) {
             case A -> {
                 double lumberjackProbability = calculateLumberjackProbability();
                 northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
             }
+            case Z -> {
+                // Choix aléatoire du type de ressource pour le Seeder
+                String resourceType = Math.random() < 0.5 ? "stone" : "tree";
+                northCity.generateSeeder(allElements, gridCols, gridRows, resourceType, maxDistance);
+            }
 
             default -> {}
         }
         view.drawAllElements();
     }
-
-
-
-
 }
