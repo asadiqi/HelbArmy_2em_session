@@ -96,14 +96,17 @@ public class Seeder extends Unit {
     private void chooseStoneTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
         // On conserve la logique spéciale pour la pierre (2x2)
         double maxTotalDistance = -1;
-        GameElement bestSpot = null; // On ne peut pas remplacer null car bestSpot doit être une position valide pour calculer les distances correctement
+        GameElement bestSpot = null; // On initialise bestSpot à null car on n'a pas encore trouvé de position candidate valide
+                                    // null signifie "aucune position valide trouvée pour l'instant"
 
-
+        // On crée une copie des positions occupées, puis on enlève ce Seeder pour ne pas bloquer la recherche
         List<GameElement> filtered = new ArrayList<>(occupied);
         filtered.remove(this);
 
+        // On parcourt toutes les positions possibles où la pierre 2x2 pourrait être plantée
         for (int x = 0; x < maxX - 1; x++) {
             for (int y = 0; y < maxY - 1; y++) {
+                // Vérifie si les 4 cases nécessaires pour la pierre sont libres
                 if (!GameElement.isOccupied(x, y, filtered) &&
                         !GameElement.isOccupied(x + 1, y, filtered) &&
                         !GameElement.isOccupied(x, y + 1, filtered) &&
@@ -111,23 +114,27 @@ public class Seeder extends Unit {
 
                     GameElement center = new GameElement(x, y);
                     double totalDistance = 0;
+
+                    // Calcule la somme des distances entre la position candidate et toutes les pierres existantes
                     for (Stone s : stones) {
                         totalDistance += center.getDistanceWith(s);
                     }
+                    // Si cette position est plus éloignée (distance totale plus grande) que toutes celles déjà testées
                     if (totalDistance > maxTotalDistance) {
                         maxTotalDistance = totalDistance;
-                        bestSpot = center;
+                        bestSpot = center; // bestSpot n'est plus null, on a trouvé une position candidate
                     }
                 }
             }
         }
-
+        // Après la recherche, si bestSpot est toujours null, cela signifie qu'aucune position 2x2 libre n'a été trouvée
         if (bestSpot != null) {
             setTarget(bestSpot);
             System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                     " a choisi une position éloignée pour une pierre : (" +
                     bestSpot.getX() + ", " + bestSpot.getY() + ")");
         } else {
+            // Aucune position trouvée, on informe l'utilisateur que la plantation est impossible actuellement
             System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                     " n’a trouvé aucune position 2x2 libre pour planter une pierre.");
         }
@@ -223,6 +230,7 @@ public class Seeder extends Unit {
             System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
             plantedTree = NO_TREE;
             setTarget(GameElement.NO_POSITION);
+
         }
 
         if (isStone && plantedStone != NO_STONE && plantedStone.isMature()) {

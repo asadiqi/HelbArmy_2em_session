@@ -202,7 +202,7 @@ public class Controller {
         }
     }
 
-    private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
+    private void generateRes ources(List<? extends GameElement> resources, double ratio, boolean isStone) {
         int numberToGenerate = (int) (gridRows * gridCols * ratio);
 
         while (resources.size() < numberToGenerate) {
