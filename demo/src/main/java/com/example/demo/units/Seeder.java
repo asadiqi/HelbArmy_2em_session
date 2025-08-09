@@ -26,6 +26,8 @@ public class Seeder extends Unit {
     public Seeder(GameElement position, City city) {
         super(position);
         this.city = city;
+        this.plantedTree = NO_TREE;
+        this.plantedStone = NO_STONE;
     }
 
     @Override
@@ -214,19 +216,19 @@ public class Seeder extends Unit {
         boolean isTree = type.equalsIgnoreCase("tree");
         boolean isStone = type.equalsIgnoreCase("stone");
 
-        if (isTree && plantedTree != null && !plantedTree.isMature()) return;
-        if (isStone && plantedStone != null && !plantedStone.isMature()) return;
+        if (isTree && plantedTree != NO_TREE && !plantedTree.isMature()) return;
+        if (isStone && plantedStone != NO_STONE && !plantedStone.isMature()) return;
 
-        if (isTree && plantedTree != null && plantedTree.isMature()) {
+        if (isTree && plantedTree != NO_TREE && plantedTree.isMature()) {
             System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
-            plantedTree = null;
-            setTarget(null);
+            plantedTree = NO_TREE;
+            setTarget(GameElement.NO_POSITION);
         }
 
-        if (isStone && plantedStone != null && plantedStone.isMature()) {
+        if (isStone && plantedStone != NO_STONE && plantedStone.isMature()) {
             System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
-            plantedStone = null;
-            setTarget(null);
+            plantedStone = NO_STONE;
+            setTarget(GameElement.NO_POSITION);
         }
 
         if (!hasValidTarget()) {
@@ -246,9 +248,10 @@ public class Seeder extends Unit {
                 plantedStone = planted;
             }
 
-            setTarget(null);
+            setTarget(GameElement.NO_POSITION);
             chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
         }
     }
+
 
 }

@@ -202,12 +202,6 @@ public class Controller {
         }
     }
 
-
-    private void removeDepletedResources() {
-        trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
-        stones.removeAll(Stone.removeDepletedStones(stones, allElements));
-    }
-
     private void generateResources(List<? extends GameElement> resources, double ratio, boolean isStone) {
         int numberToGenerate = (int) (gridRows * gridCols * ratio);
 
@@ -243,6 +237,11 @@ public class Controller {
 
     private void generateRandomStones() {
         generateResources(stones, stoneRatio, true);
+    }
+
+    private void removeDepletedResources() {
+        trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
+        stones.removeAll(Stone.removeDepletedStones(stones, allElements));
     }
 
 }
