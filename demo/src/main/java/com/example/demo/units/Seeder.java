@@ -16,8 +16,12 @@ public class Seeder extends Unit {
     public static String southSeederPath = "img/black/southSeeder.png";
     private City city;
     private String targetRessourceType;
+    public static final Tree NO_TREE = new Tree(GameElement.NO_POSITION);
+    public static final Stone NO_STONE = new Stone(GameElement.NO_POSITION);
+
     private Tree plantedTree = null;
     private Stone plantedStone = null;
+
 
     public Seeder(GameElement position, City city) {
         super(position);
@@ -70,7 +74,7 @@ public class Seeder extends Unit {
 
         if (trees.isEmpty()) {
             GameElement randomFree = GameElement.getRandomFreeCell(maxX, maxY, occupied);
-            if (randomFree != null) {
+            if (randomFree != GameElement.NO_POSITION) {
                 setTarget(randomFree);
                 System.out.println("Seeder " + (city.isNorth ? "nord" : "sud") +
                         " n’a trouvé aucun arbre, il cible une position libre aléatoire : (" +
@@ -90,7 +94,8 @@ public class Seeder extends Unit {
     private void chooseStoneTarget(List<Stone> stones, int maxX, int maxY, List<GameElement> occupied) {
         // On conserve la logique spéciale pour la pierre (2x2)
         double maxTotalDistance = -1;
-        GameElement bestSpot = null;
+        GameElement bestSpot = null; //// On ne peut pas remplacer null car bestSpot doit être une position valide pour calculer les distances correctement
+
 
         List<GameElement> filtered = new ArrayList<>(occupied);
         filtered.remove(this);
@@ -167,7 +172,7 @@ public class Seeder extends Unit {
     }
 
     public Tree plantTree(List<GameElement> occupied, List<Tree> trees, int maxX, int maxY) {
-        if (!hasValidTarget()) return null;
+        if (!hasValidTarget()) return NO_TREE;
 
         List<GameElement> freeAdjacent = getAccessibleAdjacentCoordinates(target, maxX, maxY, occupied);
         if (!freeAdjacent.isEmpty()) {
@@ -176,12 +181,12 @@ public class Seeder extends Unit {
             return plantedTree;
         } else {
             System.out.println("Aucune case libre autour de l’arbre pour planter.");
-            return null;
+            return NO_TREE;
         }
     }
 
     public Stone plantStone(List<GameElement> occupied, List<Stone> stones, int gridCols, int gridRows) {
-        if (!hasValidTarget()) return null;
+        if (!hasValidTarget()) return NO_STONE;
         plantResourceAt(target, occupied, stones, false, gridCols, gridRows);
         return plantedStone;
     }
