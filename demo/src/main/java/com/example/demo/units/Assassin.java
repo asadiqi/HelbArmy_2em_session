@@ -9,6 +9,7 @@ public class Assassin extends Unit {
 
     public static String northAssassinPath = "img/white/northAssassin.png";
     public static String southAssassinPath = "img/black/southAssassin.png";
+    public static final Assassin NO_ASSASSIN = new Assassin(GameElement.NO_POSITION, null);
 
     public City city;
     private boolean waiting = false;
@@ -29,7 +30,7 @@ public class Assassin extends Unit {
 
     public Assassin findClosestEnemyAssassin(List<GameElement> allElements) {
         double minDistance = Double.MAX_VALUE;
-        Assassin closest = null;
+        Assassin closest = NO_ASSASSIN;
 
         for (GameElement element : allElements) {
             if (element instanceof Assassin other &&
@@ -49,7 +50,7 @@ public class Assassin extends Unit {
     public void handleAssassin(int gridCols, int gridRows, List<GameElement> allElements) {
         Assassin closestEnemy = findClosestEnemyAssassin(allElements);
 
-        if (closestEnemy != null) {
+        if (closestEnemy != NO_ASSASSIN) {
             waiting = false;
             setTarget(new GameElement(closestEnemy.getX(), closestEnemy.getY()));
         } else {

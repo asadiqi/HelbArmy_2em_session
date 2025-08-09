@@ -131,8 +131,8 @@ public class Controller {
 
         switch(random) {
            // case 0 -> generateCollecters();
-            case 1 -> generateSeeders();
-           // case 2 -> generateAssassins();
+            //case 1 -> generateSeeders();
+            case 2 -> generateAssassins();
         }
     }
 
