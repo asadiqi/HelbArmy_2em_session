@@ -64,16 +64,15 @@ public class Controller {
         setupGameLoop();
     }
 
+    public List<GameElement> getGameElements() {
+        return allElements;
+    }
     public int getGridRows() {
         return gridRows;
     }
 
     public int getGridCols() {
         return gridCols;
-    }
-
-    public List<GameElement> getGameElements() {
-        return allElements;
     }
 
     private void growPlantedTrees() {
@@ -92,7 +91,6 @@ public class Controller {
         allElements.add(element);
     }
 
-
     public void setupCity() {
         int lastRow = gridRows - LAST_INDEX_OFFSET;
         int lastCol = gridCols - LAST_INDEX_OFFSET;
@@ -106,7 +104,6 @@ public class Controller {
         // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
         // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
-
 
     private void setupGameLoop() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
@@ -126,12 +123,25 @@ public class Controller {
         timeline.play();
     }
 
+    private void moveUnits() {
+        for (GameElement element : new ArrayList<>(allElements)) {
+            if (element instanceof Seeder seeder) {
+                seeder.handleSeeder(trees, stones, allElements, gridCols, gridRows);
+            } else if (element instanceof Collecter collecter) {
+                collecter.handleCollecter(trees, stones, northCity, southCity, allElements, gridCols, gridRows);
+                removeDepletedResources();
+            } else if (element instanceof Assassin assassin) {
+                assassin.handleAssassin(gridCols, gridRows, allElements);
+            }
+        }
+    }
+
     private void generateUnits() {
         int random = (int) (Math.random() * 3);
 
         switch(random) {
-           case 0 -> generateCollecters();
-            //case 1 -> generateSeeders();
+           //case 0 -> generateCollecters();
+            case 1 -> generateSeeders();
             //case 2 -> generateAssassins();
         }
     }
@@ -192,66 +202,6 @@ public class Controller {
         }
     }
 
-
-
-
-    private void moveUnits() {
-        for (GameElement element : new ArrayList<>(allElements)) {
-            if (element instanceof Seeder seeder) {
-                handleSeeder(seeder);
-            } else if (element instanceof Collecter collecter) {
-                collecter.handleCollecter(trees, stones, northCity, southCity, allElements, gridCols, gridRows);
-                removeDepletedResources();
-            } else if (element instanceof Assassin assassin) {
-                assassin.handleAssassin(gridCols, gridRows, allElements);
-            }
-        }
-    }
-
-
-
-    private void handleSeeder(Seeder seeder) {
-        String type = seeder.getTargetRessourceType();
-
-        boolean isTree = type.equalsIgnoreCase("tree");
-        boolean isStone = type.equalsIgnoreCase("stone");
-
-        if (isTree && seeder.getPlantedTree() != null && !seeder.getPlantedTree().isMature()) return;
-        if (isStone && seeder.getPlantedStone() != null && !seeder.getPlantedStone().isMature()) return;
-
-        if (isTree && seeder.getPlantedTree() != null && seeder.getPlantedTree().isMature()) {
-            System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
-            seeder.setPlantedTree(null);
-            seeder.setTarget(null);
-        }
-
-        if (isStone && seeder.getPlantedStone() != null && seeder.getPlantedStone().isMature()) {
-            System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
-            seeder.setPlantedStone(null);
-            seeder.setTarget(null);
-        }
-
-        if (!seeder.hasValidTarget()) {
-            seeder.chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
-        }
-
-        seeder.moveTowardsTarget(gridCols, gridRows, allElements);
-
-        boolean reached = isTree ? seeder.hasReachedTarget() : seeder.isAdjacentToTargetZone();
-
-        if (reached) {
-            if (isTree) {
-                Tree planted = seeder.plantTree(allElements, trees, gridCols, gridRows);
-                seeder.setPlantedTree(planted);
-            } else {
-                Stone planted = seeder.plantStone(allElements, stones, gridCols, gridRows);
-                seeder.setPlantedStone(planted);
-            }
-
-            seeder.setTarget(null);
-            seeder.chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
-        }
-    }
 
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));

@@ -207,4 +207,48 @@ public class Seeder extends Unit {
         }
         return false;
     }
+
+    public void handleSeeder(List<Tree> trees, List<Stone> stones, List<GameElement> allElements, int gridCols, int gridRows) {
+        String type = this.getTargetRessourceType();
+
+        boolean isTree = type.equalsIgnoreCase("tree");
+        boolean isStone = type.equalsIgnoreCase("stone");
+
+        if (isTree && plantedTree != null && !plantedTree.isMature()) return;
+        if (isStone && plantedStone != null && !plantedStone.isMature()) return;
+
+        if (isTree && plantedTree != null && plantedTree.isMature()) {
+            System.out.println("Seeder reprend sa mission, arbre planté arrivé à maturité");
+            plantedTree = null;
+            setTarget(null);
+        }
+
+        if (isStone && plantedStone != null && plantedStone.isMature()) {
+            System.out.println("Seeder reprend sa mission, pierre plantée arrivée à maturité");
+            plantedStone = null;
+            setTarget(null);
+        }
+
+        if (!hasValidTarget()) {
+            chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
+        }
+
+        moveTowardsTarget(gridCols, gridRows, allElements);
+
+        boolean reached = isTree ? hasReachedTarget() : isAdjacentToTargetZone();
+
+        if (reached) {
+            if (isTree) {
+                Tree planted = plantTree(allElements, trees, gridCols, gridRows);
+                plantedTree = planted;
+            } else {
+                Stone planted = plantStone(allElements, stones, gridCols, gridRows);
+                plantedStone = planted;
+            }
+
+            setTarget(null);
+            chooseTarget(type, isTree ? trees : stones, gridCols, gridRows, allElements);
+        }
+    }
+
 }
