@@ -16,7 +16,6 @@ public abstract class Resource extends GameElement {
         this.maxAmount = maxAmount;
     }
 
-
     public void setAmount(int amount) {
         this.amount = Math.max(0, Math.min(maxAmount, amount));
     }
@@ -51,7 +50,6 @@ public abstract class Resource extends GameElement {
     @Override
     public abstract String getImagePath();
 
-
     public void growResource() {
         if (isGrowing() && !isMature()) {
             int before = amount;
@@ -69,8 +67,6 @@ public abstract class Resource extends GameElement {
 
     protected abstract String getResourceName();
 
-
-
     public boolean removeIfDepleted(List<GameElement> allElements) {
         if (isDepleted()) {
             allElements.remove(this);
@@ -80,9 +76,8 @@ public abstract class Resource extends GameElement {
         return false;
     }
 
+    protected static int computeNumberToGenerate (int gridcols, int gridrows, double ratio) {
+        return (int) (gridrows * gridcols * ratio);
 
-
-
-
-
+    }
 }

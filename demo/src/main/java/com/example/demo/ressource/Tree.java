@@ -47,8 +47,18 @@ public class Tree extends Resource {
         return toRemove;
     }
 
+    public static void generateTrees(List<Tree> trees, List<GameElement> allElements, int gridCols, int gridRows, double ratio) {
+        int numberToGenerate = computeNumberToGenerate(gridCols,gridRows,ratio);
+        while (trees.size() < numberToGenerate) {
+            GameElement cell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
+            if (!cell.equals(GameElement.NO_POSITION)) {
+                Tree tree = new Tree(cell);
+                trees.add(tree);
+                allElements.add(tree);
+            }
 
-
+        }
+    }
 
 
 

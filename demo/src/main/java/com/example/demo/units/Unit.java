@@ -5,7 +5,7 @@ import com.example.demo.GameElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Unit extends GameElement {
+public abstract class Unit extends GameElement {
     protected GameElement target = GameElement.NO_POSITION; // Cible non définie (position invalide)
 
 

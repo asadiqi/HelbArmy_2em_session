@@ -64,15 +64,16 @@ public class Controller {
         setupGameLoop();
     }
 
-    public List<GameElement> getGameElements() {
-        return allElements;
-    }
     public int getGridRows() {
         return gridRows;
     }
 
     public int getGridCols() {
         return gridCols;
+    }
+
+    public List<GameElement> getGameElements() {
+        return allElements;
     }
 
     private void growPlantedTrees() {
@@ -202,46 +203,18 @@ public class Controller {
         }
     }
 
-    private void generateRes ources(List<? extends GameElement> resources, double ratio, boolean isStone) {
-        int numberToGenerate = (int) (gridRows * gridCols * ratio);
-
-        while (resources.size() < numberToGenerate) {
-            if (isStone) {
-                // Pour pierre 2x2
-                GameElement cell = GameElement.getRandomFreeCell(gridCols - 1, gridRows - 1, allElements);
-                if (!cell.equals(GameElement.NO_POSITION) &&
-                        !GameElement.isOccupied(cell.getX() + 1, cell.getY(), allElements) &&
-                        !GameElement.isOccupied(cell.getX(), cell.getY() + 1, allElements) &&
-                        !GameElement.isOccupied(cell.getX() + 1, cell.getY() + 1, allElements)) {
-
-                    Stone stone = new Stone(new GameElement(cell.getX(), cell.getY()));
-                    ((List<Stone>) resources).add(stone);
-                    addGameElement(stone);
-                    allElements.addAll(stone.getOccupiedCells());
-                }
-            } else {
-                // Pour arbre 1x1
-                GameElement cell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
-                if (!cell.equals(GameElement.NO_POSITION)) {
-                    Tree tree = new Tree(new GameElement(cell.getX(), cell.getY()));
-                    ((List<Tree>) resources).add(tree);
-                    addGameElement(tree);
-                }
-            }
-        }
-    }
-
-    private void generateRandomTrees() {
-        generateResources(trees, treeRatio, false);
-    }
-
-    private void generateRandomStones() {
-        generateResources(stones, stoneRatio, true);
-    }
 
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
         stones.removeAll(Stone.removeDepletedStones(stones, allElements));
+    }
+
+    private void generateRandomTrees() {
+        Tree.generateTrees(trees, allElements, gridCols,gridRows,treeRatio);
+    }
+
+    private void generateRandomStones() {
+        Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
 
 }

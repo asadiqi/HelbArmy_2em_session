@@ -72,5 +72,22 @@
         }
 
 
+        public static  void generateStones(List<Stone> stones, List<GameElement> allElements, int gridCols, int gridRows, double ratio) {
+            int numberToGenerate = computeNumberToGenerate(gridCols, gridRows, ratio);
+
+            while (stones.size() < numberToGenerate) {
+                GameElement cell = GameElement.getRandomFreeCell(gridCols - 1, gridRows - 1, allElements);
+                if (!cell.equals(GameElement.NO_POSITION) &&
+                        !GameElement.isOccupied(cell.getX() + 1, cell.getY(), allElements) &&
+                        !GameElement.isOccupied(cell.getX(), cell.getY() + 1, allElements) &&
+                        !GameElement.isOccupied(cell.getX() + 1, cell.getY() + 1, allElements)) {
+
+                    Stone stone = new Stone(cell);
+                    stones.add(stone);
+                    allElements.add(stone);
+                    allElements.addAll(stone.getOccupiedCells());
+                }
+            }
+        }
 
     }
