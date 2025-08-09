@@ -274,7 +274,7 @@ public class Controller {
             if (isStone) {
                 // Pour pierre 2x2
                 GameElement cell = GameElement.getRandomFreeCell(gridCols - 1, gridRows - 1, allElements);
-                if (cell != null &&
+                if (!cell.equals(GameElement.NO_POSITION) &&
                         !GameElement.isOccupied(cell.getX() + 1, cell.getY(), allElements) &&
                         !GameElement.isOccupied(cell.getX(), cell.getY() + 1, allElements) &&
                         !GameElement.isOccupied(cell.getX() + 1, cell.getY() + 1, allElements)) {
@@ -287,7 +287,7 @@ public class Controller {
             } else {
                 // Pour arbre 1x1
                 GameElement cell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
-                if (cell != null) {
+                if (!cell.equals(GameElement.NO_POSITION)) {
                     Tree tree = new Tree(new GameElement(cell.getX(), cell.getY()));
                     ((List<Tree>) resources).add(tree);
                     addGameElement(tree);

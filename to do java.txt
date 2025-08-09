@@ -145,4 +145,7 @@ controller génération de unités dans controller
 ________________________________________
 
 
+comment seeder palnte des ressource si y a pas gerate ressource dans controller ?
+
+
 
