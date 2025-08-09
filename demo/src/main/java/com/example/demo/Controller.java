@@ -144,70 +144,21 @@ public class Controller {
         int random = (int) (Math.random() * 3);
 
         switch(random) {
-           //case 0 -> generateCollecters();
-           // case 1 -> generateSeeders();
-            // case 2 -> generateAssassins();
-        }
-    }
-
-    private void generateCollecters() {
-        double lumberjackProbability = calculateLumberjackProbability();
-
-        northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
-        southCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
-    }
-
-
-    private double calculateLumberjackProbability() {
-        int totalResources = trees.size() + stones.size();
-        if (totalResources == 0) return 0.5;
-        return (double) trees.size() / totalResources;
-    }
-
-
-    private void generateSeeders() {
-        String northType = Math.random() < 0.5 ? "stone" : "tree";
-        String southType = Math.random() < 0.5 ? "stone" : "tree";
-
-        northCity.generateSeeder(allElements, gridCols, gridRows, northType, maxDistance);
-        southCity.generateSeeder(allElements, gridCols, gridRows, southType, maxDistance);
-    }
-
-    private void generateAssassins() {
-        int assassinsNorth = 0;
-        int assassinsSouth = 0;
-        for (GameElement e : allElements) {
-            if (e instanceof Assassin a) {
-                if (a.getCity().isNorth) assassinsNorth++;
-                else assassinsSouth++;
+            case 0 -> {
+             //   northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+               // southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             }
-        }
-
-        double maxProbability = 0.9;
-        double baseProbability = 0.1;
-
-        double probAssassinNorth = Math.min(baseProbability + (assassinsSouth / 5.0), maxProbability);
-        double probAssassinSouth = Math.min(baseProbability + (assassinsNorth / 5.0), maxProbability);
-
-        int totalAssassins = assassinsNorth + assassinsSouth;
-
-        if (totalAssassins == 0) {
-            if (Math.random() < 0.5) {
-                northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                System.out.println("Premier assassin généré de force côté nord");
-            } else {
-                southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-                System.out.println("Premier assassin généré de force côté sud");
+            case 1 -> {
+               // northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+               // southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
             }
-        } else {
-            if (Math.random() < probAssassinNorth) {
-                northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
-            }
-            if (Math.random() < probAssassinSouth) {
-                southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            case 2 -> {
+               // northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+               // southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             }
         }
     }
+
 
     private void removeDepletedResources() {
         trees.removeAll(Tree.removeDepletedTrees(trees, allElements));
@@ -222,10 +173,11 @@ public class Controller {
         Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
 
+
     public void handleKeyPress(KeyCode code) {
         switch (code) {
             case A -> {
-                double lumberjackProbability = calculateLumberjackProbability();
+                double lumberjackProbability = City.calculateLumberjackProbability(trees,stones);
                 northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
             }
             case Z -> {
@@ -238,4 +190,5 @@ public class Controller {
         }
         view.drawAllElements();
     }
+
 }

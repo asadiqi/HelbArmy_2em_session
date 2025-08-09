@@ -48,9 +48,9 @@ public class View {
         this.controller = controller;
         this.scene = new Scene(pane, INITIAL_WIDTH, INITIAL_HEIGHT);
 
-        scene.setOnKeyPressed(event -> {
-            controller.handleKeyPress(event.getCode());
-        });
+//        scene.setOnKeyPressed(event -> {
+//            controller.handleKeyPress(event.getCode());
+//        });
 
         initiatgrid();
         drawGrid();
