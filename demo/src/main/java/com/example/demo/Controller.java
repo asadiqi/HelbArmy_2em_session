@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.input.KeyCode;
 
-
-
-
 public class Controller {
 
     private View view;
@@ -46,25 +43,6 @@ public class Controller {
         generateRandomTrees();
         generateRandomStones();
         view.initView(this);
-
-        Collecter collecter = new Collecter(new GameElement(1, 1), northCity, true);
-        //addGameElement(collecter);
-        Collecter collecter1 = new Collecter(new GameElement(gridRows - 1, gridCols - 1), southCity, false);
-        //addGameElement(collecter1);
-
-        Seeder northSeeder = new Seeder(new GameElement(1, 1), northCity);
-        northSeeder.setTargetRessourceType("stone");
-        //addGameElement(northSeeder);
-        Seeder southSeeder = new Seeder(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        southSeeder.setTargetRessourceType("tree");
-        //addGameElement(southSeeder);
-
-
-        Assassin northAssassin = new Assassin(new GameElement(1, 1), northCity);
-        //addGameElement(northAssassin);
-        Assassin southAssassin = new Assassin(new GameElement(gridRows - 2, gridCols - 2), southCity);
-        //addGameElement(southAssassin);
-
         setupGameLoop();
     }
 
@@ -91,8 +69,6 @@ public class Controller {
             stone.growResource();
         }
     }
-
-
 
     public void setupCity() {
         int lastRow = gridRows - LAST_INDEX_OFFSET;
@@ -176,12 +152,12 @@ public class Controller {
         switch (code) {
             case A -> northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             case Z -> northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
-            case E -> northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            case E -> northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             case R -> northCity.generateRandomUnit(trees, stones, allElements, gridCols, gridRows, maxDistance);
 
             case W -> southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             case X -> southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
-            case C -> southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            case C -> southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             case V -> southCity.generateRandomUnit(trees, stones, allElements, gridCols, gridRows, maxDistance);
 
             case J -> allElements.removeIf(e -> e instanceof Collecter);
@@ -193,7 +169,7 @@ public class Controller {
                 trees.clear();
                 stones.clear();
                 northCity=null; // On ne peut pas supprimer un objet de la mémoire sans mettre à null toutes ses références, car Java supprime en mémoire uniquement les objets plus référencés.
-                southCity=null;
+                southCity=null; // On ne peut pas supprimer un objet de la mémoire sans mettre à null toutes ses références, car Java supprime en mémoire uniquement les objets plus référencés.
 
             }
 
@@ -201,6 +177,4 @@ public class Controller {
         }
         view.drawAllElements();
     }
-
-
 }

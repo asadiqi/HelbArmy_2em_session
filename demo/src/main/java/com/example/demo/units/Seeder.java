@@ -14,7 +14,7 @@ public class Seeder extends Unit {
 
     public static String northSeederPath = "img/white/northSeeder.png";
     public static String southSeederPath = "img/black/southSeeder.png";
-    private City city;
+    City city;
     private String targetRessourceType;
     public static final Tree NO_TREE = new Tree(GameElement.NO_POSITION);
     public static final Stone NO_STONE = new Stone(GameElement.NO_POSITION);
