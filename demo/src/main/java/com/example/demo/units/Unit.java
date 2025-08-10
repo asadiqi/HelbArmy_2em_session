@@ -128,4 +128,6 @@ public abstract class Unit extends GameElement {
         // libre si NON occupé
         return !GameElement.isOccupied(x, y, occupied);
     }
+
+
 }

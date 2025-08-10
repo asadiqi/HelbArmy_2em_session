@@ -69,4 +69,5 @@ public class Assassin extends Unit {
         }
         moveTowardsTarget(gridCols, gridRows, allElements);
     }
+
 }

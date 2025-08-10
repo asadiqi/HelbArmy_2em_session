@@ -70,4 +70,7 @@ public class GameElement {
         }
         return NO_POSITION; // pas trouvé
     }
+
+
+
 }

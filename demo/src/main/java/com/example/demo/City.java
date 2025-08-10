@@ -110,6 +110,16 @@ public class City extends GameElement {
     }
 
 
+    public void generateRandomUnit(List<Tree> trees, List<Stone> stones, List<GameElement> allElements,
+                                   int gridCols, int gridRows, int maxDistance) {
+        int random = (int) (Math.random() * 3);
+        switch (random) {
+            case 0 -> generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+            case 1 -> generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+            case 2 -> generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+        }
+    }
+
 
 
 

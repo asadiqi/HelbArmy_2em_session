@@ -5,6 +5,7 @@ import com.example.demo.ressource.Tree;
 import com.example.demo.units.Assassin;
 import com.example.demo.units.Collecter;
 import com.example.demo.units.Seeder;
+import com.example.demo.units.Unit;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -91,9 +92,7 @@ public class Controller {
         }
     }
 
-    private void addGameElement(GameElement element) {
-        allElements.add(element);
-    }
+
 
     public void setupCity() {
         int lastRow = gridRows - LAST_INDEX_OFFSET;
@@ -173,22 +172,28 @@ public class Controller {
         Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
 
-
     public void handleKeyPress(KeyCode code) {
         switch (code) {
-            case A -> {
-                double lumberjackProbability = City.calculateLumberjackProbability(trees,stones);
-                northCity.generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
-            }
-            case Z -> {
-                // Choix aléatoire du type de ressource pour le Seeder
-                String resourceType = Math.random() < 0.5 ? "stone" : "tree";
-                northCity.generateSeeder(allElements, gridCols, gridRows, resourceType, maxDistance);
-            }
+            case A -> northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+            case Z -> northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+            case E -> northCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            case R -> northCity.generateRandomUnit(trees, stones, allElements, gridCols, gridRows, maxDistance);
+
+            case W -> southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+            case X -> southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+            case C -> southCity.generateAssassin(allElements, gridCols, gridRows, maxDistance);
+            case V -> southCity.generateRandomUnit(trees, stones, allElements, gridCols, gridRows, maxDistance);
+
+            case J -> allElements.removeIf(e -> e instanceof Collecter);
+            case K -> allElements.removeIf(e -> e instanceof Seeder);
+            case L -> allElements.removeIf(e -> e instanceof Assassin);
+            case M -> allElements.removeIf(e -> e instanceof Unit);
+            case U -> allElements.removeIf(e -> !(e instanceof Unit));
 
             default -> {}
         }
         view.drawAllElements();
     }
+
 
 }
