@@ -144,7 +144,7 @@ public class Controller {
 
         switch(random) {
             case 0 -> {
-             //   northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+               // northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
                // southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             }
             case 1 -> {
@@ -188,7 +188,14 @@ public class Controller {
             case K -> allElements.removeIf(e -> e instanceof Seeder);
             case L -> allElements.removeIf(e -> e instanceof Assassin);
             case M -> allElements.removeIf(e -> e instanceof Unit);
-            case U -> allElements.removeIf(e -> !(e instanceof Unit));
+            case U -> {
+                allElements.removeIf(e -> !(e instanceof Unit));
+                trees.clear();
+                stones.clear();
+                northCity=null; // On ne peut pas supprimer un objet de la mémoire sans mettre à null toutes ses références, car Java supprime en mémoire uniquement les objets plus référencés.
+                southCity=null;
+
+            }
 
             default -> {}
         }
