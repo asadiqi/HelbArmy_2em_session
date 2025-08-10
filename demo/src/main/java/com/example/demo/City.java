@@ -14,10 +14,10 @@ public class City extends GameElement {
 
     private static final String northCityFilePath = "img/white/northCity.png";
     private static final String southCityFilePath = "img/black/southCity.png";
-
-
     public boolean isNorth;
-    private int stock = 0;
+
+    private int stockWood = 0;  // stock pour le bois
+    private int stockStone = 0; // stock pour le minerai
 
     public City(GameElement position, boolean isNorth) {
         super(position.getX(), position.getY());
@@ -29,13 +29,22 @@ public class City extends GameElement {
         return isNorth ? northCityFilePath : southCityFilePath;
     }
 
-    public int getStock() {
-        return stock;
+    public int getStockWood() {
+        return stockWood;
     }
 
-    public void incrementStock(int amount) {
-        stock += amount;
+    public void incrementStockWood(int amount) {
+        stockWood += amount;
     }
+
+    public int getStockStone() {
+        return stockStone;
+    }
+
+    public void incrementStockStone(int amount) {
+        stockStone += amount;
+    }
+
 
 
     private GameElement findPlacementForUnit(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {

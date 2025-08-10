@@ -102,15 +102,15 @@ public class Collecter extends Unit {
                 Tree tree = (Tree) resource;
                 if (tree.getCurrentWoodAmount() > 0) {
                     tree.decreaseWood(bonus);
-                    city.incrementStock(bonus);
-                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " bois, stock : " + city.getStock());
+                    city.incrementStockWood(bonus);
+                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " bois, stock : " + city.getStockWood());
                 }
             } else if ("stone".equals(resourceType)) {
                 Stone stone = (Stone) resource;
                 if (stone.getCurrentMineralAmount() > 0) {
                     stone.decreaseMineral(bonus);
-                    city.incrementStock(bonus);
-                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " minerai, stock : " + city.getStock());
+                    city.incrementStockStone(bonus);
+                    System.out.println(typeCollecter + " (" + (city.isNorth ? "nord" : "sud") +") a récolté " + bonus + " minerai, stock : " + city.getStockStone());
                 }
             }
         }

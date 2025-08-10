@@ -41,6 +41,10 @@ public class View {
         this.pane = new Pane();
         this.canvas = new Canvas(INITIAL_WIDTH, INITIAL_HEIGHT);
         pane.getChildren().add(canvas);
+
+        stage.setOnCloseRequest(event -> {
+            controller.endGame();
+        });
     }
 
 
@@ -62,6 +66,7 @@ public class View {
     public void setUpStage(){
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(scene);
+
         stage.show();
     }
 
@@ -107,4 +112,7 @@ public class View {
 
         }
     }
+
+
+
 }

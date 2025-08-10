@@ -32,6 +32,9 @@ public class Controller {
     private static final int GAMELOOP_INERVAL_MS = 1000;
     private static final int UNIT_GENRATION_MS = 500;
     private int elapsedTimeMs = 0;
+    private Timeline timeline;
+    private boolean isKeyPressBlocked = false;
+
 
 
     public Controller(View view) {
@@ -85,7 +88,7 @@ public class Controller {
     }
 
     private void setupGameLoop() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.millis(GAMELOOP_INERVAL_MS), event -> {
             moveUnits();
             growPlantedStones();
             growPlantedTrees();
@@ -148,7 +151,43 @@ public class Controller {
         Stone.generateStones(stones, allElements, gridCols,gridRows,stoneRatio);
     }
 
+    public void afficherResultat() {
+        int boisNord = 0;
+        int mineraiNord = 0;
+        int boisSud = 0;
+        int mineraiSud = 0;
+
+        boisNord = northCity.getStockWood();
+        mineraiNord = northCity.getStockStone();
+
+        boisSud = southCity.getStockWood();
+        mineraiSud = southCity.getStockStone();
+
+        System.out.println("=== Résultats fin de partie ===");
+        System.out.println("Nord - Bois : " + boisNord + ", Minerai : " + mineraiNord);
+        System.out.println("Sud  - Bois : " + boisSud + ", Minerai : " + mineraiSud);
+
+        if (boisNord > boisSud && mineraiNord > mineraiSud) {
+            System.out.println("Victoire de l'équipe Nord !");
+        } else if (boisSud > boisNord && mineraiSud > mineraiNord) {
+            System.out.println("Victoire de l'équipe Sud !");
+        } else {
+            System.out.println("Égalité !");
+        }
+    }
+
+    public void endGame() {
+        timeline.stop();
+        isKeyPressBlocked = true;
+        afficherResultat();
+    }
+
+
     public void handleKeyPress(KeyCode code) {
+        if (isKeyPressBlocked) {
+            // Ne rien faire si bloqué
+            return;
+        }
         switch (code) {
             case A -> northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             case Z -> northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
@@ -172,6 +211,12 @@ public class Controller {
                 southCity=null; // On ne peut pas supprimer un objet de la mémoire sans mettre à null toutes ses références, car Java supprime en mémoire uniquement les objets plus référencés.
 
             }
+            case O -> {
+                    timeline.stop();
+                    isKeyPressBlocked = true;
+                    afficherResultat();
+                }
+
 
             default -> {}
         }
