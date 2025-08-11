@@ -36,7 +36,7 @@ public class Controller {
     private int elapsedTimeMs = 0;
     private Timeline timeline;
     private boolean isKeyPressBlocked = false;
-    private Flag currentFlag;
+    private Flag currentFlag = Flag.NO_FLAG;
     private Timeline flagTimeline;
 
 
@@ -45,13 +45,14 @@ public class Controller {
         this.trees = new ArrayList<Tree>();
         this.stones = new ArrayList<Stone>();
         currentFlag = new Flag(GameElement.NO_POSITION); // flag "inactif" au départ, pas dans la liste
-        setupFlagCycle();
 
         setupCity();
         generateRandomTrees();
         generateRandomStones();
         view.initView(this);
         setupGameLoop();
+        createFlag();
+
 
     }
 
@@ -189,35 +190,49 @@ public class Controller {
         afficherResultat();
     }
 
-    private void setupFlagCycle() {
-        flagTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-            // Supprimer ancien drapeau
-            if (currentFlag != null) {
-                allElements.remove(currentFlag);
-                currentFlag = null;
-                view.drawAllElements();
-            }
+    private void addFlagWithTimeout() {
+        flagTimeline.stop();  // on stoppe la timeline auto sans vérifier null
 
-            // Créer un nouveau drapeau
-            Flag newFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
-            if (newFlag != null) {
-                currentFlag = newFlag;
+        Flag flag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
+        if (flag != Flag.NO_FLAG) {
+            view.drawAllElements();
+
+            Timeline flagDisappearing = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+                allElements.remove(flag);
                 view.drawAllElements();
 
-                // Après 10 secondes, supprimer le drapeau
-                Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(2), ev -> {
-                    allElements.remove(currentFlag);
-                    currentFlag = null;
+                // On relance la génération automatique du flag après disparition
+                flagTimeline.play();
+            }));
+
+            flagDisappearing.setCycleCount(1);
+            flagDisappearing.play();
+        } else {
+            // Si aucun flag n'est créé, on relance quand même la timeline auto
+            flagTimeline.play();
+        }
+    }
+
+
+
+    private void createFlag() {
+        flagTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(5), e -> {
+                    currentFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
                     view.drawAllElements();
-                }));
-                removeFlagTimeline.setCycleCount(1);
-                removeFlagTimeline.play();
-            }
-        }));
+                }),
+                new KeyFrame(Duration.seconds(15), e -> {
+                    allElements.remove(currentFlag);
+                    currentFlag = Flag.NO_FLAG;
+                    view.drawAllElements();
+                }),
+                new KeyFrame(Duration.seconds(20))
+        );
 
         flagTimeline.setCycleCount(Animation.INDEFINITE);
         flagTimeline.play();
     }
+
 
 
     public void handleKeyPress(KeyCode code) {
@@ -253,7 +268,8 @@ public class Controller {
                     isKeyPressBlocked = true;
                     afficherResultat();
                 }
-            case I -> Flag.createFlagIfNone(allElements, gridRows, gridCols);
+
+                case I -> addFlagWithTimeout();
 
             case P -> MagicStone.createMagicStoneAtRandomPosition(allElements, gridRows, gridCols);
 

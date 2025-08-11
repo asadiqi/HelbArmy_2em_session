@@ -8,6 +8,7 @@ import java.util.List;
 public class Flag extends GameElement {
 
     public static String flagImagePath = "img/flag.png";
+    public static final Flag NO_FLAG = new Flag(GameElement.NO_POSITION);
 
     public Flag(GameElement position) {
         super(position.getX(), position.getY());
@@ -21,17 +22,19 @@ public class Flag extends GameElement {
     // Renvoie le drapeau créé ou null si déjà présent ou pas de place
     public static Flag createFlagIfNone(List<GameElement> allElements, int gridRows, int gridCols) {
         for (GameElement e : allElements) {
-            if (e instanceof Flag) return null; // déjà un drapeau
+            if (e instanceof Flag) return NO_FLAG; // déjà un drapeau
         }
         GameElement freePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
         if (!freePos.equals(GameElement.NO_POSITION)) {
-            Flag flag = new Flag(freePos);
-            allElements.add(flag);
-            return flag;
-        } else {
-            System.out.println("No free position available to create a Flag.");
-            return null;
+            Flag newFlag = new Flag(freePos);
+            allElements.add(newFlag);
+            return newFlag;
         }
+        return NO_FLAG;
+    }
+
+    public boolean isValid() {
+        return !(this.x == -1 && this.y == -1);
     }
 
 }
