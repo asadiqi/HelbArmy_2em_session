@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.collectable.Flag;
+import com.example.demo.collectable.MagicStone;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
 import com.example.demo.units.Assassin;
@@ -47,7 +49,17 @@ public class Controller {
         generateRandomStones();
         view.initView(this);
         setupGameLoop();
+
+//        Flag flag = new Flag(new GameElement(1, 1));
+//        addGameElement(flag);
+
     }
+
+//    public void addGameElement(GameElement element) {
+//        if (element == null || element == GameElement.NO_POSITION) return;
+//        allElements.add(element);
+//        view.drawAllElements();
+//    }
 
     public int getGridRows() {
         return gridRows;
@@ -131,8 +143,8 @@ public class Controller {
                // southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
             }
             case 2 -> {
-                northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
-                southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+               // northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+               // southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             }
         }
     }
@@ -216,6 +228,11 @@ public class Controller {
                     isKeyPressBlocked = true;
                     afficherResultat();
                 }
+            case I -> Flag.createFlagIfNone(allElements, gridRows, gridCols);
+
+            case P -> MagicStone.createMagicStoneAtRandomPosition(allElements, gridRows, gridCols);
+
+
 
 
             default -> {}

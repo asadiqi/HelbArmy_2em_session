@@ -5,39 +5,34 @@ import com.example.demo.GameElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flag extends GameElement {
+public class MagicStone extends GameElement {
 
-    public static String flagImagePath = "img/flag.png";
+    public static String magicStoneImagePath = "img/magicStone.png";
 
-    public Flag(GameElement position) {
+    public MagicStone(GameElement position) {
         super(position.getX(), position.getY());
+
     }
+
 
     @Override
     public String getImagePath() {
-        return flagImagePath;
+        return magicStoneImagePath;
     }
 
-    public static void createFlagIfNone(List<GameElement> allElements, int gridRows, int gridCols) {
-        // Vérifier si un Flag existe déjà
-        for (GameElement e : allElements) {
-            if (e instanceof Flag) {
-                return; // Un flag existe déjà, on sort
-            }
-        }
 
-        // Chercher les cases libres
+    public static void createMagicStoneAtRandomPosition(List<GameElement> allElements, int gridRows, int gridCols) {
         List<GameElement> freePositions = new ArrayList<>();
         for (int row = 0; row < gridRows; row++) {
             for (int col = 0; col < gridCols; col++) {
-                boolean libre = true;
+                boolean free = true;
                 for (GameElement e : allElements) {
                     if (e.getX() == row && e.getY() == col) {
-                        libre = false;
+                        free = false;
                         break;
                     }
                 }
-                if (libre) {
+                if (free) {
                     freePositions.add(new GameElement(row, col));
                 }
             }
@@ -45,10 +40,11 @@ public class Flag extends GameElement {
 
         if (!freePositions.isEmpty()) {
             int randomIndex = (int) (Math.random() * freePositions.size());
-            allElements.add(new Flag(freePositions.get(randomIndex)));
+            allElements.add(new MagicStone(freePositions.get(randomIndex)));
         } else {
-            System.out.println("No free position available to create a Flag.");
+            System.out.println("No free position available to create a magic stone.");
         }
     }
+
 
 }
