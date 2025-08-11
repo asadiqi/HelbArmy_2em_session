@@ -36,13 +36,16 @@ public class Controller {
     private int elapsedTimeMs = 0;
     private Timeline timeline;
     private boolean isKeyPressBlocked = false;
-
+    private Flag currentFlag;
+    private Timeline flagTimeline;
 
 
     public Controller(View view) {
         this.view = view;
         this.trees = new ArrayList<Tree>();
         this.stones = new ArrayList<Stone>();
+        currentFlag = new Flag(GameElement.NO_POSITION); // flag "inactif" au départ, pas dans la liste
+        setupFlagCycle();
 
         setupCity();
         generateRandomTrees();
@@ -50,16 +53,7 @@ public class Controller {
         view.initView(this);
         setupGameLoop();
 
-//        Flag flag = new Flag(new GameElement(1, 1));
-//        addGameElement(flag);
-
     }
-
-//    public void addGameElement(GameElement element) {
-//        if (element == null || element == GameElement.NO_POSITION) return;
-//        allElements.add(element);
-//        view.drawAllElements();
-//    }
 
     public int getGridRows() {
         return gridRows;
@@ -190,8 +184,39 @@ public class Controller {
 
     public void endGame() {
         timeline.stop();
+        flagTimeline.stop();
         isKeyPressBlocked = true;
         afficherResultat();
+    }
+
+    private void setupFlagCycle() {
+        flagTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            // Supprimer ancien drapeau
+            if (currentFlag != null) {
+                allElements.remove(currentFlag);
+                currentFlag = null;
+                view.drawAllElements();
+            }
+
+            // Créer un nouveau drapeau
+            Flag newFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
+            if (newFlag != null) {
+                currentFlag = newFlag;
+                view.drawAllElements();
+
+                // Après 10 secondes, supprimer le drapeau
+                Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(2), ev -> {
+                    allElements.remove(currentFlag);
+                    currentFlag = null;
+                    view.drawAllElements();
+                }));
+                removeFlagTimeline.setCycleCount(1);
+                removeFlagTimeline.play();
+            }
+        }));
+
+        flagTimeline.setCycleCount(Animation.INDEFINITE);
+        flagTimeline.play();
     }
 
 

@@ -18,18 +18,20 @@ public class Flag extends GameElement {
         return flagImagePath;
     }
 
-    public static void createFlagIfNone(List<GameElement> allElements, int gridRows, int gridCols) {
-        // Vérifier si Flag existe
+    // Renvoie le drapeau créé ou null si déjà présent ou pas de place
+    public static Flag createFlagIfNone(List<GameElement> allElements, int gridRows, int gridCols) {
         for (GameElement e : allElements) {
-            if (e instanceof Flag) return;
+            if (e instanceof Flag) return null; // déjà un drapeau
         }
         GameElement freePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
         if (!freePos.equals(GameElement.NO_POSITION)) {
-            allElements.add(new Flag(freePos));
+            Flag flag = new Flag(freePos);
+            allElements.add(flag);
+            return flag;
         } else {
             System.out.println("No free position available to create a Flag.");
+            return null;
         }
     }
-
 
 }

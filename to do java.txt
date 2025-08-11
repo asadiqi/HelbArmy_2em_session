@@ -147,4 +147,5 @@ ________________________________________
 
 comment seeder palnte des ressource si y a pas gerate ressource dans controller ?
 getRandomFreeCell avec random max attempt dans gameelement
+quand je supprimen tous et que je click sur aze il y a une erreur 
 
