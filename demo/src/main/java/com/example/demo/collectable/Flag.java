@@ -19,36 +19,17 @@ public class Flag extends GameElement {
     }
 
     public static void createFlagIfNone(List<GameElement> allElements, int gridRows, int gridCols) {
-        // Vérifier si un Flag existe déjà
+        // Vérifier si Flag existe
         for (GameElement e : allElements) {
-            if (e instanceof Flag) {
-                return; // Un flag existe déjà, on sort
-            }
+            if (e instanceof Flag) return;
         }
-
-        // Chercher les cases libres
-        List<GameElement> freePositions = new ArrayList<>();
-        for (int row = 0; row < gridRows; row++) {
-            for (int col = 0; col < gridCols; col++) {
-                boolean libre = true;
-                for (GameElement e : allElements) {
-                    if (e.getX() == row && e.getY() == col) {
-                        libre = false;
-                        break;
-                    }
-                }
-                if (libre) {
-                    freePositions.add(new GameElement(row, col));
-                }
-            }
-        }
-
-        if (!freePositions.isEmpty()) {
-            int randomIndex = (int) (Math.random() * freePositions.size());
-            allElements.add(new Flag(freePositions.get(randomIndex)));
+        GameElement freePos = findRandomFreePosition(allElements, gridRows, gridCols);
+        if (!freePos.equals(GameElement.NO_POSITION)) {
+            allElements.add(new Flag(freePos));
         } else {
             System.out.println("No free position available to create a Flag.");
         }
     }
+
 
 }

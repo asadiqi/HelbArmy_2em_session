@@ -22,29 +22,14 @@ public class MagicStone extends GameElement {
 
 
     public static void createMagicStoneAtRandomPosition(List<GameElement> allElements, int gridRows, int gridCols) {
-        List<GameElement> freePositions = new ArrayList<>();
-        for (int row = 0; row < gridRows; row++) {
-            for (int col = 0; col < gridCols; col++) {
-                boolean free = true;
-                for (GameElement e : allElements) {
-                    if (e.getX() == row && e.getY() == col) {
-                        free = false;
-                        break;
-                    }
-                }
-                if (free) {
-                    freePositions.add(new GameElement(row, col));
-                }
-            }
-        }
-
-        if (!freePositions.isEmpty()) {
-            int randomIndex = (int) (Math.random() * freePositions.size());
-            allElements.add(new MagicStone(freePositions.get(randomIndex)));
+        GameElement freePos = findRandomFreePosition(allElements, gridRows, gridCols);
+        if (!freePos.equals(GameElement.NO_POSITION)) {
+            allElements.add(new MagicStone(freePos));
         } else {
-            System.out.println("No free position available to create a magic stone.");
+            System.out.println("No free position available to create a MagicStone.");
         }
     }
+
 
 
 }

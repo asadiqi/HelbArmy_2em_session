@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -70,6 +71,31 @@ public class GameElement {
         }
         return NO_POSITION; // pas trouvé
     }
+
+    public static GameElement findRandomFreePosition(List<GameElement> allElements, int gridRows, int gridCols) {
+        List<GameElement> freePositions = new ArrayList<>();
+        for (int row = 0; row < gridRows; row++) {
+            for (int col = 0; col < gridCols; col++) {
+                boolean free = true;
+                for (GameElement e : allElements) {
+                    if (e.getX() == row && e.getY() == col) {
+                        free = false;
+                        break;
+                    }
+                }
+                if (free) {
+                    freePositions.add(new GameElement(row, col));
+                }
+            }
+        }
+        if (freePositions.isEmpty()) {
+            return NO_POSITION;
+        }
+        int randomIndex = (int) (Math.random() * freePositions.size());
+        return freePositions.get(randomIndex);
+    }
+
+
 
 
 
