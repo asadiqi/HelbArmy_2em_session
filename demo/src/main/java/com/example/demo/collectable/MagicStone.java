@@ -22,7 +22,7 @@ public class MagicStone extends GameElement {
 
 
     public static void createMagicStoneAtRandomPosition(List<GameElement> allElements, int gridRows, int gridCols) {
-        GameElement freePos = findRandomFreePosition(allElements, gridRows, gridCols);
+        GameElement freePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
         if (!freePos.equals(GameElement.NO_POSITION)) {
             allElements.add(new MagicStone(freePos));
         } else {

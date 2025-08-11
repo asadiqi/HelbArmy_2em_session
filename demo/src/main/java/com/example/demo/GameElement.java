@@ -65,35 +65,14 @@ public class GameElement {
         for (int i = 0; i < maxAttempts; i++) {
             int x = rand.nextInt(gridCols);
             int y = rand.nextInt(gridRows);
-            if (!isOccupied(x, y, allElements)) { // on veut une case libre
+            if (!isOccupied(x, y, allElements)) {
                 return new GameElement(x, y);
             }
         }
-        return NO_POSITION; // pas trouvé
+        System.out.println("No free position found after " + maxAttempts + " attempts.");
+        return NO_POSITION;
     }
 
-    public static GameElement findRandomFreePosition(List<GameElement> allElements, int gridRows, int gridCols) {
-        List<GameElement> freePositions = new ArrayList<>();
-        for (int row = 0; row < gridRows; row++) {
-            for (int col = 0; col < gridCols; col++) {
-                boolean free = true;
-                for (GameElement e : allElements) {
-                    if (e.getX() == row && e.getY() == col) {
-                        free = false;
-                        break;
-                    }
-                }
-                if (free) {
-                    freePositions.add(new GameElement(row, col));
-                }
-            }
-        }
-        if (freePositions.isEmpty()) {
-            return NO_POSITION;
-        }
-        int randomIndex = (int) (Math.random() * freePositions.size());
-        return freePositions.get(randomIndex);
-    }
 
 
 

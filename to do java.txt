@@ -146,6 +146,5 @@ ________________________________________
 
 
 comment seeder palnte des ressource si y a pas gerate ressource dans controller ?
-
-
+getRandomFreeCell avec random max attempt dans gameelement
 

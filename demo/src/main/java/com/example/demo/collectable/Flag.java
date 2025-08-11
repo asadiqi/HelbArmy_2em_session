@@ -23,7 +23,7 @@ public class Flag extends GameElement {
         for (GameElement e : allElements) {
             if (e instanceof Flag) return;
         }
-        GameElement freePos = findRandomFreePosition(allElements, gridRows, gridCols);
+        GameElement freePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
         if (!freePos.equals(GameElement.NO_POSITION)) {
             allElements.add(new Flag(freePos));
         } else {
