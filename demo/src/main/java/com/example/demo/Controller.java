@@ -131,8 +131,8 @@ public class Controller {
                // southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
             }
             case 2 -> {
-               // northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
-               // southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+                northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+                southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             }
         }
     }

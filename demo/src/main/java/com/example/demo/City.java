@@ -57,31 +57,13 @@ public class City extends GameElement {
         }
     }
 
-    public void generateCollecter(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance, boolean isLumberjack) {
-        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        addUnitIfPossible(allElements, pos, new Collecter(pos, this, isLumberjack));
-    }
-
-    public void generateSeeder(List<GameElement> allElements, int gridCols, int gridRows, String targetType, int maxDistance) {
-        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        if (!pos.equals(GameElement.NO_POSITION)) {
-            Seeder seeder = new Seeder(pos, this);
-            seeder.setTargetRessourceType(targetType);
-            addUnitIfPossible(allElements, pos, seeder);
-        }
-    }
-
-    public void generateAssassin(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
-        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-        addUnitIfPossible(allElements, pos, new Assassin(pos, this));
-    }
-
-
     public void generateCollectorBasedOnResources(List<Tree> trees, List<Stone> stones,
-                                            List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
+                                                  List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
         double lumberjackProbability = calculateLumberjackProbability(trees, stones);
-        generateCollecter(allElements, gridCols, gridRows, maxDistance, Math.random() < lumberjackProbability);
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+        addUnitIfPossible(allElements, pos, new Collecter(pos, this, Math.random() < lumberjackProbability));
     }
+
 
     public static double calculateLumberjackProbability(List<Tree> trees, List<Stone> stones) {
         int totalResources = trees.size() + stones.size();
@@ -89,9 +71,15 @@ public class City extends GameElement {
         return (double) trees.size() / totalResources;
     }
 
+
     public void generateSeederBasedOnResources(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
         String type = Math.random() < 0.5 ? "stone" : "tree";
-        generateSeeder(allElements, gridCols, gridRows, type, maxDistance);
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+        if (!pos.equals(GameElement.NO_POSITION)) {
+            Seeder seeder = new Seeder(pos, this);
+            seeder.setTargetRessourceType(type);
+            addUnitIfPossible(allElements, pos, seeder);
+        }
     }
 
     public void generateAssassinBasedOnEnemies(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
@@ -110,13 +98,15 @@ public class City extends GameElement {
 
         int totalAssassins = assassinsAlly + assassinsEnemy;
 
-        if (totalAssassins == 0) {
-            generateAssassin(allElements, gridCols, gridRows, maxDistance);
-            System.out.println("Premier assassin généré de force côté " + (isNorth ? "nord" : "sud"));
-        } else if (Math.random() < probGenerate) {
-            generateAssassin(allElements, gridCols, gridRows, maxDistance);
+        if (totalAssassins == 0 || Math.random() < probGenerate) {
+            GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+            addUnitIfPossible(allElements, pos, new Assassin(pos, this));
+            if (totalAssassins == 0) {
+                System.out.println("Premier assassin généré de force côté " + (isNorth ? "nord" : "sud"));
+            }
         }
     }
+
 
 
     public void generateRandomUnit(List<Tree> trees, List<Stone> stones, List<GameElement> allElements,
