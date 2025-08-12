@@ -113,17 +113,17 @@ public class Controller {
     }
 
     private void moveUnits() {
-        boolean flagPresent = false;
+        Flag flag = null;
         for (GameElement e : allElements) {
             if (e instanceof Flag) {
-                flagPresent = true;
+                flag = (Flag) e;
                 break;
             }
         }
 
         for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Unit unit) {
-                if (flagPresent) {
+                if (flag != null) {
                     if (!unit.hasValidTarget() || unit.hasReachedTarget()) {
                         GameElement randomFreePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
                         if (!randomFreePos.equals(GameElement.NO_POSITION)) {
@@ -131,8 +131,21 @@ public class Controller {
                         }
                     }
                     unit.moveTowardsTarget(gridCols, gridRows, allElements);
+
+                    // Nouvelle vérification : si unité arrive sur le flag, supprimer flag et revenir au comportement normal
+                    if (unit.getX() == flag.getX() && unit.getY() == flag.getY()) {
+                        System.out.println("Flag retiré par une unité en position : (" + unit.getX() + ", " + unit.getY() + ")");
+                        allElements.remove(flag);
+                        flag = null;
+                        // on réinitialise la cible des unités pour qu'elles reprennent leur comportement normal
+                        for (GameElement e : allElements) {
+                            if (e instanceof Unit u) {
+                                u.setTarget(GameElement.NO_POSITION);
+                            }
+                        }
+                    }
                 } else {
-                    // comportement normal
+                    // comportement normal (déjà existant)
                     if (unit instanceof Seeder seeder) {
                         seeder.handleSeeder(trees, stones, allElements, gridCols, gridRows);
                     } else if (unit instanceof Collecter collecter) {
