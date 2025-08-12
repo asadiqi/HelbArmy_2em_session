@@ -59,17 +59,12 @@ public class City extends GameElement {
 
     public void generateCollectorBasedOnResources(List<Tree> trees, List<Stone> stones,
                                                   List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
-        double lumberjackProbability = calculateLumberjackProbability(trees, stones);
+        int totalResources = trees.size() + stones.size();
+        double lumberjackProbability = (totalResources == 0) ? 0.5 : (double) trees.size() / totalResources;
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
         addUnitIfPossible(allElements, pos, new Collecter(pos, this, Math.random() < lumberjackProbability));
     }
 
-
-    public static double calculateLumberjackProbability(List<Tree> trees, List<Stone> stones) {
-        int totalResources = trees.size() + stones.size();
-        if (totalResources == 0) return 0.5;
-        return (double) trees.size() / totalResources;
-    }
 
 
     public void generateSeederBasedOnResources(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {

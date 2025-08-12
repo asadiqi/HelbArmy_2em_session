@@ -217,16 +217,16 @@ public class Controller {
 
     private void createFlag() {
         flagTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(5), e -> {
+                new KeyFrame(Duration.seconds(120), e -> {
                     currentFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
                     view.drawAllElements();
                 }),
-                new KeyFrame(Duration.seconds(15), e -> {
+                new KeyFrame(Duration.seconds(130), e -> {
                     allElements.remove(currentFlag);
                     currentFlag = Flag.NO_FLAG;
                     view.drawAllElements();
                 }),
-                new KeyFrame(Duration.seconds(20))
+                new KeyFrame(Duration.seconds(240))
         );
 
         flagTimeline.setCycleCount(Animation.INDEFINITE);
