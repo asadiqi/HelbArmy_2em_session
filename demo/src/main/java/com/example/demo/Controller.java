@@ -26,7 +26,7 @@ public class Controller {
     private static final int INITIAT_INDEX = 0;
     private final int LAST_INDEX_OFFSET = 1;
     private List<GameElement> allElements = new ArrayList<>();
-    private double treeRatio = 0.05;
+    private double treeRatio = 0.010;
     private double stoneRatio = 0.03;
     private int maxDistance = gridRows - 1;
     private City northCity;
@@ -47,8 +47,8 @@ public class Controller {
         currentFlag = new Flag(GameElement.NO_POSITION); // flag "inactif" au départ, pas dans la liste
 
         setupCity();
-        //generateRandomTrees();
-        //generateRandomStones();
+        generateRandomTrees();
+        generateRandomStones();
         view.initView(this);
         setupGameLoop();
         createFlag();
@@ -113,17 +113,39 @@ public class Controller {
     }
 
     private void moveUnits() {
+        boolean flagPresent = false;
+        for (GameElement e : allElements) {
+            if (e instanceof Flag) {
+                flagPresent = true;
+                break;
+            }
+        }
+
         for (GameElement element : new ArrayList<>(allElements)) {
-            if (element instanceof Seeder seeder) {
-                seeder.handleSeeder(trees, stones, allElements, gridCols, gridRows);
-            } else if (element instanceof Collecter collecter) {
-                collecter.handleCollecter(trees, stones, northCity, southCity, allElements, gridCols, gridRows);
-                removeDepletedResources();
-            } else if (element instanceof Assassin assassin) {
-                assassin.handleAssassin(gridCols, gridRows, allElements);
+            if (element instanceof Unit unit) {
+                if (flagPresent) {
+                    if (!unit.hasValidTarget() || unit.hasReachedTarget()) {
+                        GameElement randomFreePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
+                        if (!randomFreePos.equals(GameElement.NO_POSITION)) {
+                            unit.setTarget(randomFreePos);
+                        }
+                    }
+                    unit.moveTowardsTarget(gridCols, gridRows, allElements);
+                } else {
+                    // comportement normal
+                    if (unit instanceof Seeder seeder) {
+                        seeder.handleSeeder(trees, stones, allElements, gridCols, gridRows);
+                    } else if (unit instanceof Collecter collecter) {
+                        collecter.handleCollecter(trees, stones, northCity, southCity, allElements, gridCols, gridRows);
+                        removeDepletedResources();
+                    } else if (unit instanceof Assassin assassin) {
+                        assassin.handleAssassin(gridCols, gridRows, allElements);
+                    }
+                }
             }
         }
     }
+
 
     private void generateUnits() {
         int random = (int) (Math.random() * 3);
@@ -203,11 +225,11 @@ public class Controller {
         }
 
         // Créer un timeline pour supprimer le flag après 10 secondes
-        Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+        Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(20), e -> {
             allElements.remove(newFlag);
             view.drawAllElements();
         }));
-        removeFlagTimeline.setCycleCount(2);
+        removeFlagTimeline.setCycleCount(1);
         removeFlagTimeline.play();
 
         view.drawAllElements();
@@ -215,11 +237,11 @@ public class Controller {
 
     private void createFlag() {
         flagTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(5), e -> {
+                new KeyFrame(Duration.seconds(120), e -> {
                     currentFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
                     view.drawAllElements();
                 }),
-                new KeyFrame(Duration.seconds(15), e -> {
+                new KeyFrame(Duration.seconds(130), e -> {
                     allElements.remove(currentFlag);
                     currentFlag = Flag.NO_FLAG;
                     view.drawAllElements();
