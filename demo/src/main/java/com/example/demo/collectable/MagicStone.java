@@ -1,8 +1,6 @@
 package com.example.demo.collectable;
 
 import com.example.demo.GameElement;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MagicStone extends GameElement {
@@ -14,12 +12,10 @@ public class MagicStone extends GameElement {
 
     }
 
-
     @Override
     public String getImagePath() {
         return magicStoneImagePath;
     }
-
 
     public static void createMagicStoneAtRandomPosition(List<GameElement> allElements, int gridRows, int gridCols) {
         GameElement freePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
@@ -29,7 +25,4 @@ public class MagicStone extends GameElement {
             System.out.println("No free position available to create a MagicStone.");
         }
     }
-
-
-
 }

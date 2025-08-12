@@ -45,8 +45,6 @@ public class City extends GameElement {
         stockStone += amount;
     }
 
-
-
     private GameElement findPlacementForUnit(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
         return Unit.findNearestFreeCoordinate(this, maxDistance, gridCols, gridRows, allElements);
     }
@@ -64,8 +62,6 @@ public class City extends GameElement {
         GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
         addUnitIfPossible(allElements, pos, new Collecter(pos, this, Math.random() < lumberjackProbability));
     }
-
-
 
     public void generateSeederBasedOnResources(List<GameElement> allElements, int gridCols, int gridRows, int maxDistance) {
         String type = Math.random() < 0.5 ? "stone" : "tree";
@@ -102,8 +98,6 @@ public class City extends GameElement {
         }
     }
 
-
-
     public void generateRandomUnit(List<Tree> trees, List<Stone> stones, List<GameElement> allElements,
                                    int gridCols, int gridRows, int maxDistance) {
         int random = (int) (Math.random() * 3);
@@ -113,8 +107,5 @@ public class City extends GameElement {
             case 2 -> generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
         }
     }
-
-
-
 
 }
