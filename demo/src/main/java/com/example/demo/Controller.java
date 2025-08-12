@@ -47,8 +47,8 @@ public class Controller {
         currentFlag = new Flag(GameElement.NO_POSITION); // flag "inactif" au départ, pas dans la liste
 
         setupCity();
-        generateRandomTrees();
-        generateRandomStones();
+        //generateRandomTrees();
+        //generateRandomStones();
         view.initView(this);
         setupGameLoop();
         createFlag();
@@ -214,9 +214,6 @@ public class Controller {
         view.drawAllElements();
     }
 
-
-
-
     private void createFlag() {
         flagTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(5), e -> {
@@ -233,7 +230,6 @@ public class Controller {
         flagTimeline.setCycleCount(Animation.INDEFINITE);
         flagTimeline.play();
     }
-
 
 
     public void handleKeyPress(KeyCode code) {

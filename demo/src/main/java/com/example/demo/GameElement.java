@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.collectable.Flag;
+import com.example.demo.collectable.MagicStone;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -49,11 +52,16 @@ public class GameElement {
     public static boolean isOccupied(int x, int y, List<GameElement> elements) {
         for (GameElement element : elements) {
             if (element.getX() == x && element.getY() == y) {
-                return true; // occupée
+                if (element instanceof MagicStone || element instanceof Flag) {
+                    continue; // ignore MagicStone et Flag sur cette case
+                }
+                return true; // occupée par autre chose
             }
         }
         return false; // libre
     }
+
+
 
     /**
      * Renvoie une case libre aléatoire dans la grille.

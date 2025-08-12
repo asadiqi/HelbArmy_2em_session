@@ -1,6 +1,8 @@
 package com.example.demo.units;
 
 import com.example.demo.GameElement;
+import com.example.demo.collectable.MagicStone;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,13 +79,29 @@ public abstract class Unit extends GameElement {
         if (!hasValidTarget()) return;
 
         if (hasReachedTarget()) {
-            // déjà proche de la cible, on reste sur place
             return;
         }
         GameElement current = new GameElement(this.x, this.y);
         GameElement next = getNextCoordinateForTarget(current, target, maxX, maxY, occupied);
+
+        // Vérifier si la case "next" contient une MagicStone
+        for (GameElement e : occupied) {
+            if (e instanceof MagicStone && e.getX() == next.getX() && e.getY() == next.getY()) {
+                // Trouver une case libre aléatoire
+                GameElement freeCell = GameElement.getRandomFreeCell(maxX, maxY, occupied);
+                if (!freeCell.equals(GameElement.NO_POSITION)) {
+                    // déplacer unité sur la case libre
+                    setPosition(freeCell.getX(), freeCell.getY());
+                    // Ne pas changer la cible, continuer vers la même cible depuis cette nouvelle position
+                    return;
+                }
+            }
+        }
+
+        // Sinon, déplacer normalement
         setPosition(next.getX(), next.getY());
     }
+
 
     public void setTarget(GameElement target) {
         if (target == null) {
