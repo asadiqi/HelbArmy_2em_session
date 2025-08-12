@@ -203,11 +203,11 @@ public class Controller {
         }
 
         // Créer un timeline pour supprimer le flag après 10 secondes
-        Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+        Timeline removeFlagTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             allElements.remove(newFlag);
             view.drawAllElements();
         }));
-        removeFlagTimeline.setCycleCount(1);
+        removeFlagTimeline.setCycleCount(2);
         removeFlagTimeline.play();
 
         view.drawAllElements();
