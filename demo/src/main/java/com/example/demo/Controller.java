@@ -169,10 +169,9 @@ public class Controller {
 
         boisSud = southCity.getStockWood();
         mineraiSud = southCity.getStockStone();
-
-        System.out.println("=== Résultats fin de partie ===");
-        System.out.println("Nord - Bois : " + boisNord + ", Minerai : " + mineraiNord);
-        System.out.println("Sud  - Bois : " + boisSud + ", Minerai : " + mineraiSud);
+        System.out.println("=== End of Game Results ===");
+        System.out.println("North - Wood: " + boisNord + ", Mineral: " + mineraiNord);
+        System.out.println("South - Wood: " + boisSud + ", Mineral: " + mineraiSud);
 
         if (boisNord > boisSud && mineraiNord > mineraiSud) {
             System.out.println("Victoire de l'équipe Nord !");

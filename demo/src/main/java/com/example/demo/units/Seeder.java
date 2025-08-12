@@ -2,6 +2,9 @@ package com.example.demo.units;
 
 import com.example.demo.City;
 import com.example.demo.GameElement;
+import com.example.demo.collectable.Flag;
+import com.example.demo.collectable.MagicStone;
+
 import com.example.demo.ressource.Resource;
 import com.example.demo.ressource.Stone;
 import com.example.demo.ressource.Tree;
@@ -125,6 +128,15 @@ public class Seeder extends Unit {
     private void plantResourceAt(GameElement position, List<GameElement> occupied,
                                  List<? extends Resource> resourceList, boolean isTree,
                                  int gridCols, int gridRows) {
+
+        for (GameElement e : occupied) {
+            if ((e instanceof MagicStone || e instanceof Flag) &&
+                    e.getX() == position.getX() && e.getY() == position.getY()) {
+                System.out.println("Impossible de panter : position occupé par MagicStone ou Flag");
+                return;
+            }
+        }
+
         if (isTree) {
             Tree tree = new Tree(position);
             tree.setWoodAmount(0);
