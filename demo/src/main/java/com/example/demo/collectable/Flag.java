@@ -1,5 +1,7 @@
 package com.example.demo.collectable;
 import com.example.demo.GameElement;
+import com.example.demo.units.Unit;
+
 import java.util.List;
 
 public class Flag extends GameElement {
@@ -37,5 +39,21 @@ public class Flag extends GameElement {
         }
         return NO_FLAG;
     }
+
+    public boolean handleUnitArrival(Unit unit, List<GameElement> allElements) {
+        if (unit.getX() == this.getX() && unit.getY() == this.getY()) {
+            allElements.remove(this);
+            // Reset target for all units
+            for (GameElement e : allElements) {
+                if (e instanceof Unit u) {
+                    u.setTarget(GameElement.NO_POSITION);
+                }
+            }
+
+            return true; // flag retiré
+        }
+        return false; // flag toujours présent
+    }
+
 
 }

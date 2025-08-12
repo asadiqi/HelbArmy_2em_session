@@ -111,19 +111,18 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
-
     private void moveUnits() {
-        Flag flag = null;
+        Flag flag = Flag.NO_FLAG;
         for (GameElement e : allElements) {
-            if (e instanceof Flag) {
-                flag = (Flag) e;
+            if (e instanceof Flag f) {
+                flag = f;
                 break;
             }
         }
 
         for (GameElement element : new ArrayList<>(allElements)) {
             if (element instanceof Unit unit) {
-                if (flag != null) {
+                if (flag != Flag.NO_FLAG) {
                     if (!unit.hasValidTarget() || unit.hasReachedTarget()) {
                         GameElement randomFreePos = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
                         if (!randomFreePos.equals(GameElement.NO_POSITION)) {
@@ -132,20 +131,12 @@ public class Controller {
                     }
                     unit.moveTowardsTarget(gridCols, gridRows, allElements);
 
-                    // Nouvelle vérification : si unité arrive sur le flag, supprimer flag et revenir au comportement normal
-                    if (unit.getX() == flag.getX() && unit.getY() == flag.getY()) {
-                        System.out.println("Flag retiré par une unité en position : (" + unit.getX() + ", " + unit.getY() + ")");
-                        allElements.remove(flag);
-                        flag = null;
-                        // on réinitialise la cible des unités pour qu'elles reprennent leur comportement normal
-                        for (GameElement e : allElements) {
-                            if (e instanceof Unit u) {
-                                u.setTarget(GameElement.NO_POSITION);
-                            }
-                        }
+                    if (flag.handleUnitArrival(unit, allElements)) {
+                        System.err.println("Flag retiré par une unité en position : (" + unit.getX() + ", " + unit.getY() + ")");
+                        flag = Flag.NO_FLAG;
                     }
                 } else {
-                    // comportement normal (déjà existant)
+                    // comportement normal
                     if (unit instanceof Seeder seeder) {
                         seeder.handleSeeder(trees, stones, allElements, gridCols, gridRows);
                     } else if (unit instanceof Collecter collecter) {
@@ -158,6 +149,8 @@ public class Controller {
             }
         }
     }
+
+
 
 
     private void generateUnits() {
@@ -250,11 +243,11 @@ public class Controller {
 
     private void createFlag() {
         flagTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(120), e -> {
+                new KeyFrame(Duration.seconds(5), e -> {
                     currentFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
                     view.drawAllElements();
                 }),
-                new KeyFrame(Duration.seconds(130), e -> {
+                new KeyFrame(Duration.seconds(10), e -> {
                     allElements.remove(currentFlag);
                     currentFlag = Flag.NO_FLAG;
                     view.drawAllElements();
