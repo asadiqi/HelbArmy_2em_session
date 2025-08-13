@@ -51,6 +51,10 @@ public class City extends GameElement {
 
     private void addUnitIfPossible(List<GameElement> allElements, GameElement pos, Unit unit) {
         if (!pos.equals(GameElement.NO_POSITION)) {
+            if(unit instanceof Assassin a ) a.city= this ;
+            else if ( unit instanceof Collecter c ) c.city = this ;
+            else if (unit instanceof Seeder s ) s.city = this;
+
             allElements.add(unit);
         }
     }

@@ -13,7 +13,7 @@ public class Collecter extends Unit {
     public static String southCollecterPath = "img/black/southCollecter.png";
     private boolean isLumberjackCollecter;
 
-    City city; // dans Collecter
+    public City city; // dans Collecter
 
     public Collecter(GameElement position, City city, boolean isLumberjackCollecter) {
         super(position);
