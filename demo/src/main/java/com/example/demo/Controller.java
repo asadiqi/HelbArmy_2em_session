@@ -243,7 +243,7 @@ public class Controller {
 
     private void createFlag() {
         flagTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(5), e -> {
+                new KeyFrame(Duration.seconds(5000), e -> {
                     currentFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
                     view.drawAllElements();
                 }),

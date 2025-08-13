@@ -48,22 +48,34 @@ public class Assassin extends Unit {
 
         // 2. Trouver la cible prioritaire (assassin > collecteur > semeur)
         GameElement targetEnemy = findClosestInList(enemyAssassins);
-        if (targetEnemy == GameElement.NO_POSITION) {
-            targetEnemy = findClosestInList(enemyCollectors);
-        }
-        if (targetEnemy == GameElement.NO_POSITION) {
-            targetEnemy = findClosestInList(enemySeeders);
-        }
+        if (targetEnemy == GameElement.NO_POSITION) targetEnemy = findClosestInList(enemyCollectors);
+        if (targetEnemy == GameElement.NO_POSITION) targetEnemy = findClosestInList(enemySeeders);
 
-        // 3. Déplacement ou attente
+        // 3. Vérifier si l'ennemi est adjacent pour le combat
         if (targetEnemy != GameElement.NO_POSITION) {
-            waiting = false;
-            setTarget(targetEnemy);
-        } else {
-            if (waiting) {
-                if (!hasReachedTarget()) {
-                    moveTowardsTarget(gridCols, gridRows, allElements);
+            int dx = Math.abs(this.x - targetEnemy.getX());
+            int dy = Math.abs(this.y - targetEnemy.getY());
+            if (dx <= 1 && dy <= 1) {
+                // Combat au dé
+                int winner = (int) (Math.random() * 2); // 0 = this, 1 = cible
+                if (winner == 0) {
+                    allElements.remove(targetEnemy);
+                    System.err.println(this + " a vaincu " + targetEnemy);
+
+                    // cette unité continue son déplacement
+                } else {
+                    allElements.remove(this);
+                    System.err.println(this + " a été vaincu par " + targetEnemy);
+                    return; // cette unité est supprimée, on arrête
                 }
+            } else {
+                setTarget(targetEnemy);
+                moveTowardsTarget(gridCols, gridRows, allElements);
+            }
+        } else {
+            // Pas de cible : comportement aléatoire
+            if (waiting) {
+                if (!hasReachedTarget()) moveTowardsTarget(gridCols, gridRows, allElements);
                 return;
             } else {
                 GameElement randomFreeCell = GameElement.getRandomFreeCell(gridCols, gridRows, allElements);
@@ -72,11 +84,9 @@ public class Assassin extends Unit {
                     waiting = true;
                 }
             }
+            moveTowardsTarget(gridCols, gridRows, allElements);
         }
-
-        moveTowardsTarget(gridCols, gridRows, allElements);
     }
-
 
     private GameElement findClosestInList(List<GameElement> enemies) {
         if (enemies.isEmpty()) {
@@ -94,6 +104,4 @@ public class Assassin extends Unit {
         }
         return closest;
     }
-
-
 }
