@@ -150,9 +150,6 @@ public class Controller {
         }
     }
 
-
-
-
     private void generateUnits() {
         int random = (int) (Math.random() * 3);
 

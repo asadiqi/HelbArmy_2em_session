@@ -12,7 +12,6 @@ public class Assassin extends Unit {
     public static String southAssassinPath = "img/black/southAssassin.png";
     public static final Assassin NO_ASSASSIN = new Assassin(GameElement.NO_POSITION, null);
 
-    public City city;
     private boolean waiting = false;
 
     public City getCity() {
@@ -87,6 +86,8 @@ public class Assassin extends Unit {
             moveTowardsTarget(gridCols, gridRows, allElements);
         }
     }
+    
+
 
     private GameElement findClosestInList(List<GameElement> enemies) {
         if (enemies.isEmpty()) {

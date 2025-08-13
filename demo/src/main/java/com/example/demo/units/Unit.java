@@ -1,5 +1,6 @@
 package com.example.demo.units;
 
+import com.example.demo.City;
 import com.example.demo.GameElement;
 import com.example.demo.collectable.MagicStone;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 public abstract class Unit extends GameElement {
     protected GameElement target = GameElement.NO_POSITION; // Cible non définie (position invalide)
+    public City city;
 
 
     public Unit(GameElement position) {
@@ -148,6 +150,12 @@ public abstract class Unit extends GameElement {
     }
 
 
-
+    @Override
+    public String toString() {
+        return String.format("%s (%s, x=%d, y=%d)",
+                getClass().getSimpleName(),
+                city != null && city.isNorth ? "Nord" : "Sud",
+                x, y);
+    }
 
 }
