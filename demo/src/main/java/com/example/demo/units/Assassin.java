@@ -12,7 +12,7 @@ public class Assassin extends Unit {
     private static final int COMBAT_OUTCOMES = 2;        // nombre de résultats possibles pour le combat
     private static final int COMBAT_WINNER_ATTACKER = 0; // valeur si l’attaquant gagne
     private boolean waiting = false;  // indique si l'assassin attend avant de se déplacer
-    
+
     public static String northAssassinPath = "img/white/northAssassin.png";
     public static String southAssassinPath = "img/black/southAssassin.png";
 
@@ -71,12 +71,12 @@ public class Assassin extends Unit {
                 int winner = (int) (Math.random() * COMBAT_OUTCOMES );
                 if (winner == COMBAT_WINNER_ATTACKER) {
                     allElements.remove(targetEnemy);
-                    System.err.println(this + " a vaincu " + targetEnemy);
+                    System.err.println(this + " defeated " + targetEnemy);
 
                     // cette unité continue son déplacement
                 } else {
                     allElements.remove(this);
-                    System.err.println(this + " a été vaincu par " + targetEnemy);
+                    System.err.println(this + " was defeated by " + targetEnemy);
                     return; // cette unité est supprimée, on arrête
                 }
             } else {

@@ -101,7 +101,7 @@ public class Controller {
 
             elapsedTimeMs += GAMELOOP_INERVAL_MS;
             if (elapsedTimeMs >= UNIT_GENRATION_MS) {
-                generateUnits();
+               // generateUnits();
                 elapsedTimeMs = 0;
             }
         }));
