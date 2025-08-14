@@ -93,12 +93,21 @@ public class City extends GameElement {
 
         int totalAssassins = assassinsAlly + assassinsEnemy;
 
-        if (totalAssassins == 0 || Math.random() < probGenerate) {
-            GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
-            addUnitIfPossible(allElements, pos, new Assassin(pos, this));
-            if (totalAssassins == 0) {
-                System.out.println("Premier assassin généré de force côté " + (isNorth ? "nord" : "sud"));
+        GameElement pos = findPlacementForUnit(allElements, gridCols, gridRows, maxDistance);
+
+        // Forcer le premier assassin si aucun
+        if (totalAssassins == 0) {
+            if (pos.equals(GameElement.NO_POSITION)) {
+                pos = new GameElement(this.getX(), this.getY()); // mettre sur la ville si aucune position libre
             }
+            addUnitIfPossible(allElements, pos, new Assassin(pos, this));
+            System.out.println("Premier assassin généré de force côté " + (isNorth ? "nord" : "sud"));
+            return;
+        }
+
+        // génération normale
+        if (Math.random() < probGenerate && !pos.equals(GameElement.NO_POSITION)) {
+            addUnitIfPossible(allElements, pos, new Assassin(pos, this));
         }
     }
 
