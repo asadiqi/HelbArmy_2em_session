@@ -52,8 +52,6 @@ public class Controller {
         view.initView(this);
         setupGameLoop();
         createFlag();
-
-
     }
 
     public int getGridRows() {
@@ -90,8 +88,8 @@ public class Controller {
         allElements.add(northCity);
         allElements.add(southCity);
 
-        // System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
-        // System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
+         System.out.println("North city added on cell: "+northCity.getX() + " " + northCity.getY());
+         System.out.println("South city added on cell: "+southCity.getX() + " " + southCity.getY());
     }
 
     private void setupGameLoop() {

@@ -29,7 +29,7 @@ public class MagicStone extends GameElement {
         // vérifie qu'il n'y a pas de drapeau sur cette position
         for (GameElement e : allElements) {
             if (e.getX() == freePos.getX() && e.getY() == freePos.getY() && e instanceof Flag) {
-                System.out.println("MagicStone non créé : case occupée par un Flag.");
+                System.out.println("MagicStone not created: cell occupied by a Flag.");
                 return;
             }
         }
