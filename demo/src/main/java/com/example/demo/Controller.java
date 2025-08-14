@@ -19,8 +19,8 @@ import javafx.scene.input.KeyCode;
 public class Controller {
 
     private View view;
-    private int gridRows = 15;
-    private int gridCols = 15;
+    private int gridRows = 30;
+    private int gridCols = 30;
     private List<Tree> trees;
     private List<Stone> stones;
     private static final int INITIAT_INDEX = 0;

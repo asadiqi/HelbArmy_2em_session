@@ -49,9 +49,9 @@ public class Seeder extends Unit {
     public void chooseTarget(String resourceType, List<? extends Resource> resources, int maxX, int maxY, List<GameElement> occupied) {
 
         this.targetRessourceType = resourceType;
-        if ("tree".equalsIgnoreCase(resourceType)) {
+        if ("tree".equals(resourceType)) {
             chooseTreeTarget((List<Tree>) resources, maxX, maxY, occupied);
-        } else if ("stone".equalsIgnoreCase(resourceType)) {
+        } else if ("stone".equals(resourceType)) {
             chooseStoneTarget((List<Stone>) resources, maxX, maxY, occupied);
         }
     }
@@ -214,8 +214,8 @@ public class Seeder extends Unit {
     public void handleSeeder(List<Tree> trees, List<Stone> stones, List<GameElement> allElements, int gridCols, int gridRows) {
         String type = this.getTargetRessourceType();
 
-        boolean isTree = type.equalsIgnoreCase("tree");
-        boolean isStone = type.equalsIgnoreCase("stone");
+        boolean isTree = type.equals("tree");
+        boolean isStone = type.equals("stone");
 
         if (isTree && plantedTree != NO_TREE && !plantedTree.isMature()) return;
         if (isStone && plantedStone != NO_STONE && !plantedStone.isMature()) return;
