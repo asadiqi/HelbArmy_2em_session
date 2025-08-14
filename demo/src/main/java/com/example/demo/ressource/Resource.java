@@ -20,18 +20,6 @@ public abstract class Resource extends GameElement {
         this.maxAmount = maxAmount;
     }
 
-    // nom de la ressource (ex: "Wood", "Stone")
-    protected abstract String getResourceName();
-
-    // Calcule le nombre de ressources à générer selon ratio
-    // gridCols, gridRows : dimensions de la grille
-    // ratio : proportion de cases à remplir
-    // retourne le nombre de ressources à générer
-    protected static int computeNumberToGenerate (int gridcols, int gridrows, double ratio) {
-        return (int) (gridrows * gridcols * ratio);
-
-    }
-
     // définit la quantité (entre 0 et maxAmount)
     // amount : nouvelle quantité
     public void setAmount(int amount) {
@@ -107,6 +95,19 @@ public abstract class Resource extends GameElement {
             return true;
         }
         return false;
+    }
+
+
+    // nom de la ressource (ex: "Wood", "Stone")
+    protected abstract String getResourceName();
+
+    // Calcule le nombre de ressources à générer selon ratio
+    // gridCols, gridRows : dimensions de la grille
+    // ratio : proportion de cases à remplir
+    // retourne le nombre de ressources à générer
+    protected static int computeNumberToGenerate (int gridcols, int gridrows, double ratio) {
+        return (int) (gridrows * gridcols * ratio);
+
     }
 
 }
