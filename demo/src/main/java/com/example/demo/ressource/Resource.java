@@ -6,17 +6,30 @@ import java.util.List;
 
 public abstract class Resource extends GameElement {
 
+    protected final int DEFAULT_GROW_VALUE = 20; // valeur de croissance par défaut
+    protected final int INIT_INDEX = 0;        // valeur minimale
+
     protected int amount;           // quantité actuelle
     protected int maxAmount;        // quantité maximale
     protected boolean isGrowing = false; // indique si la ressource est en croissance
-    protected final int DEFAULT_GROW_VALUE = 20; // valeur de croissance par défaut
-    protected final int INIT_INDEX = 0;        // valeur minimale
 
     // Constructeur de la classe Ressource
     public Resource(int x, int y, int defaultAmount, int maxAmount) {
         super(x, y);
         this.amount = defaultAmount;
         this.maxAmount = maxAmount;
+    }
+
+    // nom de la ressource (ex: "Wood", "Stone")
+    protected abstract String getResourceName();
+
+    // Calcule le nombre de ressources à générer selon ratio
+    // gridCols, gridRows : dimensions de la grille
+    // ratio : proportion de cases à remplir
+    // retourne le nombre de ressources à générer
+    protected static int computeNumberToGenerate (int gridcols, int gridrows, double ratio) {
+        return (int) (gridrows * gridcols * ratio);
+
     }
 
     // définit la quantité (entre 0 et maxAmount)
@@ -43,6 +56,7 @@ public abstract class Resource extends GameElement {
         return amount >= maxAmount;
     }
 
+
     // Augmente la quantité d'une valeur donnée
     // value : valeur à ajouter
     public void grow(int value) {
@@ -51,10 +65,12 @@ public abstract class Resource extends GameElement {
         }
     }
 
+    // Vérifie si la ressource pousse
     public boolean isGrowing() {
         return isGrowing; // retourne true si en croissance
     }
 
+    // Définit si la ressource doit pousser
     public void setGrowing(boolean growing) {
         isGrowing = growing; // définit si la ressource est en croissance
     }
@@ -81,10 +97,6 @@ public abstract class Resource extends GameElement {
         }
     }
 
-    // nom de la ressource (ex: "Wood", "Stone")
-    protected abstract String getResourceName();
-
-
     // Supprime la ressource de la liste si épuisée
     // allElements : liste de tous les éléments de la grille
     // retourne true si la ressource a été retirée
@@ -97,13 +109,4 @@ public abstract class Resource extends GameElement {
         return false;
     }
 
-
-    // Calcule le nombre de ressources à générer selon ratio
-    // gridCols, gridRows : dimensions de la grille
-    // ratio : proportion de cases à remplir
-    // retourne le nombre de ressources à générer
-    protected static int computeNumberToGenerate (int gridcols, int gridrows, double ratio) {
-        return (int) (gridrows * gridcols * ratio);
-
-    }
 }
