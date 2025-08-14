@@ -155,16 +155,16 @@ public class Controller {
 
         switch(random) {
             case 0 -> {
-               // northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
-               // southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+                northCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
+                southCity.generateCollectorBasedOnResources(trees, stones, allElements, gridCols, gridRows, maxDistance);
             }
             case 1 -> {
-               // northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
-               // southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+                northCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
+                southCity.generateSeederBasedOnResources(allElements, gridCols, gridRows, maxDistance);
             }
             case 2 -> {
-               // northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
-               // southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+                northCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
+                southCity.generateAssassinBasedOnEnemies(allElements, gridCols, gridRows, maxDistance);
             }
         }
     }
@@ -221,7 +221,6 @@ public class Controller {
             }
         }
 
-        // Créer un flag avec createFlagIfNone
         Flag newFlag = Flag.createFlagIfNone(allElements, gridRows, gridCols);
         if (newFlag == Flag.NO_FLAG) {
             return; // pas de flag créé
