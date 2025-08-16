@@ -141,7 +141,7 @@ public class Seeder extends Unit {
         String type = this.getTargetRessourceType();     // Récupère le type de ressource que le Seeder doit gérer
         // Vérifie si le type est un arbre ou une pierre
         boolean isTree = type.equals(TREE_TYPE);
-        boolean isStone = type.equals(TREE_TYPE);
+        boolean isStone = type.equals(STONE_TYPE);
 
         // Si le Seeder a déjà planté une ressource qui n'est pas mature, on ne fait rien
         if (isTree && plantedTree != NO_TREE && !plantedTree.isMature()) return;
