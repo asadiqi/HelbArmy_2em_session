@@ -51,11 +51,16 @@ public class Tree extends Resource {
     // trees : liste de tous les arbres
     // allElements : liste de tous les éléments de la grille
     // retourne la liste des arbres supprimés
+// Méthode à ajouter ou modifier dans la classe Tree
     public static List<Tree> removeDepletedTrees(List<Tree> trees, List<GameElement> allElements) {
         List<Tree> toRemove = new ArrayList<>();
         for (Tree tree : trees) {
-            if (tree.removeIfDepleted(allElements)) {
+            if (tree.getCurrentWoodAmount() <= 0 && !tree.isGrowing()) {
                 toRemove.add(tree);
+                allElements.remove(tree);
+
+                System.out.println("Arbre épuisé supprimé à la position (" +
+                        tree.getX() + ", " + tree.getY() + ")");
             }
         }
         return toRemove;

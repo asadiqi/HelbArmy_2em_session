@@ -75,8 +75,14 @@
         public static List<Stone> removeDepletedStones(List<Stone> stones, List<GameElement> allElements) {
             List<Stone> toRemove = new ArrayList<>();
             for (Stone stone : stones) {
-                if (stone.removeIfDepleted(allElements)) {
+                if (stone.getCurrentMineralAmount() <= 0 && !stone.isGrowing()) {
                     toRemove.add(stone);
+                    allElements.remove(stone);
+                    // Retirer aussi toutes les cellules occupées
+                    allElements.removeAll(stone.getOccupiedCells());
+
+                    System.out.println("Pierre épuisée supprimée à la position (" +
+                            stone.getX() + ", " + stone.getY() + ")");
                 }
             }
             return toRemove;
